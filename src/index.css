@@ -1,0 +1,245 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 33% 99%;
+    --foreground: 215 25% 27%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 27%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 27%;
+
+    --primary: 142 43% 42%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 15 16% 47%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215 16% 56.9%;
+
+    --accent: 32 90% 65%;
+    --accent-foreground: 215 25% 27%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 142 43% 42%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 25% 27%;
+    --sidebar-primary: 142 43% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 96.1%;
+    --sidebar-accent-foreground: 215 25% 27%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 142 43% 42%;
+  }
+
+  .dark {
+    --background: 220 20% 10%;
+    --foreground: 0 0% 98%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 142 43% 42%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 15 16% 47%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 215 25% 18%;
+    --muted-foreground: 217.2 32.6% 65%;
+
+    --accent: 32 90% 65%;
+    --accent-foreground: 215 25% 27%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 215 25% 18%;
+    --input: 215 25% 18%;
+    --ring: 142 43% 42%;
+
+    --sidebar-background: 224 71% 4%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 142 43% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 25% 18%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 215 25% 18%;
+    --sidebar-ring: 142 43% 42%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-medium tracking-tight;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+}
+
+@layer components {
+  /* Glass UI components */
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-glass;
+  }
+  
+  .glass-hover {
+    @apply hover:shadow-glass-hover transition-shadow duration-300;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-card-hover transition-all duration-300 ease-in-out transform hover:-translate-y-1;
+  }
+  
+  /* Dashboard cards */
+  .dashboard-card {
+    @apply bg-white rounded-xl shadow-card p-5 border border-border/50;
+  }
+  
+  /* Stat cards */
+  .stat-card {
+    @apply dashboard-card flex flex-col justify-between;
+  }
+  
+  .stat-value {
+    @apply text-2xl font-semibold text-foreground;
+  }
+  
+  .stat-label {
+    @apply text-sm font-medium text-muted-foreground;
+  }
+  
+  /* Smooth transitions */
+  .page-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  /* Interactive elements */
+  .interactive {
+    @apply transition-all duration-200 hover:brightness-105 active:brightness-95;
+  }
+  
+  /* Navigation links */
+  .nav-link {
+    @apply relative px-3 py-2 text-foreground/80 rounded-md transition-colors hover:text-foreground hover:bg-muted;
+  }
+  
+  .nav-link.active {
+    @apply text-primary font-medium bg-primary/10;
+  }
+  
+  /* Drag and drop zone */
+  .drop-zone {
+    @apply border-2 border-dashed border-border rounded-lg p-4 text-center cursor-pointer transition-colors hover:border-primary/50 hover:bg-primary/5;
+  }
+  
+  /* Form inputs with consistent styling */
+  .form-input {
+    @apply rounded-md border border-input px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+  }
+}
+
+@layer utilities {
+  /* Custom scrollbar */
+  .custom-scrollbar {
+    @apply scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent hover:scrollbar-thumb-primary/30;
+  }
+  
+  /* Text gradients */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-rwiz-primary-light bg-clip-text text-transparent;
+  }
+  
+  /* Util for perfect centering */
+  .center {
+    @apply flex items-center justify-center;
+  }
+  
+  /* Pill badge */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  
+  .badge-primary {
+    @apply badge bg-primary/10 text-primary;
+  }
+  
+  .badge-secondary {
+    @apply badge bg-secondary/10 text-secondary;
+  }
+  
+  .badge-accent {
+    @apply badge bg-accent/10 text-accent-foreground;
+  }
+  
+  .badge-success {
+    @apply badge bg-rwiz-success/10 text-rwiz-success;
+  }
+  
+  .badge-warning {
+    @apply badge bg-rwiz-warning/10 text-rwiz-warning;
+  }
+  
+  .badge-danger {
+    @apply badge bg-rwiz-danger/10 text-rwiz-danger;
+  }
+}
+
+/* Adding smooth transition to all elements */
+* {
+  @apply transition-colors duration-200;
+}
+
+/* Responsive adjustments */
+.container {
+  @apply px-4 md:px-6 lg:px-8;
+}
+
+/* Animation classes */
+.animate-enter {
+  @apply animate-fade-in;
+}
+
+.animate-scale {
+  @apply animate-scale-in;
+}
+
+.hover-lift {
+  @apply transition-transform duration-300 ease-out hover:-translate-y-1;
+}
