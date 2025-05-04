@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const database = require('./backend/database.js');
+const { listAIAgents } = require('./backend/database');
 
 console.log('Main process script started.'); // Log start
 
@@ -37,6 +38,10 @@ ipcMain.handle('userMetaData:set', async (event, { key, value, type }) => {
   return await database.setUserMetaData(key, value, type);
 });
 
+ipcMain.handle('aiAgents:list', async () => {
+  return await listAIAgents();
+});
+
 function createWindow() {
   console.log('createWindow function called.'); // Log function entry
 
@@ -71,7 +76,7 @@ function createWindow() {
       console.log('URL successfully loaded:', startUrl); // Log successful load
       // Try opening DevTools *after* the URL promise resolves
       console.log('Attempting to open DevTools...');
-      // mainWindow.webContents.openDevTools();
+      mainWindow.webContents.openDevTools();
       console.log('Called openDevTools.'); // Log call attempt
     })
     .catch(err => {

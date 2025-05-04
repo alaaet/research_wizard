@@ -56,7 +56,8 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { title: 'Projects', path: '/', icon: Package },
+    { title: 'Home', path: '/', icon: Home },
+    { title: 'Projects', path: '/projects', icon: Package },
   ];
 
   const isActive = (path: string) => {

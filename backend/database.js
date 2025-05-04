@@ -1,11 +1,11 @@
-// const path = require('path');
-// const sqlite3 = require('sqlite3').verbose();
-// const fs = require('fs');
-// const { app } = require('electron');
+import { fileURLToPath } from 'url';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import fs from 'fs';
 import { app } from 'electron';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Path for the SQLite database file
 const dbPath = path.join(app.getPath('userData'), 'research_management.sqlite');
@@ -42,6 +42,65 @@ function initializeTables() {
         Type TEXT
       );
     `);
+    db.run(`
+      CREATE TABLE IF NOT EXISTS ai_agents (
+        slug TEXT PRIMARY KEY UNIQUE,
+        is_active INTEGER,
+        available_models TEXT,
+        selected_model TEXT,
+        key_name TEXT,
+        key_value TEXT,
+        icon TEXT
+      );
+    `, [], (err) => {
+      if (err) {
+        console.error('Failed to create ai_agents table:', err);
+        return;
+      }
+      // Check if table is empty, then initialize from supported_agents.json
+      db.get('SELECT COUNT(*) as count FROM ai_agents', [], (err, row) => {
+        if (err) {
+          console.error('Failed to count ai_agents:', err);
+          return;
+        }
+        if (row.count === 0) {
+          // Read supported_agents.json and insert
+          const agentsPath = path.join(__dirname, 'ai_client', 'agents', 'supported_agents.json');
+          fs.readFile(agentsPath, 'utf8', (err, data) => {
+            if (err) {
+              console.error('Failed to read supported_agents.json:', err);
+              return;
+            }
+            let agents;
+            try {
+              agents = JSON.parse(data);
+            } catch (e) {
+              console.error('Invalid JSON in supported_agents.json:', e);
+              return;
+            }
+            agents.forEach(agent => {
+              db.run(
+                `INSERT INTO ai_agents (slug, is_active, available_models, selected_model, key_name, key_value, icon) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [
+                  agent.name.toLowerCase(),
+                  agent.is_default ? 1 : 0,
+                  JSON.stringify(agent.supported_models || []),
+                  (agent.supported_models && agent.supported_models[0]) || '',
+                  agent.key_name || '',
+                  '', // key_value is empty by default
+                  agent.icon || ''
+                ],
+                (err) => {
+                  if (err) {
+                    console.error('Failed to insert ai_agent:', err);
+                  }
+                }
+              );
+            });
+          });
+        }
+      });
+    });
   });
 }
 
@@ -170,6 +229,23 @@ function setUserMetaData(key, value, type) {
   });
 }
 
+function listAIAgents() {
+  return new Promise((resolve) => {
+    db.all('SELECT * FROM ai_agents', [], (err, rows) => {
+      if (err) {
+        console.error('ai_agents:list error:', err);
+        return resolve([]);
+      }
+      resolve(rows.map(row => ({
+        ...row,
+        is_active: !!row.is_active,
+        available_models: row.available_models ? JSON.parse(row.available_models) : [],
+        icon: row.icon || ''
+      })));
+    });
+  });
+}
+
 export {
   initializeTables,
   listResearchProjects,
@@ -179,6 +255,7 @@ export {
   getAllUserMetaData,
   getUserMetaData,
   setUserMetaData,
+  listAIAgents,
 };
 
  

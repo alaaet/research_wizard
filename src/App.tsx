@@ -4,6 +4,7 @@ import Index from "./pages/Index";
 import ResearchProjectDetailPage from "./pages/ResearchProjectDetail";
 import SettingsPage from "./pages/Settings";
 import { UserMetaDataProvider } from './context/UserMetaDataContext';
+import ResearchProjectsPage from "./pages/ResearchProjects";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
         <TooltipProvider>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/projects" element={<ResearchProjectsPage />} />
             <Route path="/projects/:uid" element={<ResearchProjectDetailPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Routes>
