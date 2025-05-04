@@ -1,21 +1,21 @@
 [
     {
       "name": "Gemini",
-      "supported_models": ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.5-pro-002", "gemini-1.5-flash-002", "gemini-1.5-pro-002", "gemini-1.5-flash-002"],
+      "supported_models": ["gemini-1.5-flash", "gemini-1.5-flash-8b","gemini-1.5-pro","gemini-2.0-flash","gemini-2.0-flash-lite","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-pro","gemini-2.5-pro-preview-03-25"],
       "key_name": "GEMINI_API_KEY",
       "icon": "gemini",
       "is_default": true
     },
   {
     "name": "OpenAI",
-    "supported_models": ["gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-instruct", "gpt-3.5-turbo-0125", "gpt-3.5-turbo-0612", "gpt-3.5-turbo-instruct-0125", "gpt-3.5-turbo-instruct-0612", "gpt-3.5-turbo-instruct-0125", "gpt-3.5-turbo-instruct-0612"],
+    "supported_models": ["o3-mini-2025-01-31","gpt-4o-2024-08-06", "o4-mini-2025-04-16"],
     "key_name": "OPENAI_API_KEY",
     "icon": "openai",
     "is_default": false
   },
   {
     "name": "Claude",
-    "supported_models": ["claude-3-5-sonnet-20240620", "claude-3-5-haiku-20240307", "claude-3-opus-20240229", "claude-3-5-sonnet-20240620", "claude-3-5-haiku-20240307", "claude-3-opus-20240229"],
+    "supported_models": ["claude-3-5-haiku-latest","claude-3-5-sonnet-latest","claude-3-7-sonnet-latest"],
     "key_name": "CLAUDE_API_KEY",
     "icon": "claude",
     "is_default": false

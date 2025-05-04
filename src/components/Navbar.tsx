@@ -58,6 +58,7 @@ const Navbar = () => {
   const navItems = [
     { title: 'Home', path: '/', icon: Home },
     { title: 'Projects', path: '/projects', icon: Package },
+    { title: 'Settings', path: '/settings', icon: Settings },
   ];
 
   const isActive = (path: string) => {
@@ -132,7 +133,7 @@ const Navbar = () => {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{name || 'Default User'}</p>
-              <p className="text-xs text-muted-foreground truncate">{email || 'user@rwiz.com'}</p>
+              <p className="text-xs text-muted-foreground truncate">{email || 'user@rwiz.eu'}</p>
             </div>
             <Link to="/settings">
               <div className="w-6 h-6  rounded-full flex items-center justify-center">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ResearchProject } from '../lib/researchProject';
 import { getResearchProject, updateResearchProject } from '../utils/researchProjectIpc';
+import { generateResearchKeywordsFromTopic } from '../utils/aiAgentsIpc';
 import PageLayout from '../components/layout/PageLayout';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -103,6 +104,11 @@ export default function ResearchProjectDetailPage() {
     setSaving(false);
   };
 
+  const generateKeywordsFromTitle = async () => {
+    const keywords = await generateResearchKeywordsFromTopic(project.title);
+    setForm(f => ({ ...f, keywords }));
+  };
+
   if (loading) {
     return <PageLayout><div className="p-8">Loading...</div></PageLayout>;
   }
@@ -127,6 +133,8 @@ export default function ResearchProjectDetailPage() {
           <div>
             <label className="block font-medium text-gray-800 mb-1">Title <span className="text-red-500">*</span></label>
             <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />
+          {/* Generate keywords from title using AI */}
+          <Button variant="secondary" onClick={() => generateKeywordsFromTitle()}>Generate Keywords</Button>
           </div>
           <div>
             <label className="block font-medium text-gray-800 mb-1">Keywords</label>

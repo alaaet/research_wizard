@@ -4,6 +4,7 @@ type UserMetaData = {
   Key: string;
   Value: string;
   Type: string;
+  label: string;
 };
 
 export async function getAllUserMetaData(): Promise<UserMetaData[]> {
@@ -40,6 +41,10 @@ export async function setUserMetaData(key: string, value: string, type: string):
     console.error('[setUserMetaData] Error:', err);
     throw err;
   }
+}
+
+export async function getUserMetaDataByRef(ref: string): Promise<UserMetaData[]> {
+  return await window.electron?.invoke('userMetaData:getByRef', ref);
 }
 
 export type { UserMetaData }; 

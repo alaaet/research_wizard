@@ -1,11 +1,7 @@
-import { fileURLToPath } from 'url';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import fs from 'fs';
 import { app } from 'electron';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Path for the SQLite database file
 const dbPath = path.join(app.getPath('userData'), 'research_management.sqlite');
@@ -39,9 +35,59 @@ function initializeTables() {
       CREATE TABLE IF NOT EXISTS user_meta_data (
         Key TEXT PRIMARY KEY UNIQUE,
         Value TEXT,
-        Type TEXT
+        Type TEXT,
+        ref TEXT,
+        label TEXT
       );
     `);
+    // Add label column if it doesn't exist
+    // db.get("PRAGMA table_info(user_meta_data);", [], (err, rows) => {
+    //   if (err) return;
+    //   if (!rows.some(r => r.name === 'label')) {
+    //     db.run('ALTER TABLE user_meta_data ADD COLUMN label TEXT', [], (err) => {
+    //       if (err) console.error('Failed to add label column:', err);
+    //     });
+    //   }
+    // });
+    // Set ref='gen' for existing fields with null ref
+    db.run(`UPDATE user_meta_data SET ref='gen' WHERE ref IS NULL OR ref=''`);
+
+    // Helper to generate label from key
+    function makeLabel(key: string) {
+      if (!key) return '';
+      const s = key.replace(/_/g, ' ').toLowerCase();
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    // Load default_params.json and insert AI_AGENT_PARAMS and RESEARCH_PARAMS
+    const paramsPath = path.join(__dirname, 'ai_client', 'agents', 'default_params.json');
+    fs.readFile(paramsPath, 'utf8', (err, data) => {
+      if (err) return;
+      let params;
+      try {
+        params = JSON.parse(data);
+      } catch (e) { return; }
+      // AI_AGENT_PARAMS
+      if (params.AI_AGENT_PARAMS) {
+        Object.entries(params.AI_AGENT_PARAMS).forEach(([key, value]) => {
+          const label = makeLabel(key);
+          db.run(
+            `INSERT OR IGNORE INTO user_meta_data (Key, Value, Type, ref, label) VALUES (?, ?, ?, 'ai', ?)`,
+            [key, typeof value === 'object' ? JSON.stringify(value) : value, Array.isArray(value) ? 'array' : typeof value, label]
+          );
+        });
+      }
+      // RESEARCH_PARAMS
+      if (params.RESEARCH_PARAMS) {
+        Object.entries(params.RESEARCH_PARAMS).forEach(([key, value]) => {
+          const label = makeLabel(key);
+          db.run(
+            `INSERT OR IGNORE INTO user_meta_data (Key, Value, Type, ref, label) VALUES (?, ?, ?, 'res', ?)`,
+            [key, typeof value === 'object' ? JSON.stringify(value) : value, Array.isArray(value) ? 'array' : typeof value, label]
+          );
+        });
+      }
+    });
     db.run(`
       CREATE TABLE IF NOT EXISTS ai_agents (
         slug TEXT PRIMARY KEY UNIQUE,
@@ -58,7 +104,7 @@ function initializeTables() {
         return;
       }
       // Check if table is empty, then initialize from supported_agents.json
-      db.get('SELECT COUNT(*) as count FROM ai_agents', [], (err, row) => {
+      db.get('SELECT COUNT(*) as count FROM ai_agents', [], (err, row: any) => {
         if (err) {
           console.error('Failed to count ai_agents:', err);
           return;
@@ -78,7 +124,7 @@ function initializeTables() {
               console.error('Invalid JSON in supported_agents.json:', e);
               return;
             }
-            agents.forEach(agent => {
+            agents.forEach((agent: any) => {
               db.run(
                 `INSERT INTO ai_agents (slug, is_active, available_models, selected_model, key_name, key_value, icon) VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [
@@ -107,7 +153,7 @@ function initializeTables() {
 // --- Research Projects CRUD ---
 function listResearchProjects() {
   return new Promise((resolve) => {
-    db.all('SELECT * FROM research_projects ORDER BY created_at DESC', [], (err, rows) => {
+    db.all('SELECT * FROM research_projects ORDER BY created_at DESC', [], (err, rows: any[]) => {
       if (err) {
         console.error('DB list error:', err);
         return resolve([]);
@@ -121,7 +167,7 @@ function listResearchProjects() {
   });
 }
 
-function createResearchProject(project) {
+function createResearchProject(project: any) {
   return new Promise((resolve) => {
     const now = new Date().toISOString();
     db.run(
@@ -146,9 +192,9 @@ function createResearchProject(project) {
   });
 }
 
-function getResearchProject(uid) {
+function getResearchProject(uid: string) {
   return new Promise((resolve) => {
-    db.get('SELECT * FROM research_projects WHERE uid = ?', [uid], (err, row) => {
+    db.get('SELECT * FROM research_projects WHERE uid = ?', [uid], (err, row: any) => {
       if (err) {
         console.error('DB get error:', err);
         return resolve(null);
@@ -163,7 +209,7 @@ function getResearchProject(uid) {
   });
 }
 
-function updateResearchProject(project) {
+function updateResearchProject(project: any) {
   return new Promise((resolve) => {
     const now = new Date().toISOString();
     db.run(
@@ -190,7 +236,7 @@ function updateResearchProject(project) {
 // --- User Meta Data CRUD ---
 function getAllUserMetaData() {
   return new Promise((resolve) => {
-    db.all('SELECT * FROM user_meta_data', [], (err, rows) => {
+    db.all('SELECT * FROM user_meta_data', [], (err, rows: any[]) => {
       if (err) {
         console.error('user_meta_data:getAll error:', err);
         return resolve([]);
@@ -200,9 +246,9 @@ function getAllUserMetaData() {
   });
 }
 
-function getUserMetaData(key) {
+function getUserMetaData(key: string) {
   return new Promise((resolve) => {
-    db.get('SELECT * FROM user_meta_data WHERE Key = ?', [key], (err, row) => {
+    db.get('SELECT * FROM user_meta_data WHERE Key = ?', [key], (err, row: any) => {
       if (err) {
         console.error('user_meta_data:get error:', err);
         return resolve(null);
@@ -212,7 +258,7 @@ function getUserMetaData(key) {
   });
 }
 
-function setUserMetaData(key, value, type) {
+function setUserMetaData(key: string, value: any, type: string) {
   return new Promise((resolve) => {
     db.run(
       `INSERT INTO user_meta_data (Key, Value, Type) VALUES (?, ?, ?)
@@ -231,7 +277,7 @@ function setUserMetaData(key, value, type) {
 
 function listAIAgents() {
   return new Promise((resolve) => {
-    db.all('SELECT * FROM ai_agents', [], (err, rows) => {
+    db.all('SELECT * FROM ai_agents', [], (err, rows: any[]) => {
       if (err) {
         console.error('ai_agents:list error:', err);
         return resolve([]);
@@ -246,6 +292,67 @@ function listAIAgents() {
   });
 }
 
+function updateAIAgent(agent: any) {
+  return new Promise((resolve) => {
+    db.run(
+      `UPDATE ai_agents SET 
+        is_active = ?, 
+        available_models = ?, 
+        selected_model = ?, 
+        key_name = ?, 
+        key_value = ?, 
+        icon = ?
+      WHERE slug = ?`,
+      [
+        agent.is_active ? 1 : 0,
+        JSON.stringify(agent.available_models || []),
+        agent.selected_model || '',
+        agent.key_name || '',
+        agent.key_value || '',
+        agent.icon || '',
+        agent.slug
+      ],
+      function (err) {
+        if (err) {
+          console.error('ai_agents:update error:', err);
+          return resolve({ success: false, error: err.message });
+        }
+        resolve({ success: true });
+      }
+    );
+  });
+}
+
+function getAIAgentBySlug(slug: string) {
+  return new Promise((resolve) => {
+    db.get('SELECT * FROM ai_agents WHERE slug = ?', [slug], (err, row: any) => {
+      if (err) {
+        console.error('ai_agents:getBySlug error:', err);
+        return resolve(null);
+      }
+      if (!row) return resolve(null);
+      resolve({
+        ...row,
+        is_active: !!row.is_active,
+        available_models: row.available_models ? JSON.parse(row.available_models) : [],
+        icon: row.icon || ''
+      });
+    });
+  });
+}
+
+function getUserMetaDataByRef(ref: string) {
+  return new Promise((resolve) => {
+    db.all('SELECT * FROM user_meta_data WHERE ref = ?', [ref], (err, rows: any[]) => {
+      if (err) {
+        console.error('user_meta_data:getByRef error:', err);
+        return resolve([]);
+      }
+      resolve(rows);
+    });
+  });
+}
+
 export {
   initializeTables,
   listResearchProjects,
@@ -256,6 +363,9 @@ export {
   getUserMetaData,
   setUserMetaData,
   listAIAgents,
+  updateAIAgent,
+  getAIAgentBySlug,
+  getUserMetaDataByRef,
 };
 
  

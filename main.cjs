@@ -1,45 +1,57 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const database = require('./backend/database.js');
-const { listAIAgents } = require('./backend/database');
+const db = require('./backend/dist/backend/database.js');
+const { generateResearchKeywordsFromTopic } = require('./backend/dist/backend/ai_client/index.js');
 
 console.log('Main process script started.'); // Log start
 
 // IPC handlers for CRUD operations
 ipcMain.handle('researchProjects:list', async () => {
-  return await database.listResearchProjects();
+  return await db.listResearchProjects();
 });
 
 ipcMain.handle('researchProjects:create', async (event, project) => {
   console.log('[researchProjects:create] Received project:', project);
-  return await database.createResearchProject(project);
+  return await db.createResearchProject(project);
 });
 
 ipcMain.handle('researchProjects:get', async (event, uid) => {
   console.log('[researchProjects:get] Fetching project with uid:', uid);
-  return await database.getResearchProject(uid);
+  return await db.getResearchProject(uid);
 });
 
 ipcMain.handle('researchProjects:update', async (event, project) => {
   console.log('[researchProjects:update] Updating project:', project);
-  return await database.updateResearchProject(project);
+  return await db.updateResearchProject(project);
 });
 
 // User meta data handlers
 ipcMain.handle('userMetaData:getAll', async () => {
-  return await database.getAllUserMetaData();
+  return await db.getAllUserMetaData();
 });
 
 ipcMain.handle('userMetaData:get', async (event, key) => {
-  return await database.getUserMetaData(key);
+  return await db.getUserMetaData(key);
 });
 
 ipcMain.handle('userMetaData:set', async (event, { key, value, type }) => {
-  return await database.setUserMetaData(key, value, type);
+  return await db.setUserMetaData(key, value, type);
+});
+
+ipcMain.handle('userMetaData:getByRef', async (event, ref) => {
+  return await db.getUserMetaDataByRef(ref);
 });
 
 ipcMain.handle('aiAgents:list', async () => {
-  return await listAIAgents();
+  return await db.listAIAgents();
+});
+
+ipcMain.handle('aiAgents:update', async (event, agent) => {
+  return await db.updateAIAgent(agent);
+});
+
+ipcMain.handle('aiAgents:generateResearchKeywordsFromTopic', async (event, topic) => {
+  return await generateResearchKeywordsFromTopic(topic);
 });
 
 function createWindow() {
@@ -112,7 +124,7 @@ console.log('Setting up app event listeners...');
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   console.log('App is ready.'); // Log when ready
-  database.initializeTables();
+  db.initializeTables();
   createWindow();
 
   app.on('activate', () => {

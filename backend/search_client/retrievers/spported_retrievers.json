@@ -1,0 +1,9 @@
+[
+    {
+        "name": "Exa",
+        "description": "Exa is a search engine that provides academic papers as search results.",
+        "url": "https://www.exa.com",
+        "icon": "exa",
+        "type": "search"
+    }
+]

@@ -2,7 +2,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import ResearchProjectDetailPage from "./pages/ResearchProjectDetail";
-import SettingsPage from "./pages/Settings";
+import SettingsPage from "./pages/Settings/index";
 import { UserMetaDataProvider } from './context/UserMetaDataContext';
 import ResearchProjectsPage from "./pages/ResearchProjects";
 

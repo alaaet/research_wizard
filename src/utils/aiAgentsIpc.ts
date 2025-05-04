@@ -1,13 +1,15 @@
-export type AIAgent = {
-  slug: string;
-  is_active: boolean;
-  available_models: string[];
-  selected_model: string;
-  key_name: string;
-  key_value: string;
-  icon: string;
-};
+import type { AIAgent } from '../../shared/aiAgentTypes';
 
 export async function getAIAgents(): Promise<AIAgent[]> {
   return await window.electron?.invoke('aiAgents:list');
 }
+
+export async function updateAIAgent(agent: AIAgent): Promise<{ success: boolean; error?: string }> {
+  return await window.electron?.invoke('aiAgents:update', agent);
+}
+
+export async function generateResearchKeywordsFromTopic(topic: string): Promise<string[]> {
+  return await window.electron?.invoke('aiAgents:generateResearchKeywordsFromTopic', topic);
+}
+
+
