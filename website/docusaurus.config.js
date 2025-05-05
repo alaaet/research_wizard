@@ -12,13 +12,13 @@ import {themes as prismThemes} from 'prism-react-renderer';
 const config = {
   title: 'Research Wizard',
   tagline: 'Your AI-Powered Research Management Tool',
-  favicon: '/img/favicon.ico',
+  favicon: '/research_wizard/img/favicon.ico',
 
   // Set the production url of your site here
   url: 'https://alaaet.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/research_wizard',
+  baseUrl: '/research_wizard/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -74,12 +74,12 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: '/img/rwiz.png',
+      image: '/research_wizard/img/rwiz.png',
       navbar: {
         title: 'Research Wizard',
         logo: {
           alt: 'Research Wizard Logo',
-          src: '/img/rwiz.png',
+          src: '/research_wizard/img/rwiz.png',
         },
         items: [
           {
