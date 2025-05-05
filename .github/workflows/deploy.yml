@@ -20,13 +20,11 @@ jobs:
           cache-dependency-path: website/package-lock.json
 
       - name: Install dependencies
-        run: |
-          cd website
-          npm ci
+        run: npm ci
+        working-directory: website
       - name: Build website
-        run: |
-          cd website
-          npm run build
+        run: npm run build
+        working-directory: website
 
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
