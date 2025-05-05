@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const db = require('./backend/dist/backend/database.js');
-const { generateResearchKeywordsFromTopic } = require('./backend/dist/backend/ai_client/index.js');
+const { generateResearchKeywordsFromTopic, generateResearchQuestionsFromTopic } = require('./backend/dist/backend/ai_client/index.js');
 
 console.log('Main process script started.'); // Log start
 
@@ -54,14 +54,18 @@ ipcMain.handle('aiAgents:generateResearchKeywordsFromTopic', async (event, topic
   return await generateResearchKeywordsFromTopic(topic);
 });
 
+ipcMain.handle('aiAgents:generateResearchQuestionsFromTopic', async (event, topic) => {
+  return await generateResearchQuestionsFromTopic(topic);
+});
+
 function createWindow() {
   console.log('createWindow function called.'); // Log function entry
 
   // Create the browser window.
   console.log('Creating BrowserWindow...');
   const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1500,
+    height: 960,
     webPreferences: {
       nodeIntegration: false, // Keep Node integration off for security
       contextIsolation: true, // Protect against prototype pollution

@@ -51,7 +51,7 @@ export async function processQuery(params: {
 
 export async function generateResearchKeywordsFromTopic(topic: string) {
   const response = await processQuery({
-    user: `Generate 5 research keywords for the topic: ${topic}`,
+    user: `Generate 5 academic research keywords for the topic: ${topic}, the keywords should be three words or less, the keywords should be in the form of a new line separated list with no numbers, the response should only contain the keywords`,
   });
   const keywords = response.split('\n').map(line => line.trim());
   console.log('Generated keywords:', keywords);
@@ -60,15 +60,19 @@ export async function generateResearchKeywordsFromTopic(topic: string) {
 
 export async function generateResearchQuestionsFromTopic(topic: string) {
   const response = await processQuery({
-    user: `Generate 5 research questions for the topic: ${topic}`,
+    user: `Generate 5 research questions for the topic: ${topic}, the questions should be in the form of a new line separated list with no numbers, the response should only contain the questions`,
   });
-  return response;
+  const questions = response.split('\n').map(line => line.trim());
+  console.log('Generated questions:', questions);
+  return questions;
 }
 
 export async function generateResearchQueriesFromQuestions(questions: string[]) {
   const response = await processQuery({
-    user: `Generate 5 research queries for the questions: ${questions.join(', ')}`,
+    user: `Generate 5 research queries for the questions: ${questions.join(', ')}, the queries should be in the form of a new line separated list with no numbers, the response should only contain the queries`,
   });
-  return response;
+  const queries = response.split('\n').map(line => line.trim());
+  console.log('Generated queries:', queries);
+  return queries;
 }
 

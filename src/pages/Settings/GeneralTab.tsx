@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getUserMetaData, setUserMetaData } from '../../utils/userMetaDataIpc';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
+import { useUserMetaData } from '../../context/UserMetaDataContext';
 
 const UN_LANGUAGES = [
   { value: 'ar', label: 'Arabic' },
@@ -28,6 +29,8 @@ export default function GeneralTab() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { refresh } = useUserMetaData();
 
   useEffect(() => {
     setLoading(true);
@@ -61,6 +64,7 @@ export default function GeneralTab() {
       }
       setSuccess(true);
       setTimeout(() => setSuccess(false), 2000);
+      refresh();
     } catch (err) {
       setError('Failed to save settings.');
     }

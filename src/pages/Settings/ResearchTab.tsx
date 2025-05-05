@@ -6,10 +6,10 @@ import { Button } from '../../components/ui/button';
 export default function ResearchTab() {
   const [fields, setFields] = useState<UserMetaData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [savingKey, setSavingKey] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const [editValues, setEditValues] = useState<Record<string, string>>({});
-  const [successKey, setSuccessKey] = useState<string | null>(null);
-  const [errorKey, setErrorKey] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     setLoading(true);
@@ -24,24 +24,27 @@ export default function ResearchTab() {
     setEditValues(v => ({ ...v, [key]: value }));
   };
 
-  const handleSave = async (field: UserMetaData) => {
-    setSavingKey(field.Key);
-    setSuccessKey(null);
-    setErrorKey(null);
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setSaving(true);
+    setSuccess(false);
+    setError(false);
     try {
-      await setUserMetaData(field.Key, editValues[field.Key], field.Type);
-      setSuccessKey(field.Key);
-      setTimeout(() => setSuccessKey(null), 2000);
+      for (const field of fields) {
+        await setUserMetaData(field.Key, editValues[field.Key], field.Type);
+      }
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 2000);
     } catch (err) {
-      setErrorKey(field.Key);
+      setError(true);
     }
-    setSavingKey(null);
+    setSaving(false);
   };
 
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {fields.map(field => (
         <div key={field.Key} className="space-y-1">
           <label className="block font-medium">{field.label}</label>
@@ -59,18 +62,13 @@ export default function ResearchTab() {
               rows={3}
             />
           )}
-          <Button
-            className="mt-2"
-            size="sm"
-            onClick={() => handleSave(field)}
-            disabled={savingKey === field.Key}
-          >
-            {savingKey === field.Key ? 'Saving...' : 'Save'}
-          </Button>
-          {successKey === field.Key && <span className="text-green-600 ml-2">Saved!</span>}
-          {errorKey === field.Key && <span className="text-red-500 ml-2">Error!</span>}
         </div>
       ))}
-    </div>
+      <Button type="submit" className="mt-4" size="sm" disabled={saving}>
+        {saving ? 'Saving...' : 'Save All'}
+      </Button>
+      {success && <span className="text-green-600 ml-2">Saved!</span>}
+      {error && <span className="text-red-500 ml-2">Error!</span>}
+    </form>
   );
 } 

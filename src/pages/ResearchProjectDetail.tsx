@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ResearchProject } from '../lib/researchProject';
 import { getResearchProject, updateResearchProject } from '../utils/researchProjectIpc';
-import { generateResearchKeywordsFromTopic } from '../utils/aiAgentsIpc';
+import { generateResearchKeywordsFromTopic , generateResearchQuestionsFromTopic} from '../utils/aiAgentsIpc';
 import PageLayout from '../components/layout/PageLayout';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { motion } from 'framer-motion';
+import { Brain } from 'lucide-react';
 
 function TagsInput({ value, onChange, placeholder }: { value: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
   const [input, setInput] = useState('');
@@ -109,6 +110,11 @@ export default function ResearchProjectDetailPage() {
     setForm(f => ({ ...f, keywords }));
   };
 
+  const generateResearchQuestionsFromTitle = async () => {
+    const research_questions = await generateResearchQuestionsFromTopic(project.title) || [];
+    setForm(f => ({ ...f, research_questions }));
+  };
+
   if (loading) {
     return <PageLayout><div className="p-8">Loading...</div></PageLayout>;
   }
@@ -127,17 +133,25 @@ export default function ResearchProjectDetailPage() {
         transition={{ duration: 0.3 }}
         className="p-6 animate-enter max-w-2xl mx-auto"
       >
-        <Button variant="secondary" onClick={() => navigate(-1)} className="mb-4">&larr; Back</Button>
+        <Button variant="secondary" onClick={() => navigate(-1)} className="mb-4 bg-rwiz-primary-light hover:bg-rwiz-primary-dark">&larr; Back</Button>
         <h1 className="text-2xl font-bold text-gray-800 mb-4">View/Edit Project</h1>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block font-medium text-gray-800 mb-1">Title <span className="text-red-500">*</span></label>
-            <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />
-          {/* Generate keywords from title using AI */}
-          <Button variant="secondary" onClick={() => generateKeywordsFromTitle()}>Generate Keywords</Button>
+            <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />          
           </div>
           <div>
-            <label className="block font-medium text-gray-800 mb-1">Keywords</label>
+            <div className='flex flex-row items-center gap-2 mb-2'>
+              <label className="block font-medium text-gray-800 mb-1">Keywords</label>
+              <Button 
+                variant="secondary" 
+                onClick={() => generateKeywordsFromTitle()} 
+                className='w-6 h-6 p-0 bg-rwiz-primary-light hover:bg-rwiz-primary-dark' 
+                title="Generate with AI"
+              >
+                <Brain className="w-4 h-4" />
+              </Button>
+            </div>
             <TagsInput value={form.keywords} onChange={v => setForm(f => ({ ...f, keywords: v }))} placeholder="Add keyword..." />
           </div>
           <div>
@@ -145,7 +159,17 @@ export default function ResearchProjectDetailPage() {
             <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
           </div>
           <div>
-            <label className="block font-medium text-gray-800 mb-1">Research Questions</label>
+            <div className='flex flex-row items-center gap-2 mb-2'>
+              <label className="block font-medium text-gray-800 mb-1">Research Questions</label>
+              <Button 
+                variant="secondary" 
+                onClick={() => generateResearchQuestionsFromTitle()} 
+                className='w-6 h-6 p-0 bg-rwiz-primary-light hover:bg-rwiz-primary-dark' 
+                title="Generate with AI"
+              >
+                <Brain className="w-4 h-4" />
+              </Button>
+            </div>
             <TagsInput value={form.research_questions} onChange={v => setForm(f => ({ ...f, research_questions: v }))} placeholder="Add question..." />
           </div>
           <div className="flex justify-end gap-2">

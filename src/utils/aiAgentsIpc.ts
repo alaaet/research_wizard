@@ -12,4 +12,7 @@ export async function generateResearchKeywordsFromTopic(topic: string): Promise<
   return await window.electron?.invoke('aiAgents:generateResearchKeywordsFromTopic', topic);
 }
 
+export async function generateResearchQuestionsFromTopic(topic: string): Promise<string[]> {
+  return await window.electron?.invoke('aiAgents:generateResearchQuestionsFromTopic', topic);
+}
 
