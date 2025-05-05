@@ -6,25 +6,55 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #133E87;
+  --ifm-color-primary-dark: #113574;
+  --ifm-color-primary-darker: #0b224b;
+  --ifm-color-primary-darkest: #050e1f;
+  --ifm-color-primary-light: #608BC1;
+  --ifm-color-primary-lighter: #6f92bd;
+  --ifm-color-primary-lightest: #CBDCEB;
+  --ifm-color-secondary: #CBDCEB;
+  --ifm-color-secondary-dark: #113574;
+  --ifm-color-secondary-light: #F3F3E0;
+  --ifm-background-color: #F3F3E0;
+  --ifm-surface-color: #FFFFFF;
+  --ifm-font-color-base: #133E87;
+  --ifm-font-color-secondary: #608BC1;
+  --ifm-color-success: #66BB6A;
+  --ifm-color-warning: #FFA726;
+  --ifm-color-danger: #EF5350;
+  --ifm-color-info: #29B6F6;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary: #608BC1;
+  --ifm-color-primary-dark: #133E87;
+  --ifm-color-primary-darker: #133E87;
+  --ifm-color-primary-darkest: #133E87;
+  --ifm-color-primary-light: #CBDCEB;
+  --ifm-color-primary-lighter: #F3F3E0;
+  --ifm-color-primary-lightest: #F3F3E0;
+  --ifm-color-secondary: #CBDCEB;
+  --ifm-color-secondary-dark: #133E87;
+  --ifm-color-secondary-light: #F3F3E0;
+  --ifm-background-color: #133E87;
+  --ifm-surface-color: #133E87;
+  --ifm-font-color-base: #F3F3E0;
+  --ifm-font-color-secondary: #608BC1;
+  --ifm-color-success: #66BB6A;
+  --ifm-color-warning: #FFA726;
+  --ifm-color-danger: #EF5350;
+  --ifm-color-info: #29B6F6;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Force text to be white on hover for links, buttons, and nav items */
+a:hover, a:focus,
+button:hover, button:focus,
+.navbar__item:hover, .navbar__item:focus,
+.menu__link:hover, .menu__link:focus {
+  color: #fff !important;
 }

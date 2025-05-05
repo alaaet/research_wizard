@@ -16,6 +16,11 @@
   }
 }
 
+.hero__logo {
+  width: 100px;
+  height: 100px;
+}
+
 .buttons {
   display: flex;
   align-items: center;

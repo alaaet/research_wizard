@@ -82,21 +82,21 @@ export default {
 				// 	'info': '#29B6F6'
 				// }
 				rwiz: {
-					'primary': '#133E87',          // Adapted to the dark blue (#133E87)
-					'primary-light': '#608BC1',    // Adapted to the lighter blue (#608BC1)
-					'primary-dark': '#133E87',     // Retained the same as the main primary color
-					'secondary': '#CBDCEB',        // Adapted to the soft pastel blue (#CBDCEB)
-					'secondary-light': '#F3F3E0',  // Adapted to the light cream (#F3F3E0)
-					'secondary-dark': '#133E87',   // Darker variant of blue (#133E87)
-					'accent': '#608BC1',           // Used the lighter blue as an accent
-					'background': '#F3F3E0',       // Set to the light cream color (#F3F3E0)
-					'surface': '#FFFFFF',          // Kept surface as pure white for clarity
-					'text': '#133E87',             // Text is set to the dark blue for readability
-					'text-light': '#608BC1',       // Lighter blue for secondary text
-					'success': '#66BB6A',          // Unchanged as it aligns with a "success" green
-					'warning': '#FFA726',          // Unchanged as it fits the "warning" category
-					'danger': '#EF5350',           // Unchanged to maintain significance for "danger"
-					'info': '#29B6F6'              // Retained to signify information
+					'primary': '#133E87',        
+					'primary-light': '#608BC1',  
+					'primary-dark': '#133E87',   
+					'secondary': '#CBDCEB',      
+					'secondary-light': '#F3F3E0',
+					'secondary-dark': '#133E87', 
+					'accent': '#608BC1',         
+					'background': '#F3F3E0',     
+					'surface': '#FFFFFF',        
+					'text': '#133E87',           
+					'text-light': '#608BC1',     
+					'success': '#66BB6A',        
+					'warning': '#FFA726',        
+					'danger': '#EF5350',         
+					'info': '#29B6F6'            
 				  }
 				  
 			},

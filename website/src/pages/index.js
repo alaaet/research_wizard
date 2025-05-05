@@ -12,6 +12,7 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
+        <img src="img/rwiz.png" alt="Research Wizard Logo" className="hero__logo" style={{width: '100px', height: '100px'}}/>
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
         </Heading>
@@ -20,7 +21,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            Read the docs
           </Link>
         </div>
       </div>
@@ -36,7 +37,7 @@ export default function Home() {
       description="Description will go into a meta tag in <head />">
       <HomepageHeader />
       <main>
-        <HomepageFeatures />
+        {/* <HomepageFeatures /> */}
       </main>
     </Layout>
   );
