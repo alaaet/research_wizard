@@ -12,7 +12,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 const config = {
   title: 'Research Wizard',
   tagline: 'Your AI-Powered Research Management Tool',
-  favicon: '/research_wizard/img/favicon.ico',
+  favicon: '/img/favicon.ico',
 
   // Set the production url of your site here
   url: 'https://alaaet.github.io',
@@ -74,12 +74,12 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: '/research_wizard/img/rwiz.png',
+      image: '/img/rwiz.png',
       navbar: {
         title: 'Research Wizard',
         logo: {
           alt: 'Research Wizard Logo',
-          src: '/research_wizard/img/rwiz.png',
+          src: '/img/rwiz.png',
         },
         items: [
           {
