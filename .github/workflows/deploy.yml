@@ -16,17 +16,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: yarn
-          cache-dependency-path: website/yarn.lock
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
 
       - name: Install dependencies
         run: |
           cd website
-          yarn install --frozen-lockfile
+          npm ci
       - name: Build website
         run: |
           cd website
-          yarn build
+          npm run build
 
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
