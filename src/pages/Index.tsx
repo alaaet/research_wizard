@@ -28,7 +28,7 @@ export default function Index() {
 
   return (
     <PageLayout>
-      <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex flex-col items-center h-screen">
         {showAlert && (
           <Alert style={{ backgroundColor: '#e7f3fe', color: '#2176bd', border: '1px solid #b3d8fd', position: 'relative' }}>
             <AlertTitle>Info</AlertTitle>
@@ -47,7 +47,7 @@ export default function Index() {
           </Alert>
         )}
         {/** add here a list of recent research projects */}
-        <div className="mt-8">
+        <div className="mt-6">
           <Label className="text-rwiz-primary-dark text-lg">Recent Research Projects</Label>
           {recentProjects.length === 0 ? (
             <div className="text-muted-foreground">No recent projects found.</div>

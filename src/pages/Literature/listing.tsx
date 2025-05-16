@@ -19,10 +19,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { getLiteratureResults } from '@/utils/literatureIpc';
 import type { research_paper } from '@/lib/researchPaper';
 import type { ResearchProject } from '../../lib/researchProject';
+import { Globe, Eye, Pencil, Trash2 } from 'lucide-react';
+import EditPaperModal from '@/components/modals/editPaperModal';
+import DeletePaperModal from '@/components/modals/deletePaperModal';
+import { useNavigate } from 'react-router-dom';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function LiteratureListingPage() {
   const [projects, setProjects] = useState<ResearchProject[]>([]);
@@ -30,13 +37,25 @@ export default function LiteratureListingPage() {
   const [papers, setPapers] = useState<research_paper[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editPaper, setEditPaper] = useState<research_paper | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deletePaper, setDeletePaper] = useState<research_paper | null>(null);
+  const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.ceil(papers.length / pageSize);
+  const paginatedPapers = papers.slice((page - 1) * pageSize, page * pageSize);
+  const [cardCollapsed, setCardCollapsed] = useState(false);
 
   useEffect(() => {
     // Load research projects
     window.electron?.invoke("researchProjects:list").then((data) => {
       setProjects(data || []);
     });
-  }, []);
+    // Collapse the card if papers are loaded
+    if (papers.length > 0) setCardCollapsed(true);
+  }, [papers.length]);
 
   const handleLoadPapers = async () => {
     if (!selectedProject) {
@@ -53,6 +72,16 @@ export default function LiteratureListingPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEditSave = (updated: research_paper) => {
+    setPapers(papers => papers.map(p => p.uid === updated.uid ? updated : p));
+    setEditOpen(false);
+  };
+
+  const handleDelete = (paper: research_paper) => {
+    setPapers(papers => papers.filter(p => p.uid !== paper.uid));
+    setDeleteOpen(false);
   };
 
   return (
@@ -72,79 +101,135 @@ export default function LiteratureListingPage() {
         </Alert>
       )}
       <Card className="p-4 space-y-4 w-full">
-        <div className="space-y-2">
+        <div className="flex items-center justify-between cursor-pointer" onClick={() => setCardCollapsed(c => !c)}>
           <Label>Research Project</Label>
-          <Select
-            value={selectedProject}
-            onValueChange={setSelectedProject}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a project" />
-            </SelectTrigger>
-            <SelectContent>
-              {projects.map((project) => (
-                <SelectItem key={project.uid} value={project.uid}>
-                  {project.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {cardCollapsed ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
         </div>
-        <Button onClick={handleLoadPapers} disabled={loading || !selectedProject}>
-          {loading ? "Loading..." : "Load Papers"}
-        </Button>
+        {!cardCollapsed && (
+          <>
+            <div className="space-y-2">
+              <Select
+                value={selectedProject}
+                onValueChange={setSelectedProject}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a project" />
+                </SelectTrigger>
+                <SelectContent>
+                  {projects.map((project) => (
+                    <SelectItem key={project.uid} value={project.uid}>
+                      {project.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={handleLoadPapers} disabled={loading || !selectedProject}>
+              {loading ? "Loading..." : "Load Papers"}
+            </Button>
+          </>
+        )}
       </Card>
       {papers.length > 0 && (
-        <Card className="p-4 space-y-4 w-full">
+        <>
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Papers</h2>
           </div>
-          <div className="w-full overflow-x-auto">
-            <Table className="w-full min-w-[900px]">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-1/2">Title</TableHead>
-                  <TableHead>Authors</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {papers.map((result, index) => {
-                  let publishedDate = '';
-                  if (result.publishedDate) {
-                    const dateObj = result.publishedDate instanceof Date
-                      ? result.publishedDate
-                      : new Date(result.publishedDate);
-                    publishedDate = isNaN(dateObj.getTime()) ? '' : dateObj.toLocaleDateString();
-                  }
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>{result.title}</TableCell>
-                      <TableCell>{result.author}</TableCell>
-                      <TableCell>{publishedDate}</TableCell>
-                      <TableCell>
-                        <a
-                          href={result.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:text-blue-700 underline"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            window.open(result.url, '_blank');
-                          }}
+          <Card className="p-4 space-y-4 w-full">
+            <div className="w-full overflow-x-auto">
+              <Table className="w-full min-w-[900px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-2">Index</TableHead>
+                    <TableHead className="w-80">Title</TableHead>
+                    <TableHead className="w-40">Authors</TableHead>
+                    <TableHead className="w-20">Date</TableHead>
+                    <TableHead className="w-20">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paginatedPapers.map((result, idx) => {
+                    let publishedDate = '';
+                    if (result.publishedDate) {
+                      const dateObj = result.publishedDate instanceof Date
+                        ? result.publishedDate
+                        : new Date(result.publishedDate);
+                      publishedDate = isNaN(dateObj.getTime()) ? '' : dateObj.toLocaleDateString();
+                    }
+                    return (
+                      <TableRow key={result.uid}>
+                        <TableCell>{(page - 1) * pageSize + idx + 1}</TableCell>
+                        <TableCell>{result.title}</TableCell>
+                        <TableCell>{result.author && result.author.length > 50 ? result.author.slice(0, 50) + '...' : result.author}</TableCell>
+                        <TableCell>{publishedDate}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button size="icon" variant="ghost" title="Open Link" onClick={() => window.open(result.url, '_blank')}>
+                              <Globe className="w-5 h-5 text-green-500" />
+                            </Button>
+                            <Button size="icon" variant="ghost" title="View" onClick={() => navigate(`/literature/view/${result.uid}`)}>
+                              <Eye className="w-5 h-5 text-blue-500" />
+                            </Button>
+                            <Button size="icon" variant="ghost" title="Edit" onClick={() => { setEditPaper(result); setEditOpen(true); }}>
+                              <Pencil className="w-5 h-5" />
+                            </Button>
+                            <Button size="icon" variant="ghost" title="Delete" onClick={() => { setDeletePaper(result); setDeleteOpen(true); }}>
+                              <Trash2 className="w-5 h-5 text-red-500" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+              <div className="flex justify-center mt-4">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        onClick={e => { e.preventDefault(); setPage(p => Math.max(1, p - 1)); }}
+                        aria-disabled={page === 1}
+                      />
+                    </PaginationItem>
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <PaginationItem key={i + 1}>
+                        <PaginationLink
+                          href="#"
+                          isActive={page === i + 1}
+                          onClick={e => { e.preventDefault(); setPage(i + 1); }}
                         >
-                          Link
-                        </a>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
-        </Card>
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        onClick={e => { e.preventDefault(); setPage(p => Math.min(totalPages, p + 1)); }}
+                        aria-disabled={page === totalPages}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </div>
+          </Card>
+        </>
       )}
+      <EditPaperModal
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        paper={editPaper}
+        onSave={handleEditSave}
+      />
+      <DeletePaperModal
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        paper={deletePaper}
+        onDelete={handleDelete}
+      />
     </div>
     </motion.div>
     </PageLayout>
