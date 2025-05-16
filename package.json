@@ -10,7 +10,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:backend": "tsc -p tsconfig.backend.json",
+    "build:backend": "tsc -p tsconfig.backend.json && npm run copy-static",
+    "copy-static": "copyfiles -u 2 backend/ai_client/agents/*.json backend/dist/backend/ai_client",
     "electron": "npm run build && npm run build:backend && electron ."
   },
   "dependencies": {
@@ -53,6 +54,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
+    "exa-js": "^1.7.2",
     "framer-motion": "^12.9.4",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.507.0",
@@ -83,6 +85,7 @@
     "@vitejs/plugin-react-swc": "^3.9.0",
     "browserslist": "^4.24.5",
     "caniuse-lite": "^1.0.30001716",
+    "copyfiles": "^2.4.1",
     "electron": "^36.1.0",
     "electron-rebuild": "^3.2.9",
     "eslint": "^9.26.0",

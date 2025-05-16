@@ -4,6 +4,8 @@
         "description": "Exa is a search engine that provides academic papers as search results.",
         "url": "https://www.exa.com",
         "icon": "exa",
-        "type": "search"
+        "type": "search",
+        "key_name": "EXA_API_KEY",
+        "key_value": "your_exa_api_key_here"
     }
 ]

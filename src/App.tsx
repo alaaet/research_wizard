@@ -5,6 +5,8 @@ import ResearchProjectDetailPage from "./pages/ResearchProjectDetail";
 import SettingsPage from "./pages/Settings/index";
 import { UserMetaDataProvider } from './context/UserMetaDataContext';
 import ResearchProjectsPage from "./pages/ResearchProjects";
+import LiteraturePage from "./pages/Literature";
+import LiteratureListingPage from "./pages/Literature/listing";
 
 const App = () => {
   return (
@@ -15,6 +17,8 @@ const App = () => {
             <Route path="/" element={<Index />} />
             <Route path="/projects" element={<ResearchProjectsPage />} />
             <Route path="/projects/:uid" element={<ResearchProjectDetailPage />} />
+            <Route path="/literature" element={<LiteraturePage />} />
+            <Route path="/literature/listing" element={<LiteratureListingPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </TooltipProvider>

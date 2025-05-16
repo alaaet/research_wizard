@@ -20,6 +20,10 @@ export async function processQuery(params: {
       throw new Error('No active AI agent found.');
     }
     const slug = activeAgent.slug;
+    const preselectedModel = activeAgent.selected_model;
+    if (!params.model) {
+      params.model = preselectedModel;
+    }
     // Dynamically import the agent class from the agents folder
     let AgentClass;
     switch (slug) {
@@ -55,7 +59,7 @@ export async function generateResearchKeywordsFromTopic(topic: string) {
   });
   const keywords = response.split('\n').map(line => line.trim());
   console.log('Generated keywords:', keywords);
-  return keywords;
+  return keywords.filter(keyword => keyword.length > 0);
 }
 
 export async function generateResearchQuestionsFromTopic(topic: string) {
@@ -64,7 +68,7 @@ export async function generateResearchQuestionsFromTopic(topic: string) {
   });
   const questions = response.split('\n').map(line => line.trim());
   console.log('Generated questions:', questions);
-  return questions;
+  return questions.filter(question => question.length > 0);
 }
 
 export async function generateResearchQueriesFromQuestions(questions: string[]) {
@@ -73,6 +77,6 @@ export async function generateResearchQueriesFromQuestions(questions: string[]) 
   });
   const queries = response.split('\n').map(line => line.trim());
   console.log('Generated queries:', queries);
-  return queries;
+  return queries.filter(query => query.length > 0);
 }
 

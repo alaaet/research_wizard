@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const db = require('./backend/dist/backend/database.js');
 const { generateResearchKeywordsFromTopic, generateResearchQuestionsFromTopic } = require('./backend/dist/backend/ai_client/index.js');
+const searchClient = require('./backend/dist/backend/search_client/index.js');
 
 console.log('Main process script started.'); // Log start
 
@@ -56,6 +57,29 @@ ipcMain.handle('aiAgents:generateResearchKeywordsFromTopic', async (event, topic
 
 ipcMain.handle('aiAgents:generateResearchQuestionsFromTopic', async (event, topic) => {
   return await generateResearchQuestionsFromTopic(topic);
+});
+
+// --- Search Retrievers IPC handlers ---
+ipcMain.handle('searchRetrievers:list', async () => {
+  return await db.listSearchRetrievers();
+});
+
+ipcMain.handle('searchRetrievers:update', async (event, retriever) => {
+  return await db.updateSearchRetriever(retriever);
+});
+
+ipcMain.handle('searchRetrievers:search', async (event, { retriever, project_uid, queries }) => {
+  // For now, use processSearch with queries and default options
+  // Optionally, you could use retriever.slug to select a specific retriever
+  return await searchClient.getScientificPapers(project_uid, queries, { retriever });
+});
+
+ipcMain.handle('literature:saveResults', async (event, { projectId, results }) => {
+  return await db.saveLiteratureResults(projectId, results);
+});
+
+ipcMain.handle('literature:getResults', async (event, { projectId }) => {
+  return await db.getLiteratureResults(projectId);
 });
 
 function createWindow() {
@@ -126,9 +150,9 @@ console.log('Setting up app event listeners...');
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  await db.initializeTables(); // Make sure this is awaited if it returns a Promise
   console.log('App is ready.'); // Log when ready
-  db.initializeTables();
   createWindow();
 
   app.on('activate', () => {
