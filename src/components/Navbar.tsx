@@ -17,6 +17,7 @@ import {
   Users,
   FileText,
   Cog,
+  BookOpenCheck,
 } from "lucide-react";
 import { useUserMetaData } from "../context/UserMetaDataContext";
 
@@ -78,6 +79,7 @@ const Navbar = () => {
         { title: "Manage", path: "/literature/listing", icon: ChevronRight },
       ],
     },
+    { title: "Writing", icon: BookOpenCheck, path: "/writing" },
     { title: "Settings", path: "/settings", icon: Settings },
   ];
 

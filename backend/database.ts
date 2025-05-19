@@ -3,6 +3,7 @@ import sqlite3 from 'sqlite3';
 import fs from 'fs';
 import { app } from 'electron';
 import { research_paper } from '../src/lib/researchPaper';
+import { ResearchDraft } from '../src/lib/researchDraft';
 import { generateUID } from '../src/lib/researchProject';
 
 // Path for the SQLite database file
@@ -232,6 +233,23 @@ function initializeTables() {
           `, [], (err) => {
             if (err) {
               console.log('Failed to create research_papers table:', err);
+              return reject(err);
+            }
+            resolve([]);
+          });
+          db.run(`
+            CREATE TABLE IF NOT EXISTS research_drafts (
+              uid TEXT PRIMARY KEY UNIQUE,
+              project_uid TEXT,
+              title TEXT,
+              outline TEXT,
+              report TEXT,
+              created_at TEXT,
+              updated_at TEXT
+            );
+          `, [], (err) => {
+            if (err) {
+              console.log('Failed to create research_drafts table:', err);
               return reject(err);
             }
             resolve([]);
@@ -674,6 +692,108 @@ function deletePaper(paperId: string) {
   });
 }
 
+// --- Research Drafts CRUD ---
+function getAllResearchDrafts(projectId: string) {
+  return new Promise((resolve) => {
+    db.all('SELECT * FROM research_drafts WHERE project_uid = ? ORDER BY created_at DESC', [projectId], (err, rows: any[]) => {
+      if (err) {
+        console.log('DB getAllResearchDrafts error:', err);
+        return resolve([]);
+      }
+      resolve(rows.map((row: any) => ({
+        ...row,
+        outline: row.outline ? JSON.parse(row.outline) : undefined,
+      })));
+    });
+  });
+}
+
+function getResearchDraft(draftId: string) {
+  return new Promise((resolve) => {
+    db.get('SELECT * FROM research_drafts WHERE uid = ?', [draftId], (err, row: any) => {
+      if (err) {
+        console.log('DB getResearchDraft error:', err);
+        return resolve(null); 
+      }
+      if (!row) return resolve(null);
+      resolve({
+        ...row,
+        outline: row.outline ? JSON.parse(row.outline) : undefined,
+      });
+    });
+  });
+}
+
+function addResearchDraftToProject(draft: ResearchDraft) {
+  draft.created_at = new Date().toISOString();
+  return new Promise((resolve) => {
+    if (!draft.uid) return resolve({ success: false, error: 'Draft UID is required' });
+    db.run(
+      `INSERT INTO research_drafts (uid, project_uid, title, outline, report, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
+      [draft.uid, draft.project_uid, draft.title, JSON.stringify(draft.outline), draft.report, draft.created_at],
+      function (err) {
+        if (err) {
+          console.log('DB addResearchDraftToProject error:', err);
+          return resolve({ success: false, error: err.message });
+        }
+        resolve({ success: true });
+      }
+    );
+  });
+}
+
+function updateResearchDraft(draft: ResearchDraft) {
+  draft.updated_at = new Date().toISOString();
+  return new Promise((resolve) => {
+    db.run(
+      `UPDATE research_drafts SET title = ?, outline = ?, report = ?, updated_at = ? WHERE uid = ?`,
+      [draft.title, JSON.stringify(draft.outline), draft.report, draft.updated_at, draft.uid],
+      function (err) {
+        if (err) {
+          console.log('DB updateResearchDraft error:', err);
+          return resolve({ success: false, error: err.message });
+        }
+        resolve({ success: true });
+      }
+    );
+  });
+}
+
+function updateResearchDraftReport(draft: { uid: string, report: string }) {
+  const updated_at = new Date().toISOString();
+  // Log only the size, not the content, to avoid flooding logs
+  console.log('DB updateResearchDraftReport:', {
+    uid: draft.uid,
+    report: draft.report.slice(0, 100),
+    reportLength: draft.report.length,
+    updated_at
+  });
+  return new Promise((resolve) => {
+    db.run(
+      `UPDATE research_drafts SET report = ?, updated_at = ? WHERE uid = ?`,
+      [draft.report, updated_at, draft.uid],
+      function (err) {
+        if (err) {
+          console.log('DB updateResearchDraft error:', err);
+          return resolve({ success: false, error: err.message });
+        }
+        resolve({ success: true });
+      }
+    );
+  });
+}
+
+  function deleteResearchDraft(draftId: string) {
+  return new Promise((resolve) => {
+    db.run(`DELETE FROM research_drafts WHERE uid = ?`, [draftId], function (err) {
+      if (err) {
+        console.log('DB deleteResearchDraft error:', err);
+        return resolve({ success: false, error: err.message });
+      }
+      resolve({ success: true });
+    });
+  });
+}
 
 
 export {
@@ -697,7 +817,13 @@ export {
   getLiteratureResults,
   addPaperToProject,
   updatePaper,
-  deletePaper
+  deletePaper,
+  getAllResearchDrafts,
+  getResearchDraft,
+  addResearchDraftToProject,
+  updateResearchDraft,
+  updateResearchDraftReport,
+  deleteResearchDraft
 };
 
  

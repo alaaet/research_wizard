@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const db = require('./backend/dist/backend/database.js');
-const { generateResearchKeywordsFromTopic, generateResearchQuestionsFromTopic } = require('./backend/dist/backend/ai_client/index.js');
+const { generateResearchKeywordsFromTopic, generateResearchQuestionsFromTopic, generateProjectOutline, generateSectionParagraph } = require('./backend/dist/backend/ai_client/index.js');
 const searchClient = require('./backend/dist/backend/search_client/index.js');
 const helpers = require('./backend/dist/backend/utils/helpers.js');
 
@@ -99,7 +99,41 @@ ipcMain.handle('literature:deletePaper', async (event, { paperId }) => {
   return await db.deletePaper(paperId);
 });
 
+ipcMain.handle('researchDrafts:list', async (event, { projectId }) => {
+  return await db.getAllResearchDrafts(projectId);
+});
 
+ipcMain.handle('researchDrafts:add', async (event, draft) => {
+  return await db.addResearchDraftToProject(draft);
+});
+
+ipcMain.handle('researchDrafts:getDraft', async (event, { draftId }) => {
+  return await db.getResearchDraft(draftId);
+});
+
+ipcMain.handle('researchDrafts:update', async (event, draft) => {
+  return await db.updateResearchDraft(draft);
+});
+
+ipcMain.handle('researchDrafts:updateReport', async (event, draft) => {
+  return await db.updateResearchDraftReport(draft);
+});
+
+ipcMain.handle('researchDrafts:generateOutline', async (event, { topic, language }) => {
+  return await generateProjectOutline(topic, language);
+});
+
+ipcMain.handle('researchDrafts:generateSubsectionContent', async (event, { projectId, topic, sectionTitle, subsectionTitle, language }) => {
+  return await generateSectionParagraph(projectId, topic, sectionTitle, subsectionTitle, language);
+});
+
+ipcMain.handle('researchDrafts:delete', async (event, { draftId }) => {
+  return await db.deleteResearchDraft(draftId);
+});
+
+ipcMain.handle('researchDrafts:exportReport', async (event, { uid, format }) => {
+  return await helpers.exportDraftReportHelper(uid, format);
+});
 
 function createWindow() {
   console.log('createWindow function called.'); // Log function entry

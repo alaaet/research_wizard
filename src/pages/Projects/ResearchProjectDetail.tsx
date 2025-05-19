@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ResearchProject } from '../lib/researchProject';
-import { getResearchProject, updateResearchProject } from '../utils/researchProjectIpc';
-import { generateResearchKeywordsFromTopic , generateResearchQuestionsFromTopic} from '../utils/aiAgentsIpc';
-import PageLayout from '../components/layout/PageLayout';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Textarea } from '../components/ui/textarea';
+import { ResearchProject } from '../../lib/researchProject';
+import { getResearchProject, updateResearchProject } from '../../utils/researchProjectIpc';
+import { generateResearchKeywordsFromTopic , generateResearchQuestionsFromTopic} from '../../utils/aiAgentsIpc';
+import PageLayout from '../../components/layout/PageLayout';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
 import { motion } from 'framer-motion';
 import { Brain } from 'lucide-react';
 

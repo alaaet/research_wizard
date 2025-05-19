@@ -1,4 +1,4 @@
-import { listAIAgents } from '../database';
+import { getUserMetaDataByKey, listAIAgents, getLiteratureResults } from '../database';
 import type { AIAgent } from '../../shared/aiAgentTypes';
 
 /**
@@ -79,4 +79,209 @@ export async function generateResearchQueriesFromQuestions(questions: string[]) 
   console.log('Generated queries:', queries);
   return queries.filter(query => query.length > 0);
 }
+
+export async function generateProjectDescription(topic: string) {
+  const response = await processQuery({
+    user: `Generate a description for a research project on the topic: ${topic}, the description should be a set of short paragraphs (100 words or less each), the response should only contain the description`,
+  });
+  return response;
+}
+
+export async function generateProjectOutline(
+  topic: string,
+  language: string = 'English'
+) {
+  const minSections: number = Number((await getUserMetaDataByKey('MIN_SECTIONS_PER_REPORT') as any)?.Value) || 5;
+  const maxSections: number = Number((await getUserMetaDataByKey('MAX_SECTIONS_PER_REPORT') as any)?.Value) || 10;
+  const minSubSections: number = Number((await getUserMetaDataByKey('MIN_SUBSECTIONS_PER_SECTION') as any)?.Value) || 2;
+  const maxSubSections: number = Number((await getUserMetaDataByKey('MAX_SUBSECTIONS_PER_SECTION') as any)?.Value) || 5;
+  console.log('Generating report outline...');
+  const prompt = `Create a logical outline for a research report on the topic: "${topic}".\nThe outline should be structured as a JSON object with the following format:\n{\n  "title": "Report Title",\n  "sections": [ /* Aim for ${minSections}-${maxSections} sections */\n    {\n      "title": "Section 1 Title",\n      "subsections": [ /* Aim for ${minSubSections}-${maxSubSections} subsections */\n        "Subsection 1.1 Title", "Subsection 1.2 Title" /* ... */\n      ]\n    } /* ... more sections ... */\n  ]\n}\nEnsure the titles are descriptive and cover key aspects of the topic. Respond *only* in ${language} language with the valid JSON object, without any introductory text, comments, or explanations.`;
+
+  const system = `You are a research planning assistant. Generate a structured report outline in JSON format based on the user's topic. Output only the JSON in ${language} language.`;
+
+  const response = await processQuery({
+    user: prompt,
+    system,
+    temperature: 0.5,
+  });
+
+  if (response.startsWith('[Error') || response.startsWith('[AI')) {
+    console.error('Failed to generate outline due to LLM error:', response);
+    return null;
+  }
+
+  try {
+    const jsonString = response
+      .replace(/```json\n?/, '')
+      .replace(/```$/, '')
+      .trim();
+    const outline = JSON.parse(jsonString);
+    if (outline && outline.title && Array.isArray(outline.sections)) {
+      console.log('Outline generated successfully.');
+      return outline;
+    } else {
+      console.error('Generated outline has an invalid structure:', outline);
+      return null;
+    }
+  } catch (error) {
+    console.error('Failed to parse generated outline JSON:', error);
+    console.error('LLM Response was:', response);
+    return null;
+  }
+}
+
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+export async function generateSectionParagraph(
+  projectId: string,
+  topic: string,
+  sectionTitle: string,
+  subsectionTitle: string,
+  language: string = 'English',
+  model: string = '',
+): Promise<{ success: boolean; text: string; citedIndices: number[] }> {
+  const minWords: number = Number((await getUserMetaDataByKey('MIN_WORDS_PER_PARAGRAPH') as any)?.Value) || 250;
+  const maxWords: number = Number((await getUserMetaDataByKey('MAX_WORDS_PER_PARAGRAPH') as any)?.Value) || 1500;
+  const maxRetries: number = Number((await getUserMetaDataByKey('MAX_PARAGRAPH_RETRIES') as any)?.Value) || 2;
+  const retryDelay: number = Number((await getUserMetaDataByKey('RETRY_DELAY_MS') as any)?.Value) || 5000;
+  const contentSlice = 1000;
+
+  console.log(
+    `   Generating paragraph for: ${sectionTitle} -> ${subsectionTitle}`
+  );
+
+  const papers = (await getLiteratureResults(projectId)) as any[];
+  const inputData = papers.map((item) => ({
+    index: item.index,
+    url: item.url,
+    text: item.summary,
+  }))
+    .map(
+      (item) =>
+        `--START ITEM ${item.index}--\nURL: ${item.url}\nCONTENT: ${
+          item.text
+            ? item.text.slice(0, contentSlice)
+            : '[Content not available]'
+        }\n--END ITEM ${item.index}--\n`
+    )
+    .join('\n');
+
+  const userPrompt = `You are writing a research report on "${topic}". Outline context: ${sectionTitle} -> ${subsectionTitle}. Available Information (Input Data):\n${inputData}\nInstructions:\n1. Write a single, coherent paragraph focusing *only* on subsection "${subsectionTitle}" in ${language} language.\n2. Length: ${minWords}-${maxWords} words.\n3. Base paragraph *strictly* on Input Data.\n4. Synthesize from multiple sources if relevant.\n5. Cite sources using footnote notation ([index]).\n6. After the paragraph, on a NEW line, list cited source indices: "Cited sources: [index1, index2, ...]" (or [] if none).\nBegin paragraph now:`;
+
+  let attempts = 0;
+  let currentDelay = retryDelay;
+
+  while (attempts <= maxRetries) {
+    attempts++;
+    try {
+      console.log(
+        `      Attempt ${attempts}/${
+          maxRetries + 1
+        } for "${subsectionTitle}"...`
+      );
+      const llmResponse = await processQuery({
+        model,
+        system: `You are a meticulous research assistant writing a specific paragraph for a report. Follow all instructions precisely: topic focus, word count (${minWords}-${maxWords}), strict adherence to provided data, citation format ([index]), and the final "Cited sources: [...]" line.`,
+        user: userPrompt,
+        temperature: 0.6,
+      });
+
+      if (llmResponse.startsWith('[Error') || llmResponse.startsWith('[AI') || llmResponse.startsWith('[LLM')) {
+        console.error(
+          `      Failed attempt ${attempts} for "${subsectionTitle}": ${llmResponse}`
+        );
+        if (attempts > maxRetries) {
+          return {
+            success: false,
+            text: `[Paragraph generation failed after ${attempts} attempts: ${llmResponse}]`,
+            citedIndices: [],
+          };
+        }
+        throw new Error(llmResponse);
+      }
+
+      // --- Parse successful response ---
+      const lines = llmResponse.split('\n');
+      let paragraph = '';
+      let citedIndices: number[] = [];
+      const citedLineIndex = lines.findIndex((line) =>
+        line.trim().startsWith('Cited sources: [')
+      );
+
+      if (citedLineIndex !== -1) {
+        paragraph = lines.slice(0, citedLineIndex).join('\n').trim();
+        const citedLine = lines[citedLineIndex].trim();
+        try {
+          const indicesMatch = citedLine.match(/\[(.*?)\]/);
+          if (indicesMatch && indicesMatch[1].trim() !== '') {
+            citedIndices = indicesMatch[1]
+              .split(',')
+              .map((s) => parseInt(s.trim(), 10))
+              .filter((n) => !isNaN(n));
+          } else if (!indicesMatch) {
+            console.warn(
+              `      Could not parse cited indices from line: "${citedLine}" for "${subsectionTitle}"`
+            );
+          }
+        } catch (parseError) {
+          console.warn(
+            `      Error parsing cited indices from line "${citedLine}" for "${subsectionTitle}":`,
+            parseError
+          );
+        }
+      } else {
+        console.warn(
+          `      "Cited sources: [...]" line not found in response for "${subsectionTitle}". Assuming entire response is paragraph.`
+        );
+        paragraph = llmResponse;
+      }
+
+      // Optional word count check
+      const wordCount = paragraph.split(/\s+/).filter(Boolean).length;
+      if (
+        paragraph.length > 0 &&
+        (wordCount < minWords * 0.8 || wordCount > maxWords * 1.2)
+      ) {
+        console.warn(
+          `      Generated paragraph word count (${wordCount}) for "${subsectionTitle}" outside target range (${minWords}-${maxWords}).`
+        );
+      }
+
+      console.log(
+        `      Successfully generated paragraph for "${subsectionTitle}" on attempt ${attempts}.`
+      );
+      return { success: true, text: paragraph, citedIndices: citedIndices };
+    } catch (error: any) {
+      console.warn(
+        `      Attempt ${attempts} failed for "${subsectionTitle}". Error: ${error.message}`
+      );
+      if (attempts > maxRetries) {
+        console.error(
+          `      Maximum retries (${maxRetries}) reached for "${subsectionTitle}". Giving up.`
+        );
+        return {
+          success: false,
+          text: `[Paragraph generation failed after ${attempts} attempts: ${error.message}]`,
+          citedIndices: [],
+        };
+      } else {
+        console.log(
+          `      Waiting ${currentDelay}ms before retrying "${subsectionTitle}"...`
+        );
+        await sleep(currentDelay);
+        currentDelay *= 2;
+      }
+    }
+  }
+  return {
+    success: false,
+    text: `[Paragraph generation failed unexpectedly for "${subsectionTitle}"]`,
+    citedIndices: [],
+  };
+}
+
 

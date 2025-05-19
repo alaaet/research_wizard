@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { ResearchProject, generateUID } from '../lib/researchProject';
-import { listResearchProjects, createResearchProject } from '../utils/researchProjectIpc';
-import { Link, useLocation } from 'react-router-dom';
-import PageLayout from '../components/layout/PageLayout';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Textarea } from '../components/ui/textarea';
-import { Card } from '../components/ui/card';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { ResearchProject, generateUID } from '../../lib/researchProject';
+import { listResearchProjects, createResearchProject } from '../../utils/researchProjectIpc';
+import { Link } from 'react-router-dom';
+import PageLayout from '../../components/layout/PageLayout';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
+import { Card } from '../../components/ui/card';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
 import { motion } from 'framer-motion';
 function TagsInput({ value, onChange, placeholder }: { value: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
   const [input, setInput] = useState('');
