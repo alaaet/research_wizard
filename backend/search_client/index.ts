@@ -40,7 +40,7 @@ export async function processSearch(queries: string[], options: any): Promise<an
     } else {
       message = String(err);
     }
-    console.error(`[Search Error: ${message}]`);
+    console.log(`[Search Error: ${message}]`);
     return []
   }
 }

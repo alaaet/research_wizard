@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageLayout from "@/components/layout/PageLayout";
 import { motion } from "framer-motion";
 import { Card } from '@/components/ui/card';
@@ -20,8 +20,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { getLiteratureResults } from '@/utils/literatureIpc';
+import { getLiteratureResults, exportLiterature, addPaper, updatePaper, deletePaper } from '@/utils/literatureIpc';
 import type { research_paper } from '@/lib/researchPaper';
 import type { ResearchProject } from '../../lib/researchProject';
 import { Globe, Eye, Pencil, Trash2 } from 'lucide-react';
@@ -30,6 +29,8 @@ import DeletePaperModal from '@/components/modals/deletePaperModal';
 import { useNavigate } from 'react-router-dom';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import AddPaperModal from '@/components/modals/addPaperModal';
+import { toast } from "sonner"
 
 export default function LiteratureListingPage() {
   const [projects, setProjects] = useState<ResearchProject[]>([]);
@@ -38,15 +39,16 @@ export default function LiteratureListingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
-  const [editPaper, setEditPaper] = useState<research_paper | null>(null);
+  const [paperToEdit, setPaperToEdit] = useState<research_paper | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deletePaper, setDeletePaper] = useState<research_paper | null>(null);
+  const [paperToDelete, setPaperToDelete] = useState<research_paper | null>(null);
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const pageSize = 10;
   const totalPages = Math.ceil(papers.length / pageSize);
   const paginatedPapers = papers.slice((page - 1) * pageSize, page * pageSize);
   const [cardCollapsed, setCardCollapsed] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
 
   useEffect(() => {
     // Load research projects
@@ -56,6 +58,12 @@ export default function LiteratureListingPage() {
     // Collapse the card if papers are loaded
     if (papers.length > 0) setCardCollapsed(true);
   }, [papers.length]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error, { dismissible: true });
+    }
+  }, [error]);
 
   const handleLoadPapers = async () => {
     if (!selectedProject) {
@@ -74,14 +82,45 @@ export default function LiteratureListingPage() {
     }
   };
 
-  const handleEditSave = (updated: research_paper) => {
-    setPapers(papers => papers.map(p => p.uid === updated.uid ? updated : p));
+  const handleEditSave = async (updated: research_paper) => {
+    const res = await updatePaper(updated);
+    if (res?.success) {
+      setPapers(papers => papers.map(p => p.uid === updated.uid ? updated : p));
+      toast('Paper updated successfully');
+    }
+    else{
+      setError("Failed to update paper");
+    }
     setEditOpen(false);
   };
 
-  const handleDelete = (paper: research_paper) => {
-    setPapers(papers => papers.filter(p => p.uid !== paper.uid));
+  const handleDelete = async (paper: research_paper) => {
+    const res = await deletePaper(paper.uid);
+    if (res?.success) {
+      setPapers(papers => papers.filter(p => p.uid !== paper.uid));
+      toast('Paper deleted successfully');
+    }
+    else{
+      setError("Failed to delete paper");
+    }
     setDeleteOpen(false);
+  };
+
+  const handleAddPaper = async (paper: research_paper) => {
+    if (!selectedProject) return;
+    const res = await addPaper(selectedProject, paper);
+    if (res?.success) {
+      setPapers(papers => [...papers, paper]);
+      toast('Paper added successfully');
+      setError(null);
+    } else {
+      if (res?.error === 'A paper with this title and URL already exists.') {
+        setError('A paper with this title and URL already exists.');
+      } else {
+        setError('Failed to add paper');
+      }
+    }
+    setAddOpen(false);
   };
 
   return (
@@ -94,12 +133,6 @@ export default function LiteratureListingPage() {
     >
     <div className="w-full px-4 space-y-6">
       <h1 className="text-2xl font-bold">Saved Literature Papers</h1>
-      {error && (
-        <Alert variant="destructive">
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
       <Card className="p-4 space-y-4 w-full">
         <div className="flex items-center justify-between cursor-pointer" onClick={() => setCardCollapsed(c => !c)}>
           <Label>Research Project</Label>
@@ -118,7 +151,7 @@ export default function LiteratureListingPage() {
                 <SelectContent>
                   {projects.map((project) => (
                     <SelectItem key={project.uid} value={project.uid}>
-                      {project.title}
+                      {project.title.length > 100 ? project.title.slice(0, 100) : project.title}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -134,6 +167,22 @@ export default function LiteratureListingPage() {
         <>
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Papers</h2>
+            {/* add a button to add a new paper, and a button to export the papers , the export button should export the papers as : BibTeX, EndNote XML or RIS file format. */}
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setAddOpen(true)}>
+                Add Paper
+              </Button>
+              <Select onValueChange={async (value) => { await exportLiterature(value, papers); }}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Export Papers" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bibtex">BibTeX</SelectItem>
+                  <SelectItem value="endnote">EndNote XML</SelectItem>
+                  <SelectItem value="ris">RIS</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <Card className="p-4 space-y-4 w-full">
             <div className="w-full overflow-x-auto">
@@ -148,32 +197,66 @@ export default function LiteratureListingPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paginatedPapers.map((result, idx) => {
+                  {paginatedPapers.map((paper, idx) => {
                     let publishedDate = '';
-                    if (result.publishedDate) {
-                      const dateObj = result.publishedDate instanceof Date
-                        ? result.publishedDate
-                        : new Date(result.publishedDate);
+                    if (paper.publishedDate) {
+                      const dateObj = paper.publishedDate instanceof Date
+                        ? paper.publishedDate
+                        : new Date(paper.publishedDate);
                       publishedDate = isNaN(dateObj.getTime()) ? '' : dateObj.toLocaleDateString();
                     }
                     return (
-                      <TableRow key={result.uid}>
+                      <TableRow key={paper.uid} className="hover:bg-gray-100 cursor-pointer" onClick={() => navigate(`/literature/view/${selectedProject}/${paper.uid}`)}>
                         <TableCell>{(page - 1) * pageSize + idx + 1}</TableCell>
-                        <TableCell>{result.title}</TableCell>
-                        <TableCell>{result.author && result.author.length > 50 ? result.author.slice(0, 50) + '...' : result.author}</TableCell>
+                        <TableCell>{paper.title}</TableCell>
+                        <TableCell>{paper.author && paper.author.length > 50 ? paper.author.slice(0, 50) + '...' : paper.author}</TableCell>
                         <TableCell>{publishedDate}</TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Button size="icon" variant="ghost" title="Open Link" onClick={() => window.open(result.url, '_blank')}>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="Open Link"
+                              onClick={e => {
+                                e.stopPropagation();
+                                window.open(paper.url, '_blank');
+                              }}
+                            >
                               <Globe className="w-5 h-5 text-green-500" />
                             </Button>
-                            <Button size="icon" variant="ghost" title="View" onClick={() => navigate(`/literature/view/${result.uid}`)}>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="View"
+                              onClick={e => {
+                                e.stopPropagation();
+                                navigate(`/literature/view/${selectedProject}/${paper.uid}`);
+                              }}
+                            >
                               <Eye className="w-5 h-5 text-blue-500" />
                             </Button>
-                            <Button size="icon" variant="ghost" title="Edit" onClick={() => { setEditPaper(result); setEditOpen(true); }}>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="Edit"
+                              onClick={e => {
+                                e.stopPropagation();
+                                setPaperToEdit(paper);
+                                setEditOpen(true);
+                              }}
+                            >
                               <Pencil className="w-5 h-5" />
                             </Button>
-                            <Button size="icon" variant="ghost" title="Delete" onClick={() => { setDeletePaper(result); setDeleteOpen(true); }}>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="Delete"
+                              onClick={e => {
+                                e.stopPropagation();
+                                setPaperToDelete(paper);
+                                setDeleteOpen(true);
+                              }}
+                            >
                               <Trash2 className="w-5 h-5 text-red-500" />
                             </Button>
                           </div>
@@ -221,14 +304,19 @@ export default function LiteratureListingPage() {
       <EditPaperModal
         open={editOpen}
         onOpenChange={setEditOpen}
-        paper={editPaper}
+        paper={paperToEdit}
         onSave={handleEditSave}
       />
       <DeletePaperModal
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        paper={deletePaper}
+        paper={paperToDelete}
         onDelete={handleDelete}
+      />
+      <AddPaperModal
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        onAdd={handleAddPaper}
       />
     </div>
     </motion.div>

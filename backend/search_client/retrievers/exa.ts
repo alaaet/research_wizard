@@ -88,7 +88,7 @@ export class ExaRetriever extends BaseRetriever {
         }));
         results.push(...resultsWithQuery);
       } catch (error) {
-        console.error(
+        console.log(
           `Error fetching Exa results for query "${query}":`,
           error
         );

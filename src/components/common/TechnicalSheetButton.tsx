@@ -49,7 +49,7 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
   // Format data for the technical sheet
   const formatTechSheetData = () => {
     if (!data || Object.keys(data).length === 0) {
-      console.error("Données insuffisantes pour générer la fiche technique");
+      console.log("Données insuffisantes pour générer la fiche technique");
       return null;
     }
     
@@ -81,7 +81,7 @@ const TechnicalSheetButton: React.FC<TechnicalSheetButtonProps> = ({
       await exportModuleData('fiche_technique', 'pdf', techSheetData);
       console.log("Fiche technique générée avec succès");
     } catch (error) {
-      console.error("Error generating technical sheet:", error);
+      console.log("Error generating technical sheet:", error);
     } finally {
       setIsGenerating(false);
     }

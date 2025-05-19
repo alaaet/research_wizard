@@ -14,7 +14,7 @@ export async function getAllUserMetaData(): Promise<UserMetaData[]> {
     console.log('[getAllUserMetaData] Result:', result);
     return result;
   } catch (err) {
-    console.error('[getAllUserMetaData] Error:', err);
+    console.log('[getAllUserMetaData] Error:', err);
     throw err;
   }
 }
@@ -26,7 +26,7 @@ export async function getUserMetaData(key: string): Promise<UserMetaData | null>
     console.log('[getUserMetaData] Result:', result);
     return result;
   } catch (err) {
-    console.error('[getUserMetaData] Error:', err);
+    console.log('[getUserMetaData] Error:', err);
     throw err;
   }
 }
@@ -38,7 +38,7 @@ export async function setUserMetaData(key: string, value: string, type: string):
     console.log('[setUserMetaData] Result:', result);
     return result;
   } catch (err) {
-    console.error('[setUserMetaData] Error:', err);
+    console.log('[setUserMetaData] Error:', err);
     throw err;
   }
 }

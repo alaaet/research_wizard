@@ -70,14 +70,14 @@ export class GeminiAgent extends BaseAIAgent {
           // --- Stricter Error Handling ---
           if (!response) {
             // This case might indicate a network error or severe API issue
-            console.error(`LLM call to ${model} failed: No response object.`);
+            console.log(`LLM call to ${model} failed: No response object.`);
             throw new Error(`LLM call failed: No response object.`); // Throw for retry
           }
       
           // Check for blocking first
           if (response.promptFeedback?.blockReason) {
             const reason = response.promptFeedback.blockReason;
-            console.error(
+            console.log(
               `LLM content blocked for model ${model}. Reason: ${reason}`
             );
             // Decide if blocking is retryable (maybe sometimes?) - for now, treat as non-retryable failure for the paragraph
@@ -91,7 +91,7 @@ export class GeminiAgent extends BaseAIAgent {
             !response.candidates[0].content
           ) {
             const finishReason = response.candidates?.[0]?.finishReason;
-            console.error(
+            console.log(
               `LLM call to ${model} returned invalid structure or no content. Finish Reason: ${
                 finishReason || "N/A"
               }`
@@ -112,7 +112,7 @@ export class GeminiAgent extends BaseAIAgent {
           const textContent = response.candidates[0].content.parts?.[0]?.text;
           if (textContent === undefined || textContent === null) {
             // Check specifically for missing text
-            console.error(
+            console.log(
               `LLM call to ${model} response structure OK but no text content.`
             );
             throw new Error(`LLM call failed: No text content in response.`); // Throw for retry
@@ -124,7 +124,7 @@ export class GeminiAgent extends BaseAIAgent {
           let message = '';
           if (error instanceof Error) {
             message = error.message;
-            console.error(
+            console.log(
               `Error during Google Generative AI call (Model: ${model}):`,
               message
             );
@@ -138,12 +138,12 @@ export class GeminiAgent extends BaseAIAgent {
               );
               throw error; // Rethrow the original error to signal a retry is needed
             } else {
-              console.error(`-> Non-retryable error for model ${model}.`);
+              console.log(`-> Non-retryable error for model ${model}.`);
               return `[Error generating LLM response: ${message}]`;
             }
           } else {
             message = String(error);
-            console.error(
+            console.log(
               `Error during Google Generative AI call (Model: ${model}):`,
               message
             );

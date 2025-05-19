@@ -72,7 +72,7 @@ export default function ResearchProjectsPage() {
     // await createResearchProject();
     createResearchProject(project)
       .then(result => console.log('Project creation result:', result))
-      .catch(err => console.error('Project creation error:', err));
+      .catch(err => console.log('Project creation error:', err));
 
     setForm({ title: '', keywords: [], description: '', research_questions: [] });
     setOpen(false);

@@ -38,7 +38,7 @@ const ReportGenerationButton: React.FC<ReportGenerationButtonProps> = ({
     try {
       await exportModuleData(moduleName, format);
     } catch (error) {
-      console.error("Error generating report:", error);
+      console.log("Error generating report:", error);
     } finally {
       setIsGenerating(false);
     }

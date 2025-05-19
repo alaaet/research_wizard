@@ -17,6 +17,7 @@
   "include": [
     "backend/ai_client/**/*.ts",
     "backend/search_client/**/*.ts",
+    "backend/utils/**/*.ts",
     "backend/database.d.ts",
     "shared/**/*.ts"
   ]

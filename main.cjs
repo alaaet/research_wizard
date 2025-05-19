@@ -3,6 +3,7 @@ const path = require('path');
 const db = require('./backend/dist/backend/database.js');
 const { generateResearchKeywordsFromTopic, generateResearchQuestionsFromTopic } = require('./backend/dist/backend/ai_client/index.js');
 const searchClient = require('./backend/dist/backend/search_client/index.js');
+const helpers = require('./backend/dist/backend/utils/helpers.js');
 
 console.log('Main process script started.'); // Log start
 
@@ -82,6 +83,24 @@ ipcMain.handle('literature:getResults', async (event, { projectId }) => {
   return await db.getLiteratureResults(projectId);
 });
 
+ipcMain.handle('literature:export', async (event, { format, papers }) => {
+  return await helpers.exportLiteratureFile(format, papers);
+});
+
+ipcMain.handle('literature:addPaper', async (event, { projectId, paper }) => {
+  return await db.addPaperToProject(projectId, paper);
+});
+
+ipcMain.handle('literature:updatePaper', async (event, { paper }) => {
+  return await db.updatePaper(paper);
+});
+
+ipcMain.handle('literature:deletePaper', async (event, { paperId }) => {
+  return await db.deletePaper(paperId);
+});
+
+
+
 function createWindow() {
   console.log('createWindow function called.'); // Log function entry
 
@@ -120,23 +139,23 @@ function createWindow() {
       console.log('Called openDevTools.'); // Log call attempt
     })
     .catch(err => {
-      console.error('Failed to load URL:', startUrl, err); // Log loading error
+      console.log('Failed to load URL:', startUrl, err); // Log loading error
     });
 
   // LogwebContents existence
   if (mainWindow && mainWindow.webContents) {
       console.log('webContents object exists.');
       mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
-          console.error(`webContents failed to load URL: ${validatedURL}. Error ${errorCode}: ${errorDescription}`);
+          console.log(`webContents failed to load URL: ${validatedURL}. Error ${errorCode}: ${errorDescription}`);
       });
       mainWindow.webContents.on('crashed', (event, killed) => {
-          console.error(`webContents crashed! Killed: ${killed}`);
+          console.log(`webContents crashed! Killed: ${killed}`);
       });
       mainWindow.webContents.on('render-process-gone', (event, details) => {
-          console.error(`webContents render process gone! Reason: ${details.reason}`);
+          console.log(`webContents render process gone! Reason: ${details.reason}`);
       });
   } else {
-      console.error('mainWindow or mainWindow.webContents is not available before loading URL.');
+      console.log('mainWindow or mainWindow.webContents is not available before loading URL.');
   }
 
   // Optional: Open DevTools immediately (less ideal but for debugging)

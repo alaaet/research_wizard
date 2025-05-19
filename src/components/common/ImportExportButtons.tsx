@@ -39,7 +39,7 @@ const ImportExportButtons: React.FC<ImportExportButtonsProps> = ({
     try {
       await exportModuleData(moduleName, exportFormat);
     } catch (error) {
-      console.error(`Error exporting ${moduleName}:`, error);
+      console.log(`Error exporting ${moduleName}:`, error);
     }
     
     setExportDialogOpen(false);
@@ -51,7 +51,7 @@ const ImportExportButtons: React.FC<ImportExportButtonsProps> = ({
   
   const handleImportConfirm = async () => {
     if (!selectedFile) {
-      console.error("Aucun fichier sélectionné");
+      console.log("Aucun fichier sélectionné");
       return;
     }
     
@@ -62,7 +62,7 @@ const ImportExportButtons: React.FC<ImportExportButtonsProps> = ({
         onImportComplete();
       }
     } catch (error) {
-      console.error(`Error importing ${moduleName}:`, error);
+      console.log(`Error importing ${moduleName}:`, error);
     }
     
     setImportDialogOpen(false);
@@ -73,7 +73,7 @@ const ImportExportButtons: React.FC<ImportExportButtonsProps> = ({
     try {
       await printModuleData(moduleName);
     } catch (error) {
-      console.error(`Error printing ${moduleName}:`, error);
+      console.log(`Error printing ${moduleName}:`, error);
     }
   };
   
@@ -81,7 +81,7 @@ const ImportExportButtons: React.FC<ImportExportButtonsProps> = ({
     try {
       await exportModuleData('guide_cultures', 'pdf');
     } catch (error) {
-      console.error("Error generating technical guide:", error);
+      console.log("Error generating technical guide:", error);
     }
   };
   

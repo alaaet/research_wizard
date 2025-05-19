@@ -17,7 +17,7 @@ export async function listResearchProjects(): Promise<ResearchProject[]> {
     console.log('[listResearchProjects] Result:', result);
     return result;
   } catch (err) {
-    console.error('[listResearchProjects] Error:', err);
+    console.log('[listResearchProjects] Error:', err);
     throw err;
   }
 }
@@ -29,7 +29,7 @@ export async function createResearchProject(project: ResearchProject): Promise<{
     console.log('[createResearchProject] Result:', result);
     return result;
   } catch (err) {
-    console.error('[createResearchProject] Error:', err);
+    console.log('[createResearchProject] Error:', err);
     throw err;
   }
 }
@@ -41,7 +41,7 @@ export async function getResearchProject(uid: string): Promise<ResearchProject |
     console.log('[getResearchProject] Result:', result);
     return result;
   } catch (err) {
-    console.error('[getResearchProject] Error:', err);
+    console.log('[getResearchProject] Error:', err);
     throw err;
   }
 }
@@ -53,7 +53,7 @@ export async function updateResearchProject(project: ResearchProject): Promise<{
     console.log('[updateResearchProject] Result:', result);
     return result;
   } catch (err) {
-    console.error('[updateResearchProject] Error:', err);
+    console.log('[updateResearchProject] Error:', err);
     throw err;
   }
 }

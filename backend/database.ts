@@ -2,6 +2,8 @@ import path from 'path';
 import sqlite3 from 'sqlite3';
 import fs from 'fs';
 import { app } from 'electron';
+import { research_paper } from '../src/lib/researchPaper';
+import { generateUID } from '../src/lib/researchProject';
 
 // Path for the SQLite database file
 const dbPath = path.join(app.getPath('userData'), 'research_management.sqlite');
@@ -12,7 +14,7 @@ fs.mkdirSync(app.getPath('userData'), { recursive: true });
 // Open or create the database (serialized mode)
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
-    console.error('Failed to open database:', err);
+    console.log('Failed to open database:', err);
   } else {
     console.log('Database opened at', dbPath);
   }
@@ -48,7 +50,7 @@ function initializeTables() {
           //   if (err) return;
           //   if (!rows.some(r => r.name === 'label')) {
           //     db.run('ALTER TABLE user_meta_data ADD COLUMN label TEXT', [], (err) => {
-          //       if (err) console.error('Failed to add label column:', err);
+          //       if (err) console.log('Failed to add label column:', err);
           //     });
           //   }
           // });
@@ -103,13 +105,13 @@ function initializeTables() {
             );
           `, [], (err) => {
             if (err) {
-              console.error('Failed to create ai_agents table:', err);
+              console.log('Failed to create ai_agents table:', err);
               return reject(err);
             }
             // Check if table is empty, then initialize from supported_agents.json
             db.get('SELECT COUNT(*) as count FROM ai_agents', [], (err, row: any) => {
               if (err) {
-                console.error('Failed to count ai_agents:', err);
+                console.log('Failed to count ai_agents:', err);
                 return reject(err);
               }
               if (row.count === 0) {
@@ -118,14 +120,14 @@ function initializeTables() {
                 const agentsPath = path.join(app.getAppPath(), 'backend', 'ai_client', 'agents', 'supported_agents.json');
                 fs.readFile(agentsPath, 'utf8', (err, data) => {
                   if (err) {
-                    console.error('Failed to read supported_agents.json:', err);
+                    console.log('Failed to read supported_agents.json:', err);
                     return reject(err);
                   }
                   let agents;
                   try {
                     agents = JSON.parse(data);
                   } catch (e) {
-                    console.error('Invalid JSON in supported_agents.json:', e);
+                    console.log('Invalid JSON in supported_agents.json:', e);
                     return reject(e);
                   }
                   agents.forEach((agent: any) => {
@@ -142,7 +144,7 @@ function initializeTables() {
                       ],
                       (err) => {
                         if (err) {
-                          console.error('Failed to insert ai_agent:', err);
+                          console.log('Failed to insert ai_agent:', err);
                           return reject(err);
                         }
                       }
@@ -165,27 +167,27 @@ function initializeTables() {
             );
           `, [], (err) => {
             if (err) {
-              console.error('Failed to create search_retrievers table:', err);
+              console.log('Failed to create search_retrievers table:', err);
               return reject(err);
             }
             // Check if table is empty, then initialize from spported_retrievers.json
             db.get('SELECT COUNT(*) as count FROM search_retrievers', [], (err, row: any) => {
               if (err) {
-                console.error('Failed to count search_retrievers:', err);
+                console.log('Failed to count search_retrievers:', err);
                 return reject(err);
               }
               if (row.count === 0) {
                 const retrieversPath = path.join(app.getAppPath(), 'backend', 'search_client', 'retrievers', 'spported_retrievers.json');
                 fs.readFile(retrieversPath, 'utf8', (err, data) => {
                   if (err) {
-                    console.error('Failed to read spported_retrievers.json:', err);
+                    console.log('Failed to read spported_retrievers.json:', err);
                     return reject(err);
                   }
                   let retrievers;
                   try {
                     retrievers = JSON.parse(data);
                   } catch (e) {
-                    console.error('Invalid JSON in spported_retrievers.json:', e);
+                    console.log('Invalid JSON in spported_retrievers.json:', e);
                     return reject(e);
                   }
                   retrievers.forEach((retriever: any) => {
@@ -203,7 +205,7 @@ function initializeTables() {
                       ],
                       (err) => {
                         if (err) {
-                          console.error('Failed to insert search_retriever:', err);
+                          console.log('Failed to insert search_retriever:', err);
                           return reject(err);
                         }
                       }
@@ -229,7 +231,7 @@ function initializeTables() {
             );
           `, [], (err) => {
             if (err) {
-              console.error('Failed to create research_papers table:', err);
+              console.log('Failed to create research_papers table:', err);
               return reject(err);
             }
             resolve([]);
@@ -245,7 +247,7 @@ function listResearchProjects() {
   return new Promise((resolve) => {
     db.all('SELECT * FROM research_projects ORDER BY created_at DESC', [], (err, rows: any[]) => {
       if (err) {
-        console.error('DB list error:', err);
+        console.log('DB list error:', err);
         return resolve([]);
       }
       resolve(rows.map(row => ({
@@ -273,7 +275,7 @@ function createResearchProject(project: any) {
       ],
       function (err) {
         if (err) {
-          console.error('DB create error:', err);
+          console.log('DB create error:', err);
           return resolve({ success: false, error: err.message });
         }
         resolve({ success: true });
@@ -286,7 +288,7 @@ function getResearchProject(uid: string) {
   return new Promise((resolve) => {
     db.get('SELECT * FROM research_projects WHERE uid = ?', [uid], (err, row: any) => {
       if (err) {
-        console.error('DB get error:', err);
+        console.log('DB get error:', err);
         return resolve(null);
       }
       if (!row) return resolve(null);
@@ -314,7 +316,7 @@ function updateResearchProject(project: any) {
       ],
       function (err) {
         if (err) {
-          console.error('DB update error:', err);
+          console.log('DB update error:', err);
           return resolve({ success: false, error: err.message });
         }
         resolve({ success: true });
@@ -328,7 +330,7 @@ function getAllUserMetaData() {
   return new Promise((resolve) => {
     db.all('SELECT * FROM user_meta_data', [], (err, rows: any[]) => {
       if (err) {
-        console.error('user_meta_data:getAll error:', err);
+        console.log('user_meta_data:getAll error:', err);
         return resolve([]);
       }
       resolve(rows);
@@ -340,7 +342,7 @@ function getUserMetaData(key: string) {
   return new Promise((resolve) => {
     db.get('SELECT * FROM user_meta_data WHERE Key = ?', [key], (err, row: any) => {
       if (err) {
-        console.error('user_meta_data:get error:', err);
+        console.log('user_meta_data:get error:', err);
         return resolve(null);
       }
       resolve(row);
@@ -356,7 +358,7 @@ function setUserMetaData(key: string, value: any, type: string) {
       [key, value, type],
       function (err) {
         if (err) {
-          console.error('user_meta_data:set error:', err);
+          console.log('user_meta_data:set error:', err);
           return resolve({ success: false, error: err.message });
         }
         resolve({ success: true });
@@ -369,7 +371,7 @@ function listAIAgents() {
   return new Promise((resolve) => {
     db.all('SELECT * FROM ai_agents', [], (err, rows: any[]) => {
       if (err) {
-        console.error('ai_agents:list error:', err);
+        console.log('ai_agents:list error:', err);
         return resolve([]);
       }
       resolve(rows.map(row => ({
@@ -391,7 +393,7 @@ function updateAIAgent(agent: any) {
         [agent.slug],
         (err) => {
           if (err) {
-            console.error('ai_agents:deactivate others error:', err);
+            console.log('ai_agents:deactivate others error:', err);
             // Continue to update the agent anyway
           }
           updateAgent();
@@ -422,7 +424,7 @@ function updateAIAgent(agent: any) {
         ],
         function (err) {
           if (err) {
-            console.error('ai_agents:update error:', err);
+            console.log('ai_agents:update error:', err);
             return resolve({ success: false, error: err.message });
           }
           resolve({ success: true });
@@ -436,7 +438,7 @@ function getAIAgentBySlug(slug: string) {
   return new Promise((resolve) => {
     db.get('SELECT * FROM ai_agents WHERE slug = ?', [slug], (err, row: any) => {
       if (err) {
-        console.error('ai_agents:getBySlug error:', err);
+        console.log('ai_agents:getBySlug error:', err);
         return resolve(null);
       }
       if (!row) return resolve(null);
@@ -454,7 +456,7 @@ function getUserMetaDataByRef(ref: string) {
   return new Promise((resolve) => {
     db.all('SELECT * FROM user_meta_data WHERE ref = ?', [ref], (err, rows: any[]) => {
       if (err) {
-        console.error('user_meta_data:getByRef error:', err);
+        console.log('user_meta_data:getByRef error:', err);
         return resolve([]);
       }
       resolve(rows);
@@ -467,7 +469,7 @@ function getUserMetaDataByKey(key: string) {
   return new Promise((resolve) => {
       db.all('SELECT * FROM user_meta_data WHERE key = ?', [key], (err, rows) => {
           if (err) {
-              console.error('user_meta_data:getByKey error:', err);
+              console.log('user_meta_data:getByKey error:', err);
               return resolve([]);
           }
           resolve(rows);
@@ -480,7 +482,7 @@ function listSearchRetrievers() {
   return new Promise((resolve) => {
     db.all('SELECT * FROM search_retrievers', [], (err, rows: any[]) => {
       if (err) {
-        console.error('search_retrievers:list error:', err);
+        console.log('search_retrievers:list error:', err);
         return resolve([]);
       }
       resolve(rows.map((row: any) => ({
@@ -515,7 +517,7 @@ function updateSearchRetriever(retriever: any) {
       ],
       function (err) {
         if (err) {
-          console.error('search_retrievers:update error:', err);
+          console.log('search_retrievers:update error:', err);
           return resolve({ success: false, error: err.message });
         }
         resolve({ success: true });
@@ -528,7 +530,7 @@ function getRetrieverBySlug(slug: string) {
   return new Promise((resolve) => {
     db.get('SELECT * FROM search_retrievers WHERE slug = ?', [slug], (err, row: any) => {
       if (err) {
-        console.error('search_retrievers:getBySlug error:', err);
+        console.log('search_retrievers:getBySlug error:', err);
         return resolve(null);
       }
       if (!row) return resolve(null);
@@ -541,7 +543,7 @@ function getRetrieverBySlug(slug: string) {
 }
 
 // --- Literature CRUD ---
-function saveLiteratureResults(projectId: string, results: any[]) {
+function saveLiteratureResults(projectId: string, results: research_paper[]) {
   return new Promise((resolve) => {
     if (!Array.isArray(results)) return resolve({ success: false, error: 'Results must be an array' });
     const now = new Date().toISOString();
@@ -566,7 +568,7 @@ function saveLiteratureResults(projectId: string, results: any[]) {
           completed++;
           if (err) {
             hasError = true;
-            console.error('Failed to save research paper:', err);
+            console.log('Failed to save research paper:', err);
           }
           if (completed === results.length) {
             resolve({ success: !hasError });
@@ -585,7 +587,7 @@ function getLiteratureResults(projectId: string) {
       [projectId],
       (err, rows: any[]) => {
         if (err) {
-          console.error('Failed to get research papers:', err);
+          console.log('Failed to get research papers:', err);
           return resolve([]);
         }
         // Parse publishedDate as ISO string
@@ -598,6 +600,81 @@ function getLiteratureResults(projectId: string) {
     );
   });
 }
+
+function addPaperToProject(projectId: string, paper: research_paper) {
+  if (!paper.uid) paper.uid = generateUID();
+  return new Promise((resolve) => {
+    db.run(
+      `INSERT INTO research_papers (uid, project_uid, title, url, publishedDate, author, score, summary, sourceQuery, idx) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        paper.uid,
+        projectId,
+        paper.title,
+        paper.url,
+        paper.publishedDate ? (typeof paper.publishedDate === 'string' ? paper.publishedDate : new Date(paper.publishedDate).toISOString()) : Date.now(),
+        paper.author,
+        paper.score,
+        paper.summary,
+        paper.sourceQuery,
+        paper.index
+      ],
+      function (err) {
+        if (err) {
+          console.log('Failed to add paper to project:', err);
+          if ((err as any).code === 'SQLITE_CONSTRAINT') {
+            return resolve({ success: false, error: 'A paper with this title and URL already exists.' });
+          }
+          return resolve({ success: false, error: err.message });
+        }
+        resolve({ success: true });
+      }
+    );
+  });
+}
+
+function updatePaper(paper: research_paper) {
+  return new Promise((resolve) => {
+    db.run(
+      `UPDATE research_papers SET title = ?, url = ?, publishedDate = ?, author = ?, score = ?, summary = ?, sourceQuery = ?, idx = ? WHERE uid = ?`,
+      [
+        paper.title,
+        paper.url,
+        paper.publishedDate ? (typeof paper.publishedDate === 'string' ? paper.publishedDate : new Date(paper.publishedDate).toISOString()) : Date.now(),
+        paper.author,
+        paper.score,
+        paper.summary,
+        paper.sourceQuery, 
+        paper.index,
+        paper.uid
+      ],
+      function (err) {
+        if (err) {
+          console.log('Failed to update paper:', err);
+          return resolve({ success: false, error: err.message });
+        }
+        resolve({ success: true });
+      }
+    );
+  });
+}
+
+function deletePaper(paperId: string) {
+  return new Promise((resolve) => {
+    db.run(
+      `DELETE FROM research_papers WHERE uid = ?`,
+      [paperId],
+      function (err) {
+        if (err) {
+          console.log('Failed to delete paper:', err);
+          return resolve({ success: false, error: err.message });
+        }
+        resolve({ success: true });
+      }
+    );
+  });
+}
+
+
 
 export {
   initializeTables,
@@ -618,6 +695,9 @@ export {
   getRetrieverBySlug,
   saveLiteratureResults,
   getLiteratureResults,
+  addPaperToProject,
+  updatePaper,
+  deletePaper
 };
 
  
