@@ -69,10 +69,10 @@ ipcMain.handle('searchRetrievers:update', async (event, retriever) => {
   return await db.updateSearchRetriever(retriever);
 });
 
-ipcMain.handle('searchRetrievers:search', async (event, { retriever, project_uid, queries }) => {
+ipcMain.handle('searchRetrievers:search', async (event, { retriever, project_uid, project_title, queries }) => {
   // For now, use processSearch with queries and default options
   // Optionally, you could use retriever.slug to select a specific retriever
-  return await searchClient.getScientificPapers(project_uid, queries, { retriever });
+  return await searchClient.getScientificPapers(project_uid, project_title, queries, { retriever });
 });
 
 ipcMain.handle('literature:saveResults', async (event, { projectId, results }) => {

@@ -7,5 +7,5 @@ export abstract class BaseRetriever {
     throw new Error('BaseRetriever.create() must be implemented by subclasses');
   }
 
-  abstract search(queries: string[], options: any): Promise<any[]>;
+  abstract search(project_title: string, queries: string[], options: any): Promise<any[]>;
 }

@@ -60,12 +60,15 @@ export class ExaRetriever extends BaseRetriever {
   /*
   Search for queries using Exa and return a list of scientific papers
   */
-  async search(queries: string[], options: SearchOptions): Promise<research_paper[]> {
+  async search(project_title: string, queries: string[] = [], options: SearchOptions): Promise<research_paper[]> {
     let results: any[] = [];
     console.log(
       `Workspaceing ${options.linksPerQuery} results per query for:`,
       queries
     );
+    if (project_title) {
+      queries = [project_title, ...queries];
+    }
     if (queries.length === 0) {
       return [];
     }

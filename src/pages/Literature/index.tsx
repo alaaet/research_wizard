@@ -93,8 +93,9 @@ export default function LiteraturePage() {
 
       // Perform the search using the selected retriever
       const results: research_paper[] = await searchWithRetriever(
-        retrievers.find((r) => r.slug === selectedRetrieverName),
+        selectedRetrieverName,
         projects.find((p) => p.title === selectedProject)?.uid,
+        project.title,
         project.research_questions
       );
 

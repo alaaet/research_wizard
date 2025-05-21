@@ -7,11 +7,15 @@ import { generateUID } from '../../src/lib/researchProject';
  * @param options - Search options for the retriever
  * @returns {Promise<any>} - The search results or error message
  */
-export async function processSearch(queries: string[], options: any): Promise<any[]> {
+export async function processSearch(project_title: string, queries: string[], options: any): Promise<any[]> {
   try {
     // Get the active search retriever
     const retrievers = (await listSearchRetrievers()) as any[];
-    const activeRetriever = retrievers.find((r: any) => r.slug === options.retriever || r.is_active);
+    // First try to find the explicitly specified retriever, then fall back to active retriever
+    const activeRetriever = options.retriever 
+      ? retrievers.find((r: any) => r.slug.toLowerCase() === options.retriever.toLowerCase())
+      : retrievers.find((r: any) => r.is_active);
+      
     if (!activeRetriever) {
       throw new Error('No active search retriever found.');
     }
@@ -24,6 +28,11 @@ export async function processSearch(queries: string[], options: any): Promise<an
         RetrieverClass = mod.ExaRetriever;
         break;
       }
+      case 'crossref': {
+        const mod = await import('./retrievers/crossref');
+        RetrieverClass = mod.CrossrefRetriever;
+        break;
+      }
       // Add more cases for other retrievers as you implement them
       default:
         throw new Error(`Search retriever '${slug}' is not supported.`);
@@ -31,7 +40,7 @@ export async function processSearch(queries: string[], options: any): Promise<an
     // Instantiate the retriever using its static create method
     const retriever = await RetrieverClass.create();
     // Send the queries to the retriever's search method
-    const results = await retriever.search(queries, options);
+    const results = await retriever.search(project_title, queries, options);
     return results;
   } catch (err) {
     let message = '';
@@ -45,10 +54,10 @@ export async function processSearch(queries: string[], options: any): Promise<an
   }
 }
 
-export async function getScientificPapers(project_uid: string, queries: string[], options: any): Promise<research_paper[]> {
+export async function getScientificPapers(project_uid: string, project_title: string, queries: string[], options: any): Promise<research_paper[]> {
     const linksPerQueryObject: any = await getUserMetaDataByKey('LINKS_PER_SEARCH_QUERY');
     const linksPerQuery = linksPerQueryObject?.value || 10;
-    const papers = await processSearch(queries, {
+    const papers = await processSearch(project_title, queries, {
         linksPerQuery,
         useAutoprompt: false,
         type: 'neural',

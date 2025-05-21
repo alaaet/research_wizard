@@ -7,5 +7,12 @@
         "type": "search",
         "key_name": "EXA_API_KEY",
         "key_value": "your_exa_api_key_here"
+    },
+    {
+        "name": "Crossref",
+        "description": "Crossref is a DOI registration agency that provides access to academic papers and their metadata.",
+        "url": "https://www.crossref.org",
+        "icon": "crossref",
+        "type": "search"
     }
 ] 

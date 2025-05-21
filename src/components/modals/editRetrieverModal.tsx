@@ -42,13 +42,15 @@ const EditRetrieverModal: React.FC<EditRetrieverModalProps> = ({ open, onOpenCha
                                 onChange={e => setEditRetriever({ ...editRetriever, is_active: e.target.checked })}
                             />
                         </div>
-                        <div>
-                            <label className="block font-medium mb-1">API Key Value</label>
-                            <Input
-                                value={editRetriever.key_value}
-                                onChange={e => setEditRetriever({ ...editRetriever, key_value: e.target.value })}
-                            />
-                        </div>
+                        {editRetriever.key_name && (
+                            <div>
+                                <label className="block font-medium mb-1">API Key Value</label>
+                                <Input
+                                    value={editRetriever.key_value}
+                                    onChange={e => setEditRetriever({ ...editRetriever, key_value: e.target.value })}
+                                />
+                            </div>
+                        )}
                         <DialogFooter>
                             <Button type="submit">Save</Button>
                         </DialogFooter>
