@@ -10,6 +10,9 @@ import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import PageLayout from "@/components/layout/PageLayout";
+import { Clipboard, ClipboardCheck } from 'lucide-react';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { toast } from 'sonner';
 
 export default function ReportDetails() {
   const { uid } = useParams<{ uid: string }>();
@@ -77,10 +80,51 @@ export default function ReportDetails() {
         </div>
         <Card className="p-4">
           <Tabs defaultValue="formatted" className="w-full">
-            <TabsList className="mb-4">
-              <TabsTrigger value="raw">Raw</TabsTrigger>
-              <TabsTrigger value="formatted">Formatted</TabsTrigger>
-            </TabsList>
+            <div className="flex items-center justify-between mb-4">
+              <TabsList>
+                <TabsTrigger value="raw">Raw</TabsTrigger>
+                <TabsTrigger value="formatted">Formatted</TabsTrigger>
+              </TabsList>
+              <div className="flex gap-2 ml-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button size="icon" variant="ghost" onClick={async (e) => {
+                        e.preventDefault();
+                        if (draft?.report) {
+                          await navigator.clipboard.writeText(draft.report);
+                          toast.success('Raw report copied!');
+                        }
+                      }}>
+                        <Clipboard className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Copy raw text</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button size="icon" variant="ghost" onClick={async (e) => {
+                        e.preventDefault();
+                        if (draft?.report) {
+                          const md = new (await import('markdown-it')).default();
+                          const html = md.render(draft.report);
+                          await navigator.clipboard.write([
+                            new window.ClipboardItem({
+                              'text/html': new Blob([html], { type: 'text/html' }),
+                              'text/plain': new Blob([draft.report], { type: 'text/plain' }),
+                            }),
+                          ]);
+                          toast.success('Formatted report copied as rich text!');
+                        }
+                      }}>
+                        <ClipboardCheck className="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Copy formatted text</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
             <TabsContent value="raw">
               <Button
                 size="sm"
