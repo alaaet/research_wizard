@@ -168,9 +168,9 @@ function createWindow() {
     .then(() => {
       console.log('URL successfully loaded:', startUrl); // Log successful load
       // Try opening DevTools *after* the URL promise resolves
-      console.log('Attempting to open DevTools...');
-      mainWindow.webContents.openDevTools();
-      console.log('Called openDevTools.'); // Log call attempt
+      // console.log('Attempting to open DevTools...');
+      // mainWindow.webContents.openDevTools();
+      // console.log('Called openDevTools.'); // Log call attempt
     })
     .catch(err => {
       console.log('Failed to load URL:', startUrl, err); // Log loading error

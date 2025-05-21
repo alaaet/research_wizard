@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { getUserMetaDataByRef, setUserMetaData, type UserMetaData } from '../../utils/userMetaDataIpc';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
-import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 export default function ReportParametersTab() {

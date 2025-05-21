@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "build:backend": "tsc -p tsconfig.backend.json && npm run copy-static",
-    "copy-static": "copyfiles -u 2 backend/ai_client/agents/*.json backend/dist/backend/ai_client",
+    "copy-static": "copyfiles -u 2 \"backend/default_settings/**/*.json\" backend/dist/backend/default_settings",
     "electron": "npm run build && npm run build:backend && electron ."
   },
   "dependencies": {

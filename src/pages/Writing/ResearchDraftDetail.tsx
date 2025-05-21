@@ -104,7 +104,7 @@ function OutlineEditor({
       <div className="mt-4">
         <Card className="mb-4 border-l-4 border-primary bg-muted/40 rounded-lg shadow-sm p-4">
           {/* <h3 className="font-serif text-lg font-bold mb-2 text-primary">Outline (Book Index)</h3> */}
-          <ul className="list-decimal pl-6">
+          <ul className="list-none pl-6">
             {outline.sections.map((section, idx) => (
               <li key={idx} className="mb-2">
                 <div className="flex items-center gap-2 font-semibold font-serif text-base">
@@ -343,7 +343,7 @@ export default function ResearchDraftDetailPage() {
                 <Card className="p-2 mb-4">
                   <CardContent className="p-0">
                     <div className="relative">
-                      <div className="prose prose-sm max-w-none text-muted-foreground mt-1 line-clamp-2 max-h-40 overflow-hidden">
+                      <div className="prose prose-sm max-w-none text-muted-foreground mt-1 line-clamp-6 max-h-40 overflow-hidden">
                         <ReactMarkdown>{draft?.report?.slice(0, 500) || ""}</ReactMarkdown>
                       </div>
                       <div className="pointer-events-none absolute left-0 right-0 bottom-0 h-12 bg-gradient-to-t from-white/90 to-transparent" />

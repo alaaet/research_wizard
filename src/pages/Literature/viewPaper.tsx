@@ -5,7 +5,9 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getLiteratureResults } from '@/utils/literatureIpc';
 import type { research_paper } from '@/lib/researchPaper';
-import { Globe } from 'lucide-react';
+import { Copy, Globe } from 'lucide-react';
+import { toast } from "sonner"
+
 
 export default function ViewPaperPage() {
   const { uid, projectId } = useParams();
@@ -50,7 +52,18 @@ export default function ViewPaperPage() {
               <h2 className="text-2xl font-bold mb-2">{paper.title}</h2>
               <div><strong>Authors:</strong> {paper.author}</div>
               <div><strong>Published Date:</strong> {paper.publishedDate ? (paper.publishedDate instanceof Date ? paper.publishedDate.toLocaleDateString() : new Date(paper.publishedDate).toLocaleDateString()) : 'N/A'}</div>
-              <div className="flex items-center gap-2"><strong>URL:</strong> <a href={paper.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline flex items-center gap-1">Open Link <Globe className="w-5 h-5 text-blue-500" /></a></div>
+              <div className="flex items-center gap-2"><strong>URL:</strong> <a href={paper.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline flex items-center gap-1">Open Link <Globe className="w-5 h-5 text-blue-500" /></a>                             <Button
+                size="icon"
+                variant="ghost"
+                title="Copy URL"
+                onClick={e => {
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(paper.url);
+                  toast.success("URL copied to clipboard");
+                }}
+              >
+                <Copy className="w-5 h-5 text-blue-500" />
+              </Button></div>
               <div><strong>Score:</strong> {paper.score ?? 'N/A'}</div>
               <div><strong>Summary:</strong> <div className="whitespace-pre-line mt-1">{paper.summary || 'No summary provided.'}</div></div>
               <div><strong>Source Query:</strong> {paper.sourceQuery || 'N/A'}</div>

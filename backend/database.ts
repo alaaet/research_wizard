@@ -42,20 +42,11 @@ function initializeTables() {
             Value TEXT,
             Type TEXT,
             ref TEXT,
-            label TEXT
+            label TEXT,
+            idx INTEGER
           );
         `, [], (err) => {
           if (err) return reject(err);
-          // Add label column if it doesn't exist
-          // db.get("PRAGMA table_info(user_meta_data);", [], (err, rows) => {
-          //   if (err) return;
-          //   if (!rows.some(r => r.name === 'label')) {
-          //     db.run('ALTER TABLE user_meta_data ADD COLUMN label TEXT', [], (err) => {
-          //       if (err) console.log('Failed to add label column:', err);
-          //     });
-          //   }
-          // });
-          // Set ref='gen' for existing fields with null ref
           db.run(`UPDATE user_meta_data SET ref='gen' WHERE ref IS NULL OR ref=''`);
 
           // Helper to generate label from key
@@ -66,30 +57,35 @@ function initializeTables() {
           }
 
           // Load default_params.json and insert AI_AGENT_PARAMS and RESEARCH_PARAMS
-          const paramsPath = path.join(__dirname, 'ai_client', 'agents', 'default_params.json');
+          const paramsPath = path.join(__dirname, 'default_settings', 'default_params.json');
           fs.readFile(paramsPath, 'utf8', (err, data) => {
             if (err) return;
-            let params;
+            let params: {
+              AI_AGENT_PARAMS?: Record<string, { value: any, index: number }>;
+              RESEARCH_PARAMS?: Record<string, { value: any, index: number }>;
+            };
             try {
               params = JSON.parse(data);
             } catch (e) { return; }
             // AI_AGENT_PARAMS
             if (params.AI_AGENT_PARAMS) {
-              Object.entries(params.AI_AGENT_PARAMS).forEach(([key, value]) => {
+              Object.entries(params.AI_AGENT_PARAMS).forEach(([key, valueObj]) => {
                 const label = makeLabel(key);
+                const value = valueObj.value;
                 db.run(
-                  `INSERT OR IGNORE INTO user_meta_data (Key, Value, Type, ref, label) VALUES (?, ?, ?, 'ai', ?)`,
-                  [key, typeof value === 'object' ? JSON.stringify(value) : value, Array.isArray(value) ? 'array' : typeof value, label]
+                  `INSERT OR IGNORE INTO user_meta_data (Key, Value, Type, ref, label, idx) VALUES (?, ?, ?, 'ai', ?, ?)`,
+                  [key, typeof value === 'object' ? JSON.stringify(value) : value, Array.isArray(value) ? 'array' : typeof value, label, valueObj.index]
                 );
               });
             }
             // RESEARCH_PARAMS
             if (params.RESEARCH_PARAMS) {
-              Object.entries(params.RESEARCH_PARAMS).forEach(([key, value]) => {
+              Object.entries(params.RESEARCH_PARAMS).forEach(([key, valueObj]) => {
                 const label = makeLabel(key);
+                const value = valueObj.value;
                 db.run(
-                  `INSERT OR IGNORE INTO user_meta_data (Key, Value, Type, ref, label) VALUES (?, ?, ?, 'res', ?)`,
-                  [key, typeof value === 'object' ? JSON.stringify(value) : value, Array.isArray(value) ? 'array' : typeof value, label]
+                  `INSERT OR IGNORE INTO user_meta_data (Key, Value, Type, ref, label, idx) VALUES (?, ?, ?, 'res', ?, ?)`,
+                  [key, typeof value === 'object' ? JSON.stringify(value) : value, Array.isArray(value) ? 'array' : typeof value, label, valueObj.index]
                 );
               });
             }
@@ -117,8 +113,7 @@ function initializeTables() {
               }
               if (row.count === 0) {
                 // Read supported_agents.json and insert
-                // const agentsPath = path.join(__dirname, 'ai_client', 'agents', 'supported_agents.json');
-                const agentsPath = path.join(app.getAppPath(), 'backend', 'ai_client', 'agents', 'supported_agents.json');
+                const agentsPath = path.join(app.getAppPath(), 'backend', 'default_settings', 'supported_agents.json');
                 fs.readFile(agentsPath, 'utf8', (err, data) => {
                   if (err) {
                     console.log('Failed to read supported_agents.json:', err);
@@ -178,7 +173,7 @@ function initializeTables() {
                 return reject(err);
               }
               if (row.count === 0) {
-                const retrieversPath = path.join(app.getAppPath(), 'backend', 'search_client', 'retrievers', 'spported_retrievers.json');
+                const retrieversPath = path.join(app.getAppPath(), 'backend', 'default_settings', 'supported_retrievers.json');
                 fs.readFile(retrieversPath, 'utf8', (err, data) => {
                   if (err) {
                     console.log('Failed to read spported_retrievers.json:', err);
@@ -346,7 +341,7 @@ function updateResearchProject(project: any) {
 // --- User Meta Data CRUD ---
 function getAllUserMetaData() {
   return new Promise((resolve) => {
-    db.all('SELECT * FROM user_meta_data', [], (err, rows: any[]) => {
+    db.all('SELECT * FROM user_meta_data ORDER BY idx ASC', [], (err, rows: any[]) => {
       if (err) {
         console.log('user_meta_data:getAll error:', err);
         return resolve([]);
@@ -358,7 +353,7 @@ function getAllUserMetaData() {
 
 function getUserMetaData(key: string) {
   return new Promise((resolve) => {
-    db.get('SELECT * FROM user_meta_data WHERE Key = ?', [key], (err, row: any) => {
+    db.get('SELECT * FROM user_meta_data WHERE Key = ? ORDER BY idx ASC', [key], (err, row: any) => {
       if (err) {
         console.log('user_meta_data:get error:', err);
         return resolve(null);
@@ -472,7 +467,7 @@ function getAIAgentBySlug(slug: string) {
 
 function getUserMetaDataByRef(ref: string) {
   return new Promise((resolve) => {
-    db.all('SELECT * FROM user_meta_data WHERE ref = ?', [ref], (err, rows: any[]) => {
+    db.all('SELECT * FROM user_meta_data WHERE ref = ? ORDER BY idx ASC', [ref], (err, rows: any[]) => {
       if (err) {
         console.log('user_meta_data:getByRef error:', err);
         return resolve([]);

@@ -129,7 +129,7 @@ export async function exportDraftReportHelper(uid: string, format: 'md' | 'docs'
 
   const { filePath } = await dialog.showSaveDialog({
     title: `Export Report as ${filterName}`,
-    defaultPath: path.join(app.getPath('documents'), `report.${ext}`),
+    defaultPath: path.join(app.getPath('documents'), `draft-${draft.title}-${Date.now()}.${ext}`),
     filters: [
       { name: filterName, extensions: [ext] },
       { name: 'All Files', extensions: ['*'] }

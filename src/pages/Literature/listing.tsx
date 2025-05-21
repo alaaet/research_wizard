@@ -25,7 +25,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/compon
 import { getLiteratureResults, exportLiterature, addPaper, updatePaper, deletePaper } from '@/utils/literatureIpc';
 import type { research_paper } from '@/lib/researchPaper';
 import type { ResearchProject } from '../../lib/researchProject';
-import { Globe, Eye, Pencil, Trash2 } from 'lucide-react';
+import { Globe, Eye, Pencil, Trash2, Copy } from 'lucide-react';
 import EditPaperModal from '@/components/modals/editPaperModal';
 import DeletePaperModal from '@/components/modals/deletePaperModal';
 import { useNavigate } from 'react-router-dom';
@@ -224,6 +224,18 @@ export default function LiteratureListingPage() {
                               }}
                             >
                               <Globe className="w-5 h-5 text-green-500" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              title="Copy URL"
+                              onClick={e => {
+                                e.stopPropagation();
+                                navigator.clipboard.writeText(paper.url);
+                                toast.success("URL copied to clipboard");
+                              }}
+                            >
+                              <Copy className="w-5 h-5 text-blue-500" />
                             </Button>
                             <Button
                               size="icon"
