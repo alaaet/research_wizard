@@ -159,13 +159,21 @@ export default function LiteraturePage() {
                 value={selectedProject}
                 onValueChange={setSelectedProject}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a project" />
+                <SelectTrigger className="h-10 min-h-[2.5rem] max-h-10 overflow-hidden">
+                  <SelectValue
+                    placeholder="Select a project"
+                    className="truncate"
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {projects.map((project) => (
-                    <SelectItem key={project.uid} value={project.uid}>
-                      {project.title}
+                    <SelectItem
+                      key={project.uid}
+                      value={project.uid}
+                      title={project.title}
+                      className="truncate"
+                    >
+                      {project.title.length > 100 ? project.title.slice(0, 100) + "..." : project.title}
                     </SelectItem>
                   ))}
                 </SelectContent>

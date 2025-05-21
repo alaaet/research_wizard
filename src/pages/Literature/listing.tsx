@@ -19,6 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Checkbox } from '@/components/ui/checkbox';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown-menu';
 
 import { getLiteratureResults, exportLiterature, addPaper, updatePaper, deletePaper } from '@/utils/literatureIpc';
 import type { research_paper } from '@/lib/researchPaper';
@@ -34,8 +36,8 @@ import { toast } from "sonner"
 
 export default function LiteratureListingPage() {
   const [projects, setProjects] = useState<ResearchProject[]>([]);
-  const [selectedProject, setSelectedProject] = useState<string>("");
   const [papers, setPapers] = useState<research_paper[]>([]);
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
@@ -45,8 +47,6 @@ export default function LiteratureListingPage() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const pageSize = 10;
-  const totalPages = Math.ceil(papers.length / pageSize);
-  const paginatedPapers = papers.slice((page - 1) * pageSize, page * pageSize);
   const [cardCollapsed, setCardCollapsed] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
 
@@ -54,10 +54,24 @@ export default function LiteratureListingPage() {
     // Load research projects
     window.electron?.invoke("researchProjects:list").then((data) => {
       setProjects(data || []);
+      setSelectedProjects((data || []).map((p: ResearchProject) => p.uid));
     });
-    // Collapse the card if papers are loaded
-    if (papers.length > 0) setCardCollapsed(true);
-  }, [papers.length]);
+  }, []);
+
+  useEffect(() => {
+    // Load all papers for all projects
+    async function fetchAllPapers() {
+      setLoading(true);
+      let allPapers: research_paper[] = [];
+      for (const project of projects) {
+        const projectPapers = await getLiteratureResults(project.uid);
+        if (projectPapers) allPapers = allPapers.concat(projectPapers);
+      }
+      setPapers(allPapers);
+      setLoading(false);
+    }
+    if (projects.length > 0) fetchAllPapers();
+  }, [projects.length]);
 
   useEffect(() => {
     if (error) {
@@ -65,22 +79,15 @@ export default function LiteratureListingPage() {
     }
   }, [error]);
 
-  const handleLoadPapers = async () => {
-    if (!selectedProject) {
-      setError("Please select a project");
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      const results: research_paper[] = await getLiteratureResults(selectedProject);
-      setPapers(results);
-    } catch (err) {
-      setError(err.message || "An error occurred while loading papers");
-    } finally {
-      setLoading(false);
-    }
+  const handleProjectToggle = (uid: string) => {
+    setSelectedProjects((prev) =>
+      prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]
+    );
   };
+
+  const filteredPapers = papers.filter(p => selectedProjects.includes(p.project_uid));
+  const totalPages = Math.ceil(filteredPapers.length / pageSize);
+  const paginatedPapers = filteredPapers.slice((page - 1) * pageSize, page * pageSize);
 
   const handleEditSave = async (updated: research_paper) => {
     const res = await updatePaper(updated);
@@ -107,8 +114,8 @@ export default function LiteratureListingPage() {
   };
 
   const handleAddPaper = async (paper: research_paper) => {
-    if (!selectedProject) return;
-    const res = await addPaper(selectedProject, paper);
+    if (!selectedProjects.includes(paper.project_uid)) return;
+    const res = await addPaper(paper.project_uid, paper);
     if (res?.success) {
       setPapers(papers => [...papers, paper]);
       toast('Paper added successfully');
@@ -134,36 +141,30 @@ export default function LiteratureListingPage() {
     <div className="w-full px-4 space-y-6">
       <h1 className="text-2xl font-bold">Saved Literature Papers</h1>
       <Card className="p-4 space-y-4 w-full">
-        <div className="flex items-center justify-between cursor-pointer" onClick={() => setCardCollapsed(c => !c)}>
-          <Label>Research Project</Label>
-          {cardCollapsed ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
+        <div className="flex items-center justify-between">
+          <Label>Filter by Research Projects</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">Select Projects</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="p-2">
+              {projects.map((project) => (
+                <div key={project.uid} className="flex items-center gap-2 py-1">
+                  <Checkbox
+                    checked={selectedProjects.includes(project.uid)}
+                    onCheckedChange={() => handleProjectToggle(project.uid)}
+                    id={`project-checkbox-${project.uid}`}
+                  />
+                  <label htmlFor={`project-checkbox-${project.uid}`} className="text-sm cursor-pointer">
+                    {project.title.length > 70 ? project.title.slice(0, 70)+'...' : project.title}
+                  </label>
+                </div>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        {!cardCollapsed && (
-          <>
-            <div className="space-y-2">
-              <Select
-                value={selectedProject}
-                onValueChange={setSelectedProject}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a project" />
-                </SelectTrigger>
-                <SelectContent>
-                  {projects.map((project) => (
-                    <SelectItem key={project.uid} value={project.uid}>
-                      {project.title.length > 100 ? project.title.slice(0, 100) : project.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <Button onClick={handleLoadPapers} disabled={loading || !selectedProject}>
-              {loading ? "Loading..." : "Load Papers"}
-            </Button>
-          </>
-        )}
       </Card>
-      {papers.length > 0 && (
+      {filteredPapers.length > 0 && (
         <>
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Papers</h2>
@@ -172,7 +173,7 @@ export default function LiteratureListingPage() {
               <Button variant="outline" onClick={() => setAddOpen(true)}>
                 Add Paper
               </Button>
-              <Select onValueChange={async (value) => { await exportLiterature(value, papers); }}>
+              <Select onValueChange={async (value) => { await exportLiterature(value, filteredPapers); }}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Export Papers" />
                 </SelectTrigger>
@@ -206,7 +207,7 @@ export default function LiteratureListingPage() {
                       publishedDate = isNaN(dateObj.getTime()) ? '' : dateObj.toLocaleDateString();
                     }
                     return (
-                      <TableRow key={paper.uid} className="hover:bg-gray-100 cursor-pointer" onClick={() => navigate(`/literature/view/${selectedProject}/${paper.uid}`)}>
+                      <TableRow key={paper.uid} className="hover:bg-gray-100 cursor-pointer" onClick={() => navigate(`/literature/view/${paper.project_uid}/${paper.uid}`)}>
                         <TableCell>{(page - 1) * pageSize + idx + 1}</TableCell>
                         <TableCell>{paper.title}</TableCell>
                         <TableCell>{paper.author && paper.author.length > 50 ? paper.author.slice(0, 50) + '...' : paper.author}</TableCell>
@@ -230,7 +231,7 @@ export default function LiteratureListingPage() {
                               title="View"
                               onClick={e => {
                                 e.stopPropagation();
-                                navigate(`/literature/view/${selectedProject}/${paper.uid}`);
+                                navigate(`/literature/view/${paper.project_uid}/${paper.uid}`);
                               }}
                             >
                               <Eye className="w-5 h-5 text-blue-500" />

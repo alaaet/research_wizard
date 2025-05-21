@@ -14,7 +14,7 @@ import { getResearchProject } from '@/utils/researchProjectIpc';
 import { getUserMetaData } from '@/utils/userMetaDataIpc';
 import { ResearchDraft } from '@/lib/researchDraft';
 import { generateUID } from '@/lib/researchProject';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { ReportGenerator } from '@/components/data/ReportGenerator';
 
 export default function CreateDraftPage() {
   const { projectId } = useParams();
@@ -238,7 +238,7 @@ export default function CreateDraftPage() {
                         }
                       }}
                     />
-                    <Button type="button" onClick={addManualSubsection} variant="secondary">Add</Button>
+                    <Button type="button" onClick={addManualSubsection} variant="outline">Add</Button>
                   </div>
                   <ul className="list-disc pl-5">
                     {manualSubsections.map((sub, idx) => (
@@ -317,41 +317,18 @@ export default function CreateDraftPage() {
             </div>
           </>
         )}
-        {/* Future steps go here */}
         {step === 2 && (
-          <div>
-            <h2 className="text-lg font-semibold mb-2">Step 2: Draft Generation</h2>
-            <Button onClick={handleGenerateReport} disabled={generating || Object.keys(report).length > 0} className="mb-4">
-              {generating ? 'Generating...' : 'Generate Report Content'}
-            </Button>
-            <div className="space-y-4">
-              {outline.sections.map((section, sIdx) => (
-                <div key={sIdx} className="mb-4">
-                  <div className="font-semibold text-lg mb-2">{section.title}</div>
-                  <ul className="space-y-2">
-                    {section.subsections.map((sub, subIdx) => {
-                      const key = `${section.title}|||${sub}`;
-                      const status = report[key]?.status;
-                      return (
-                        <li key={subIdx} className="flex items-center gap-2">
-                          <span>{sub}</span>
-                          {status === 'success' && <CheckCircle className="text-green-500 w-5 h-5" />}
-                          {status === 'error' && <XCircle className="text-red-500 w-5 h-5" />}
-                          {status === 'pending' && <span className="text-yellow-500">...</span>}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ))}
-            </div>
-            {allDone && (
-              <div className="flex justify-end mt-4">
-                <Button onClick={handleSaveReport} variant="default">Save Report to Draft</Button>
-              </div>
-            )}
-            <Button onClick={() => setStep(1)} variant="outline" className="mt-4">Back</Button>
-          </div>
+          <ReportGenerator
+            outline={outline}
+            report={report}
+            generating={generating}
+            allDone={allDone}
+            handleGenerateReport={handleGenerateReport}
+            handleSaveReport={handleSaveReport}
+            footer={
+              <Button onClick={() => setStep(1)} variant="outline" className="mt-4">Back</Button>
+            }
+          />
         )}
       </Card>
     </div>

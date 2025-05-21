@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   getResearchDraft,
   exportDraftReport,
@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import PageLayout from "@/components/layout/PageLayout";
-import { Clipboard, ClipboardCheck } from 'lucide-react';
+import { Clipboard, ClipboardCheck, ArrowLeft } from 'lucide-react';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 
@@ -20,6 +20,7 @@ export default function ReportDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showRaw, setShowRaw] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!uid) return;
@@ -53,7 +54,12 @@ export default function ReportDetails() {
         className="p-6 animate-enter max-w-4xl mx-auto"
       >
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Report Details</h1>
+          <div className="flex items-center gap-2">
+            <Button size="icon" variant="ghost" onClick={() => navigate(-1)} title="Back">
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <h1 className="text-2xl font-bold">Report Details</h1>
+          </div>
           <div className="flex gap-2">
             <Button
               size="sm"
