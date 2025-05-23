@@ -154,10 +154,14 @@ export default function CreateDraftPage() {
           } else {
             newReport[key] = { status: 'error', content: '' };
             setReport(r => ({ ...r, [key]: { status: 'error', content: '' } }));
+            toast.error('Failed to generate subsection content.');
+            console.error('Failed to generate subsection content:', result);
           }
-        } catch {
+        } catch (err: any) {
           newReport[key] = { status: 'error', content: '' };
           setReport(r => ({ ...r, [key]: { status: 'error', content: '' } }));
+          toast.error('Failed to generate subsection content.');
+          console.error('Failed to generate subsection content:', err);
         }
       }
     }

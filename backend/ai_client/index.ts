@@ -278,6 +278,7 @@ export async function generateSectionParagraph(
       console.log(
         `      Successfully generated paragraph for "${subsectionTitle}" on attempt ${attempts}.`
       );
+      console.log(`\n---------------------------------- \n       Paragraph: ${paragraph} \n---------------------------------- \n \n`);
       return { success: true, text: paragraph, citedIndices: citedIndices };
     } catch (error: any) {
       console.warn(

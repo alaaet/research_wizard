@@ -217,15 +217,20 @@ export default function ResearchDraftDetailPage() {
             'English' // or use a language selector if available
           );
           if (result && result.success && result.text) {
+            console.log('Generated subsection content:', result.text);
             newReport[key] = { status: 'success', content: result.text };
             setRegenReport(r => ({ ...r, [key]: { status: 'success', content: result.text } }));
           } else {
             newReport[key] = { status: 'error', content: '' };
             setRegenReport(r => ({ ...r, [key]: { status: 'error', content: '' } }));
+            toast.error('Failed to generate subsection content.');
+            console.error('Failed to generate subsection content:', result);
           }
-        } catch {
+        } catch (err: any) {
           newReport[key] = { status: 'error', content: '' };
           setRegenReport(r => ({ ...r, [key]: { status: 'error', content: '' } }));
+          toast.error('Failed to generate subsection content.');
+          console.error('Failed to generate subsection content:', err);
         }
       }
     }

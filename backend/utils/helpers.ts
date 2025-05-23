@@ -84,7 +84,23 @@ async function convertMarkdownToDocx(markdown: string): Promise<Buffer> {
 // Function to convert Markdown to PDF Buffer using puppeteer
 async function convertMarkdownToPDF(markdown: string): Promise<Buffer> {
     const html = markdownToHtml(markdown);
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ 
+        headless: true,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--disable-gpu',
+            '--disable-software-rasterizer',
+            '--disable-gpu-compositing',
+            '--disable-gpu-rasterization',
+            '--disable-gpu-sandbox',
+            '--disable-software-rasterizer',
+            '--disable-vsync',
+            '--single-process'
+        ]
+    });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
     const pdfUint8Array = await page.pdf({
@@ -94,7 +110,9 @@ async function convertMarkdownToPDF(markdown: string): Promise<Buffer> {
             right: '1in',
             bottom: '1in',
             left: '1in'
-        }
+        },
+        preferCSSPageSize: true,
+        printBackground: true
     });
     await browser.close();
     return Buffer.from(pdfUint8Array);
