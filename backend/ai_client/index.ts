@@ -33,6 +33,18 @@ export async function processQuery(params: {
         AgentClass = mod.GeminiAgent;
         break;
       }
+      case 'openai': {
+        // Import OpenAIAgent
+        const mod = await import('./agents/openai');
+        AgentClass = mod.OpenAIAgent;
+        break;
+      }
+      case 'claude': {
+        // Import ClaudeAIAgent
+        const mod = await import('./agents/claude');
+        AgentClass = mod.ClaudeAIAgent;
+        break;
+      }
       // Add more cases for other agents as you implement them
       default:
         throw new Error(`AI agent '${slug}' is not supported.`);
@@ -170,7 +182,9 @@ export async function generateSectionParagraph(
     )
     .join('\n');
 
-  const userPrompt = `You are writing a research report on "${topic}". Outline context: ${sectionTitle} -> ${subsectionTitle}. Available Information (Input Data):\n${inputData}\nInstructions:\n1. Write a single, coherent paragraph focusing *only* on subsection "${subsectionTitle}" in ${language} language.\n2. Length: ${minWords}-${maxWords} words.\n3. Base paragraph *strictly* on Input Data.\n4. Synthesize from multiple sources if relevant.\n5. Cite sources using footnote notation ([index]).\n6. After the paragraph, on a NEW line, list cited source indices: "Cited sources: [index1, index2, ...]" (or [] if none).\nBegin paragraph now:`;
+  const userPrompt = `You are writing a research report on "${topic}". Outline context: ${sectionTitle} -> ${subsectionTitle}. Available Information (Input Data):\n${inputData}\nInstructions:\n1. Write a single, coherent paragraph focusing *only* on subsection "${subsectionTitle}" in ${language} language.\n2. Length: ${minWords}-${maxWords} words (STRICTLY ENFORCED).\n3. Base paragraph *strictly* on Input Data.\n4. Synthesize from multiple sources if relevant.\n5. Cite sources using footnote notation ([index]).\n6. You MUST include at least one citation.\n7. After the paragraph, on a NEW line, list cited source indices: "Cited sources: [index1, index2, ...]".\n8. If you cannot meet the word count or citation requirements, explain why in the response.\nBegin paragraph now:`;
+
+  const system = `You are a meticulous research assistant writing a specific paragraph for a report. Follow all instructions precisely: topic focus, word count (${minWords}-${maxWords}), strict adherence to provided data, citation format ([index]), and the final "Cited sources: [...]" line. You must include at least one citation and meet the word count requirements.`;
 
   let attempts = 0;
   let currentDelay = retryDelay;
@@ -185,7 +199,7 @@ export async function generateSectionParagraph(
       );
       const llmResponse = await processQuery({
         model,
-        system: `You are a meticulous research assistant writing a specific paragraph for a report. Follow all instructions precisely: topic focus, word count (${minWords}-${maxWords}), strict adherence to provided data, citation format ([index]), and the final "Cited sources: [...]" line.`,
+        system,
         user: userPrompt,
         temperature: 0.6,
       });
@@ -240,15 +254,25 @@ export async function generateSectionParagraph(
         paragraph = llmResponse;
       }
 
-      // Optional word count check
+      // Word count validation with stricter enforcement
       const wordCount = paragraph.split(/\s+/).filter(Boolean).length;
-      if (
-        paragraph.length > 0 &&
-        (wordCount < minWords * 0.8 || wordCount > maxWords * 1.2)
-      ) {
+      if (wordCount < minWords || wordCount > maxWords) {
         console.warn(
-          `      Generated paragraph word count (${wordCount}) for "${subsectionTitle}" outside target range (${minWords}-${maxWords}).`
+          `      Generated paragraph word count (${wordCount}) for "${subsectionTitle}" outside target range (${minWords}-${maxWords}). Retrying...`
         );
+        if (attempts <= maxRetries) {
+          throw new Error(`Word count ${wordCount} outside required range ${minWords}-${maxWords}`);
+        }
+      }
+
+      // Citation validation
+      if (citedIndices.length === 0) {
+        console.warn(
+          `      No citations found in response for "${subsectionTitle}". Retrying...`
+        );
+        if (attempts <= maxRetries) {
+          throw new Error('No citations found in response');
+        }
       }
 
       console.log(
