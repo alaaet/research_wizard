@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ResearchDraftOutline } from '../../lib/researchDraftOutline';
-import { addResearchDraftToProject, generateResearchDraftOutline, generateSubsectionContent, updateResearchDraftReport } from '../../utils/researchDraftIpc';
+import { addResearchDraftToProject, generateResearchDraftOutline, generateSubsectionContent, updateResearchDraftReport } from '../../connectors/researchDraftIpc';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
@@ -10,8 +10,8 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { getResearchProject } from '@/utils/researchProjectIpc';
-import { getUserMetaData } from '@/utils/userMetaDataIpc';
+import { getResearchProject } from '@/connectors/researchProjectIpc';
+import { getUserMetaData } from '@/connectors/userMetaDataIpc';
 import { ResearchDraft } from '@/lib/researchDraft';
 import { generateUID } from '@/lib/researchProject';
 import { ReportGenerator } from '@/components/data/ReportGenerator';
@@ -171,24 +171,55 @@ export default function CreateDraftPage() {
 
   // Save the report to the draft
   const handleSaveReport = async () => {
-    const reportText = outline.sections.map(section => {
-      const sectionText = section.subsections.map(subsection => {
-        const key = `${section.title}|||${subsection}`;
-        return `### ${subsection}\n${report[key]?.content || ''}`;
+    try {
+      if (!outline?.sections || !Array.isArray(outline.sections)) {
+        throw new Error('Invalid outline structure: sections array is missing or invalid');
+      }
+
+      const reportText = outline.sections.map(section => {
+        if (!section.title || !Array.isArray(section.subsections)) {
+          throw new Error(`Invalid section structure: missing title or subsections in section "${section.title || 'unnamed'}"`);
+        }
+
+        const sectionText = section.subsections.map(subsection => {
+          if (!subsection) {
+            throw new Error(`Invalid subsection in section "${section.title}": subsection is empty`);
+          }
+
+          const key = `${section.title}|||${subsection}`;
+          const content = report[key]?.content;
+          
+          if (!content) {
+            console.warn(`Warning: No content found for subsection "${subsection}" in section "${section.title}"`);
+          }
+
+          return `### ${subsection}\n${content || ''}`;
+        }).join('\n\n');
+
+        return `## ${section.title}\n${sectionText}`;
       }).join('\n\n');
-      return `## ${section.title}\n${sectionText}`;
-    }).join('\n\n');
-    console.log('Report text:', reportText);
-    const draftObj = {
-        uid: draft?.uid,
+
+      if (!draft?.uid) {
+        throw new Error('Draft UID is missing');
+      }
+
+      console.log('Report text:', reportText);
+      const draftObj = {
+        uid: draft.uid,
         report: reportText,
-    };
-    const result = await updateResearchDraftReport(draftObj);
-    if (result.success) {
-      toast.success('Draft saved successfully!');
-      navigate(-1);
-    } else {
-      toast.error('Failed to save draft.');
+      };
+      console.log('Draft object:', draftObj);
+
+      const result = await updateResearchDraftReport(draftObj);
+      if (result.success) {
+        toast.success('Draft saved successfully!');
+        navigate(-1);
+      } else {
+        throw new Error(result.error || 'Failed to save draft');
+      }
+    } catch (error) {
+      console.error('Error in handleSaveReport:', error);
+      toast.error(error.message || 'Failed to save draft');
     }
   };
 

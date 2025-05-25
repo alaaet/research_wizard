@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/layout/PageLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { getLiteratureResults } from '@/utils/literatureIpc';
+import { getLiteratureResults } from '@/connectors/literatureIpc';
 import type { research_paper } from '@/lib/researchPaper';
 import { Copy, Globe } from 'lucide-react';
 import { toast } from "sonner"

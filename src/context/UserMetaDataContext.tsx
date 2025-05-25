@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { getUserMetaData, setUserMetaData } from '../utils/userMetaDataIpc';
+import { getUserMetaData, setUserMetaData } from '../connectors/userMetaDataIpc';
 
 interface UserMetaDataContextType {
   name: string;

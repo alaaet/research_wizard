@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ResearchProject } from '../../lib/researchProject';
-import { getResearchProject, updateResearchProject } from '../../utils/researchProjectIpc';
-import { generateResearchKeywordsFromTopic , generateResearchQuestionsFromTopic} from '../../utils/aiAgentsIpc';
+import { getResearchProject, updateResearchProject } from '../../connectors/researchProjectIpc';
+import { generateResearchKeywordsFromTopic , generateResearchQuestionsFromTopic} from '../../connectors/aiAgentsIpc';
 import PageLayout from '../../components/layout/PageLayout';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';

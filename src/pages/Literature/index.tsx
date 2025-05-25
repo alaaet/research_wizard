@@ -23,11 +23,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   getSearchRetrievers,
   searchWithRetriever,
-} from "@/utils/integrationsIpc";
+} from "@/connectors/integrationsIpc";
 import type { SearchRetriever } from "../../../shared/searchRetrieverTypes";
 import type { ResearchProject } from "../../lib/researchProject";
 import { research_paper } from "@/lib/researchPaper";
-import { saveLiteratureResults } from "@/utils/literatureIpc";
+import { saveLiteratureResults } from "@/connectors/literatureIpc";
+import { listResearchProjects, getResearchProject, updateResearchProject } from "@/connectors/researchProjectIpc";
+import { generateResearchQuestionsFromTopic } from "@/connectors/aiAgentsIpc";
 
 export default function LiteraturePage() {
   const [retrievers, setRetrievers] = useState<SearchRetriever[]>([]);
@@ -46,7 +48,7 @@ export default function LiteraturePage() {
     });
 
     // Load research projects
-    window.electron?.invoke("researchProjects:list").then((data) => {
+    listResearchProjects().then((data) => {
       setProjects(data || []);
     });
   }, []);
@@ -62,10 +64,7 @@ export default function LiteraturePage() {
 
     try {
       // Get the selected project details
-      const project = await window.electron?.invoke(
-        "researchProjects:get",
-        selectedProject
-      );
+      const project = await getResearchProject(selectedProject);
 
       // Check if research questions exist
       if (!project.research_questions?.length) {
@@ -74,13 +73,10 @@ export default function LiteraturePage() {
         );
 
         if (generateQueries) {
-          const questions = await window.electron?.invoke(
-            "aiAgents:generateResearchQuestionsFromTopic",
-            project.topic
-          );
+          const questions = await generateResearchQuestionsFromTopic(project.title);
 
           // Update project with new questions
-          await window.electron?.invoke("researchProjects:update", {
+          await updateResearchProject({
             ...project,
             research_questions: questions,
           });

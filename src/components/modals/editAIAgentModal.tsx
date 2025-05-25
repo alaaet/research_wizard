@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import type { AIAgent } from '../../../shared/aiAgentTypes';
-import { updateAIAgent } from '@/utils/aiAgentsIpc';
+import { updateAIAgent } from '@/connectors/aiAgentsIpc';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import React, { useState } from 'react';

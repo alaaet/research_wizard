@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { SearchRetriever } from '../../../shared/searchRetrieverTypes';
-import { getSearchRetrievers, updateSearchRetriever } from '../../utils/integrationsIpc';
+import { getSearchRetrievers, updateSearchRetriever } from '../../connectors/integrationsIpc';
 import { Card } from '../../components/ui/card';
 import { Check } from 'lucide-react';
 import { useIsDarkTheme } from '@/hooks/useIsDarkTheme';

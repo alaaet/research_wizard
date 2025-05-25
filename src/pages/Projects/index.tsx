@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ResearchProject, generateUID } from '../../lib/researchProject';
-import { listResearchProjects, createResearchProject } from '../../utils/researchProjectIpc';
+import { listResearchProjects, createResearchProject } from '../../connectors/researchProjectIpc';
 import { Link } from 'react-router-dom';
 import PageLayout from '../../components/layout/PageLayout';
 import { Button } from '../../components/ui/button';

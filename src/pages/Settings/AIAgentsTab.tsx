@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import type { AIAgent } from '../../../shared/aiAgentTypes';
-import { getAIAgents } from '../../utils/aiAgentsIpc';
+import { getAIAgents } from '../../connectors/aiAgentsIpc';
 import { Card } from '../../components/ui/card';
 import { Check } from 'lucide-react';
 import { useIsDarkTheme } from '@/hooks/useIsDarkTheme';
 import EditAIAgentModal from '../../components/modals/editAIAgentModal';
 import { Label } from '@/components/ui/label';
-import { getUserMetaDataByRef, setUserMetaData, type UserMetaData } from '../../utils/userMetaDataIpc';
+import { getUserMetaDataByRef, setUserMetaData, type UserMetaData } from '../../connectors/userMetaDataIpc';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 

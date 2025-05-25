@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUserMetaData, setUserMetaData } from '../../utils/userMetaDataIpc';
+import { getUserMetaData, setUserMetaData } from '../../connectors/userMetaDataIpc';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { useUserMetaData } from '../../context/UserMetaDataContext';

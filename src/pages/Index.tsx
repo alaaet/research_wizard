@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { listResearchProjects } from '../utils/researchProjectIpc';
+import { listResearchProjects } from '../connectors/researchProjectIpc';
 import { useNavigate } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 

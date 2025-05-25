@@ -10,6 +10,9 @@
     "moduleResolution": "node",
     "skipLibCheck": true,
     "baseUrl": ".",
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": true,
     "paths": {
       "@shared/*": ["shared/*"]
     }
@@ -19,6 +22,7 @@
     "backend/search_client/**/*.ts",
     "backend/utils/**/*.ts",
     "backend/database.d.ts",
+    "backend/database.ts",
     "shared/**/*.ts"
   ]
 }

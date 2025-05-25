@@ -22,7 +22,8 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown-menu';
 
-import { getLiteratureResults, exportLiterature, addPaper, updatePaper, deletePaper } from '@/utils/literatureIpc';
+import { getLiteratureResults, exportLiterature, addPaper, updatePaper, deletePaper } from '@/connectors/literatureIpc';
+import { listResearchProjects } from '@/connectors/researchProjectIpc';
 import type { research_paper } from '@/lib/researchPaper';
 import type { ResearchProject } from '../../lib/researchProject';
 import { Globe, Eye, Pencil, Trash2, Copy } from 'lucide-react';
@@ -52,7 +53,7 @@ export default function LiteratureListingPage() {
 
   useEffect(() => {
     // Load research projects
-    window.electron?.invoke("researchProjects:list").then((data) => {
+    listResearchProjects().then((data) => {
       setProjects(data || []);
       setSelectedProjects((data || []).map((p: ResearchProject) => p.uid));
     });

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ResearchDraft } from '../../lib/researchDraft';
-import { deleteResearchDraft, listResearchDrafts } from '../../utils/researchDraftIpc';
+import { deleteResearchDraft, listResearchDrafts } from '../../connectors/researchDraftIpc';
+import { listResearchProjects } from '../../connectors/researchProjectIpc';
 import { Link, useNavigate } from 'react-router-dom';
 import PageLayout from '../../components/layout/PageLayout';
 import { Button } from '../../components/ui/button';
@@ -28,7 +29,7 @@ export default function ResearchDraftsPage() {
 
   useEffect(() => {
     // Load research projects
-    window.electron?.invoke("researchProjects:list").then((data) => {
+    listResearchProjects().then((data) => {
       setProjects(data || []);
       // Select all projects by default
       setSelectedProjects((data || []).map((p: ResearchProject) => p.uid));
@@ -38,7 +39,7 @@ export default function ResearchDraftsPage() {
       setLoading(true);
       let allDrafts: ResearchDraft[] = [];
       for (const project of projects) {
-        const projectDrafts = await window.electron?.invoke('researchDrafts:list', { projectId: project.uid });
+        const projectDrafts = await listResearchDrafts(project.uid);
         if (projectDrafts) allDrafts = allDrafts.concat(projectDrafts);
       }
       setDrafts(allDrafts);

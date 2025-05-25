@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   getResearchDraft,
   exportDraftReport,
-} from "../../utils/researchDraftIpc";
+} from "../../connectors/researchDraftIpc";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";

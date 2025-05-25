@@ -755,30 +755,76 @@ function updateResearchDraft(draft: ResearchDraft) {
 }
 
 function updateResearchDraftReport(draft: { uid: string, report: string }) {
-  const updated_at = new Date().toISOString();
-  // Log only the size, not the content, to avoid flooding logs
-  console.log('DB updateResearchDraftReport:', {
-    uid: draft.uid,
-    report: draft.report.slice(0, 100),
-    reportLength: draft.report.length,
-    updated_at
-  });
   return new Promise((resolve) => {
-    db.run(
-      `UPDATE research_drafts SET report = ?, updated_at = ? WHERE uid = ?`,
-      [draft.report, updated_at, draft.uid],
-      function (err) {
-        if (err) {
-          console.log('DB updateResearchDraft error:', err);
-          return resolve({ success: false, error: err.message });
-        }
-        resolve({ success: true });
+    try {
+      // Input validation
+      if (!draft.uid) {
+        return resolve({ success: false, error: 'Draft UID is required' });
       }
-    );
+
+      if (typeof draft.report !== 'string') {
+        return resolve({ success: false, error: 'Report must be a string' });
+      }
+
+      const updated_at = new Date().toISOString();
+      
+      // Log only the size, not the content, to avoid flooding logs
+      console.log('DB updateResearchDraftReport:', {
+        uid: draft.uid,
+        reportPreview: draft.report.slice(0, 100),
+        reportLength: draft.report.length,
+        updated_at
+      });
+
+      // First check if the draft exists
+      db.get('SELECT uid FROM research_drafts WHERE uid = ?', [draft.uid], (err, row) => {
+        if (err) {
+          console.error('DB updateResearchDraftReport check error:', err);
+          return resolve({ success: false, error: 'Database error while checking draft existence' });
+        }
+
+        if (!row) {
+          return resolve({ success: false, error: 'Draft not found' });
+        }
+
+        // Proceed with update if draft exists
+        db.run(
+          `UPDATE research_drafts SET report = ?, updated_at = ? WHERE uid = ?`,
+          [draft.report, updated_at, draft.uid],
+          function (err) {
+            if (err) {
+              console.error('DB updateResearchDraftReport error:', err);
+              return resolve({ 
+                success: false, 
+                error: `Database error: ${err.message}`
+              });
+            }
+
+            if (this.changes === 0) {
+              return resolve({ 
+                success: false, 
+                error: 'No changes were made to the draft'
+              });
+            }
+
+            resolve({ 
+              success: true,
+              message: 'Draft report updated successfully'
+            });
+          }
+        );
+      });
+    } catch (error) {
+      console.error('DB updateResearchDraftReport unexpected error:', error);
+      resolve({ 
+        success: false, 
+        error: 'An unexpected error occurred while updating the draft report'
+      });
+    }
   });
 }
 
-  function deleteResearchDraft(draftId: string) {
+function deleteResearchDraft(draftId: string) {
   return new Promise((resolve) => {
     db.run(`DELETE FROM research_drafts WHERE uid = ?`, [draftId], function (err) {
       if (err) {
@@ -789,7 +835,6 @@ function updateResearchDraftReport(draft: { uid: string, report: string }) {
     });
   });
 }
-
 
 export {
   initializeTables,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUserMetaDataByRef, setUserMetaData, type UserMetaData } from '../../utils/userMetaDataIpc';
+import { getUserMetaDataByRef, setUserMetaData, type UserMetaData } from '../../connectors/userMetaDataIpc';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import { Separator } from "@/components/ui/separator";

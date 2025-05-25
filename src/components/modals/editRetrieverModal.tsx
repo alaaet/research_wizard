@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import type { SearchRetriever } from '../../../shared/searchRetrieverTypes';
-import { updateSearchRetriever } from '@/utils/integrationsIpc';
+import { updateSearchRetriever } from '@/connectors/integrationsIpc';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import React from 'react';

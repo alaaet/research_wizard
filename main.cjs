@@ -116,7 +116,29 @@ ipcMain.handle('researchDrafts:update', async (event, draft) => {
 });
 
 ipcMain.handle('researchDrafts:updateReport', async (event, draft) => {
-  return await db.updateResearchDraftReport(draft);
+  try {
+    if (!draft || !draft.uid || !draft.report) {
+      throw new Error('Invalid draft data: missing required fields');
+    }
+
+    // Validate report size (e.g., max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+    if (draft.report.length > maxSize) {
+      throw new Error('Report size exceeds maximum limit of 10MB');
+    }
+
+    const result = await db.updateResearchDraftReport(draft);
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to update draft report');
+    }
+    return result;
+  } catch (error) {
+    console.error('[researchDrafts:updateReport] Error:', error);
+    return { 
+      success: false, 
+      error: error.message || 'An error occurred while updating the draft report'
+    };
+  }
 });
 
 ipcMain.handle('researchDrafts:generateOutline', async (event, { topic, language }) => {
