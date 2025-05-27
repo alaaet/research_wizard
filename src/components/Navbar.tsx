@@ -118,12 +118,12 @@ const Navbar = () => {
         } md:relative md:translate-x-0 flex flex-col h-full overflow-y-auto`}
       >
         <div className="p-2 border-b border-border flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
+          {/* <Link to="/" className="flex items-center space-x-2"> */}
             <img src={rwiz} alt={t('navigation.appName')} className="h-8 w-8" />
             <span className="text-lg font-bold text-foreground">
               Research Wizard
             </span>
-          </Link>
+          {/* </Link> */}
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
