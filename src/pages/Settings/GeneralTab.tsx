@@ -126,7 +126,6 @@ export default function GeneralTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }) {
             handleChange('ui_language', value);
             i18n.changeLanguage(value);
           }}
-          dir={dir}
         />
       </div>
       <div className="flex justify-end gap-2">

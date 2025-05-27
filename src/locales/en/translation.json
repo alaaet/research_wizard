@@ -90,6 +90,7 @@
       "createdAt": "Created at",
       "updatedAt": "Updated at",
       "status": "Status",
+      "currentStatus": "Current Status",
       "viewEdit": "View/Edit Project",
       "back": "Back",
       "titleLabel": "Title",
