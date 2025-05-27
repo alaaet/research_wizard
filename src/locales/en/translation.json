@@ -187,7 +187,30 @@
   },
   "writing": {
     "title": "Writing",
-    "createDraft": "Create New Draft",
+    "createDraft": {
+      "title": "Create New Draft",
+      "step1": "Step 1: Create Outline",
+      "step2": "Step 2: Generate Report",
+      "reportTitle": "Report Title",
+      "enterTitle": "Enter report title",
+      "sectionTitle": "Section Title",
+      "enterSection": "Enter section title",
+      "subsections": "Subsections",
+      "addSubsection": "Add subsection",
+      "add": "Add",
+      "addSection": "Add Section",
+      "currentOutline": "Current Outline",
+      "topic": "Topic",
+      "enterTopic": "Enter research topic",
+      "language": "Language",
+      "enterLanguage": "e.g. English",
+      "generateOutline": "Generate Outline",
+      "generating": "Generating...",
+      "generatedOutline": "Generated Outline",
+      "cancel": "Cancel",
+      "saveAndGenerate": "Save & Generate Report",
+      "back": "Back"
+    },
     "drafts": "Drafts",
     "reports": "Reports",
     "noDrafts": "No drafts found",
@@ -320,5 +343,15 @@
       "30days": "30 days",
       "90days": "90 days"
     }
+  },
+  "projectStatus": {
+    "Not Started": "Not Started",
+    "Planning": "Planning",
+    "Data Collection": "Data Collection",
+    "Analysis": "Analysis",
+    "Writing": "Writing",
+    "Submitted": "Submitted",
+    "Completed": "Completed",
+    "On Hold": "On Hold"
   }
 } 

@@ -13,6 +13,7 @@ import { Badge } from '../../components/ui/badge';
 import { Label } from '../../components/ui/label';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import CreateNewProject from '@/components/modals/CreateNewProject';
 
 function TagsInput({ value, onChange, placeholder }: { value: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
   const [input, setInput] = useState('');
@@ -101,70 +102,20 @@ export default function ResearchProjectsPage() {
         transition={{ duration: 0.3 }}
         className="p-6 animate-enter"
       >
+            <CreateNewProject 
+              open={open} 
+              onOpenChange={setOpen}
+              onProjectCreated={(project) => {
+                // Handle project creation if needed
+                setOpen(false);
+              }}
+            />
         <div className="max-w-3xl mx-auto py-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-800">{t('projects.title')}</h1>
-            <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={() => setOpen(true)}>{t('projects.createNew')}</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogTitle>{t('projects.create.title')}</DialogTitle>
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                  <div>
-                    <label className="block font-medium mb-1">
-                      {t('projects.create.titleLabel')} <span className="text-red-500">*</span>
-                    </label>
-                    <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />
-                  </div>
-                  <div>
-                    <label className="block font-medium mb-1">{t('projects.create.keywords')}</label>
-                    <TagsInput 
-                      value={form.keywords} 
-                      onChange={v => setForm(f => ({ ...f, keywords: v }))} 
-                      placeholder={t('projects.create.addKeyword')} 
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-medium mb-1">{t('projects.create.description')}</label>
-                    <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
-                  </div>
-                  <div>
-                    <label className="block font-medium mb-1">{t('projects.create.researchQuestions')}</label>
-                    <TagsInput 
-                      value={form.research_questions} 
-                      onChange={v => setForm(f => ({ ...f, research_questions: v }))} 
-                      placeholder={t('projects.create.addQuestion')} 
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="status" className="block font-medium mb-1">{t('projects.create.status')}</Label>
-                    <Select
-                      value={form.status}
-                      onValueChange={(value) => setForm(f => ({ ...f, status: value as ProjectStatus }))}
-                      defaultValue={PROJECT_STATUSES[0]}
-                    >
-                      <SelectTrigger id="status">
-                        <SelectValue placeholder={t('projects.create.selectStatus')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PROJECT_STATUSES.map(status => (
-                          <SelectItem key={status} value={status}>{t(`projectStatus.${status}`, status)}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-                      {t('projects.create.cancel')}
-                    </Button>
-                    <Button type="submit" disabled={loading || !form.title.trim()}>
-                      {loading ? t('projects.create.saving') : t('projects.create.save')}
-                    </Button>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
+          <Button onClick={() => setOpen(true)}>
+            {t('projects.createNew')}
+          </Button>
           </div>
           <div className="space-y-4">
             {projects.length === 0 ? (
@@ -175,7 +126,7 @@ export default function ResearchProjectsPage() {
                   <Card className="p-4 hover:bg-muted cursor-pointer">
                     <div className="flex justify-between items-start">
                       <div className="font-semibold text-lg">{project.title}</div>
-                      <Badge variant="outline">{t(`projectStatus.${project.status || PROJECT_STATUSES[0]}`, project.status || PROJECT_STATUSES[0])}</Badge>
+                      <Badge variant="outline" className='bg-orange-300 hover:bg-orange-400'>{t(`projectStatus.${project.status || PROJECT_STATUSES[0]}`, project.status || PROJECT_STATUSES[0])}</Badge>
                     </div>
                     {project.description && <div className="text-muted-foreground mt-1">{project.description}</div>}
                     {project.keywords && project.keywords.length > 0 && (

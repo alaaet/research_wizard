@@ -84,38 +84,110 @@ async function convertMarkdownToDocx(markdown: string): Promise<Buffer> {
 // Function to convert Markdown to PDF Buffer using puppeteer
 async function convertMarkdownToPDF(markdown: string): Promise<Buffer> {
     const html = markdownToHtml(markdown);
-    const browser = await puppeteer.launch({ 
-        headless: true,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--disable-gpu',
-            '--disable-software-rasterizer',
-            '--disable-gpu-compositing',
-            '--disable-gpu-rasterization',
-            '--disable-gpu-sandbox',
-            '--disable-software-rasterizer',
-            '--disable-vsync',
-            '--single-process'
-        ]
-    });
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-    const pdfUint8Array = await page.pdf({
-        format: 'A4',
-        margin: {
-            top: '1in',
-            right: '1in',
-            bottom: '1in',
-            left: '1in'
-        },
-        preferCSSPageSize: true,
-        printBackground: true
-    });
-    await browser.close();
-    return Buffer.from(pdfUint8Array);
+    let browser;
+    let page;
+    
+    try {
+        browser = await puppeteer.launch({ 
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--disable-gpu',
+                '--disable-software-rasterizer',
+                '--disable-gpu-compositing',
+                '--disable-gpu-rasterization',
+                '--disable-gpu-sandbox',
+                '--disable-software-rasterizer',
+                '--disable-vsync',
+                '--single-process'
+            ]
+        });
+
+        // Create a new page directly
+        page = await browser.newPage();
+        
+        // Set viewport size
+        await page.setViewport({
+            width: 1200,
+            height: 800,
+            deviceScaleFactor: 1
+        });
+
+        // Set a longer timeout for page load
+        await page.setDefaultNavigationTimeout(60000);
+
+        // Create a data URL from the HTML content
+        const dataUrl = `data:text/html;charset=UTF-8,${encodeURIComponent(html)}`;
+        
+        // Navigate to the data URL instead of using setContent
+        await page.goto(dataUrl, {
+            waitUntil: ['networkidle0', 'domcontentloaded'],
+            timeout: 60000
+        });
+
+        // Wait for the page to be fully loaded
+        await page.waitForFunction(() => {
+            return document.readyState === 'complete';
+        }, { timeout: 60000 });
+
+        // Add a small delay to ensure all resources are loaded
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Generate PDF with retry logic
+        let retries = 3;
+        let lastError;
+        
+        while (retries > 0) {
+            try {
+                const pdfUint8Array = await page.pdf({
+                    format: 'A4',
+                    margin: {
+                        top: '1in',
+                        right: '1in',
+                        bottom: '1in',
+                        left: '1in'
+                    },
+                    preferCSSPageSize: true,
+                    printBackground: true,
+                    timeout: 60000
+                });
+                return Buffer.from(pdfUint8Array);
+            } catch (error) {
+                lastError = error;
+                retries--;
+                if (retries > 0) {
+                    // Wait a bit before retrying
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+        }
+        
+        throw lastError;
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        throw error;
+    } finally {
+        // Close page first if it exists
+        if (page) {
+            try {
+                await page.close().catch(() => {});
+            } catch (closeError) {
+                console.error('Error closing page:', closeError);
+            }
+        }
+        
+        // Then close browser if it exists
+        if (browser) {
+            try {
+                await browser.close().catch(() => {});
+            } catch (closeError) {
+                console.error('Error closing browser:', closeError);
+            }
+        }
+    }
 }
 
 export async function exportDraftReportHelper(uid: string, format: 'md' | 'docs' | 'pdf') {

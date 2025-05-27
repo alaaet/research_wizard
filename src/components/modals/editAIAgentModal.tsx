@@ -59,7 +59,7 @@ const EditAIAgentModal: React.FC<EditAIAgentModalProps> = ({ open, onOpenChange,
                             <label className="block font-medium mb-1">Supported Models</label>
                             <div className="flex flex-wrap gap-2 mb-2">
                                 {editAgent.available_models.map((model, idx) => (
-                                    <Badge key={model} variant="secondary" className="flex items-center gap-1 bg-rwiz-secondary hover:bg-rwiz-secondary-light">
+                                    <Badge key={model} variant="secondary" className="flex items-center gap-1 bg-rwiz-secondary hover:bg-rwiz-secondary-dark">
                                         {model}
                                         <button
                                             type="button"

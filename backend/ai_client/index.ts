@@ -11,6 +11,7 @@ export async function processQuery(params: {
   system?: string;
   temperature?: number;
   model?: string;
+  skipLanguageForceSet?: boolean;
 }) {
   try {
     const defaultTemperature: number = await getUserMetaDataByKey('TEMPERATURE') as number || 0.7;
@@ -18,9 +19,10 @@ export async function processQuery(params: {
     if (!params.temperature) {
       params.temperature = defaultTemperature;
     }
+    if (!params.skipLanguageForceSet) {
     const defaultLanguage: string = await getUserMetaDataByKey('research_language') as string || 'English';
     params.user += `\n\n Please respond in ${defaultLanguage} language`;
-    console.log('User prompt:', params.user);
+    }
     // Get the active AI agent
     const agents = await listAIAgents() as AIAgent[];
     const activeAgent = agents.find((a: AIAgent) => a.is_active);
@@ -117,13 +119,14 @@ export async function generateProjectOutline(
   const maxSubSections: number = await getUserMetaDataByKey('MAX_SUBSECTIONS_PER_SECTION') as number || 5;
 
   console.log('Generating report outline...');
-  const prompt = `Create a logical outline for a research report on the topic: "${topic}".\nThe outline should be structured as a JSON object with the following format:\n{\n  "title": "Report Title",\n  "sections": [ /* Aim for ${minSections}-${maxSections} sections */\n    {\n      "title": "Section 1 Title",\n      "subsections": [ /* Aim for ${minSubSections}-${maxSubSections} subsections */\n        "Subsection 1.1 Title", "Subsection 1.2 Title" /* ... */\n      ]\n    } /* ... more sections ... */\n  ]\n}\nEnsure the titles are descriptive and cover key aspects of the topic. Respond *only* in ${language} language with the valid JSON object, without any introductory text, comments, or explanations.`;
+  const prompt = `Create a logical outline for a research report on the topic: "${topic}".\nThe outline should be structured as a JSON object with the following format:\n{\n  "title": "Report Title",\n  "sections": [ /* Aim for ${minSections}-${maxSections} sections */\n    {\n      "title": "Section 1 Title",\n      "subsections": [ /* Aim for ${minSubSections}-${maxSubSections} subsections */\n        "Subsection 1.1 Title", "Subsection 1.2 Title" /* ... */\n      ]\n    } /* ... more sections ... */\n  ]\n}\nEnsure the titles are descriptive and cover key aspects of the topic. while the JSON property keys should always be in English, the values should be *only* in ${language} language with the valid JSON object, without any introductory text, comments, or explanations.`;
 
-  const system = `You are a research planning assistant. Generate a structured report outline in JSON format based on the user's topic. Output only the JSON in ${language} language.`;
+  const system = `You are a research planning assistant. Generate a structured report outline in JSON format based on the user's topic. Output only the JSON values and nothing else in ${language} language, keep the keys always in English.`;
 
   const response = await processQuery({
     user: prompt,
     system,
+    skipLanguageForceSet: true,
   });
 
   if (response.startsWith('[Error') || response.startsWith('[AI')) {

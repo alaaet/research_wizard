@@ -1,20 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { changeLanguage } from '@/lib/i18n';
+import supportedLanguages from '../../backend/default_settings/supported_languages.json';
 
 interface LanguageSelectorProps {
   value: string;
   onChange: (value: string) => void;
 }
-
-const LANGUAGES = [
-  { code: 'en', name: 'English' },
-  { code: 'ar', name: 'العربية' },
-  { code: 'zh', name: '中文' },
-  { code: 'fr', name: 'Français' },
-  { code: 'ru', name: 'Русский' },
-  { code: 'es', name: 'Español' }
-];
 
 const LanguageSelector = ({ value, onChange }: LanguageSelectorProps) => {
   const { t } = useTranslation();
@@ -32,7 +24,7 @@ const LanguageSelector = ({ value, onChange }: LanguageSelectorProps) => {
           <SelectValue placeholder={t('settings.language.uiLanguage')} />
         </SelectTrigger>
         <SelectContent>
-          {LANGUAGES.map(lang => (
+          {supportedLanguages.languages.map(lang => (
             <SelectItem key={lang.code} value={lang.code}>
               {lang.name}
             </SelectItem>

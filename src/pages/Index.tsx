@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from 'react-i18next';
 import { FolderOpen } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { PROJECT_STATUSES } from '@/lib/researchProject';
 
 export default function Index() {
   const { t, i18n } = useTranslation();
@@ -85,7 +87,12 @@ export default function Index() {
                     style={{ textAlign: rtl ? 'right' : 'left' }}
                   >
                     <div>
+                    <div className="flex justify-between items-start">
                       <div className="font-semibold text-base">{proj.title}</div>
+                      <Badge variant="outline" className='bg-orange-300 hover:bg-orange-400'>
+                        {String(t(`projectStatus.${proj.status || PROJECT_STATUSES[0]}`, proj.status || PROJECT_STATUSES[0]))}
+                      </Badge>
+                    </div>
                       <div className="text-xs text-muted-foreground mt-1">
                         {t('home.recentProjects.createdAt', {
                           date: new Date(proj.created_at).toLocaleString(i18n.language, {
