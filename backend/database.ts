@@ -31,6 +31,7 @@ function initializeTables() {
           keywords TEXT,
           description TEXT,
           research_questions TEXT,
+          status TEXT, -- New column
           created_at TEXT NOT NULL DEFAULT (datetime('now')),
           updated_at TEXT NOT NULL DEFAULT (datetime('now'))
         );
@@ -276,13 +277,14 @@ function createResearchProject(project: any) {
   return new Promise((resolve) => {
     const now = new Date().toISOString();
     db.run(
-      `INSERT INTO research_projects (uid, title, keywords, description, research_questions, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO research_projects (uid, title, keywords, description, research_questions, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         project.uid,
         project.title,
         JSON.stringify(project.keywords || []),
         project.description || '',
         JSON.stringify(project.research_questions || []),
+        project.status || 'Not Started',
         now,
         now
       ],
@@ -318,12 +320,13 @@ function updateResearchProject(project: any) {
   return new Promise((resolve) => {
     const now = new Date().toISOString();
     db.run(
-      `UPDATE research_projects SET title = ?, keywords = ?, description = ?, research_questions = ?, updated_at = ? WHERE uid = ?`,
+      `UPDATE research_projects SET title = ?, keywords = ?, description = ?, research_questions = ?, status = ?, updated_at = ? WHERE uid = ?`,
       [
         project.title,
         JSON.stringify(project.keywords || []),
         project.description || '',
         JSON.stringify(project.research_questions || []),
+        project.status,
         now,
         project.uid
       ],

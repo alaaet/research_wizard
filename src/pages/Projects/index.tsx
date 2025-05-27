@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ResearchProject, generateUID } from '../../lib/researchProject';
+import { ResearchProject, generateUID, PROJECT_STATUSES, ProjectStatus } from '../../lib/researchProject';
 import { listResearchProjects, createResearchProject } from '../../connectors/researchProjectIpc';
 import { Link } from 'react-router-dom';
 import PageLayout from '../../components/layout/PageLayout';
@@ -8,6 +8,9 @@ import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
 import { Card } from '../../components/ui/card';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import { Badge } from '../../components/ui/badge';
+import { Label } from '../../components/ui/label';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
@@ -46,11 +49,18 @@ export default function ResearchProjectsPage() {
   const { t } = useTranslation();
   const [projects, setProjects] = useState<ResearchProject[]>([]);
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    title: string;
+    keywords: string[];
+    description: string;
+    research_questions: string[];
+    status: ProjectStatus;
+  }>({
     title: '',
     keywords: [] as string[],
     description: '',
     research_questions: [] as string[],
+    status: PROJECT_STATUSES[0],
   });
   const [loading, setLoading] = useState(false);
 
@@ -71,12 +81,13 @@ export default function ResearchProjectsPage() {
       keywords: form.keywords,
       description: form.description,
       research_questions: form.research_questions,
+      status: form.status,
     }
     createResearchProject(project)
       .then(result => console.log('Project creation result:', result))
       .catch(err => console.log('Project creation error:', err));
 
-    setForm({ title: '', keywords: [], description: '', research_questions: [] });
+    setForm({ title: '', keywords: [], description: '', research_questions: [], status: PROJECT_STATUSES[0] });
     setOpen(false);
     setLoading(false);
     fetchProjects();
@@ -126,6 +137,23 @@ export default function ResearchProjectsPage() {
                       placeholder={t('projects.create.addQuestion')} 
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="status" className="block font-medium mb-1">{t('projects.create.status')}</Label>
+                    <Select
+                      value={form.status}
+                      onValueChange={(value) => setForm(f => ({ ...f, status: value as ProjectStatus }))}
+                      defaultValue={PROJECT_STATUSES[0]}
+                    >
+                      <SelectTrigger id="status">
+                        <SelectValue placeholder={t('projects.create.selectStatus')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PROJECT_STATUSES.map(status => (
+                          <SelectItem key={status} value={status}>{t(`projectStatus.${status}`, status)}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="flex justify-end gap-2">
                     <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
                       {t('projects.create.cancel')}
@@ -145,7 +173,10 @@ export default function ResearchProjectsPage() {
               projects.map(project => (
                 <Link to={`/projects/${project.uid}`} key={project.uid}>
                   <Card className="p-4 hover:bg-muted cursor-pointer">
-                    <div className="font-semibold text-lg">{project.title}</div>
+                    <div className="flex justify-between items-start">
+                      <div className="font-semibold text-lg">{project.title}</div>
+                      <Badge variant="outline">{t(`projectStatus.${project.status || PROJECT_STATUSES[0]}`, project.status || PROJECT_STATUSES[0])}</Badge>
+                    </div>
                     {project.description && <div className="text-muted-foreground mt-1">{project.description}</div>}
                     {project.keywords && project.keywords.length > 0 && (
                       <div className="mt-2 flex flex-wrap gap-2">
@@ -166,6 +197,7 @@ export default function ResearchProjectsPage() {
                     )}
                     <div className="text-xs text-muted-foreground mt-2">
                       {t('projects.list.created')} {project.created_at ? new Date(project.created_at).toLocaleString() : ''}
+                      {' | '} {t('projects.list.updated')} {project.updated_at ? new Date(project.updated_at).toLocaleString() : ''}
                     </div>
                   </Card>
                 </Link>

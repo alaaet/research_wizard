@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ResearchProject } from '../../lib/researchProject';
+import { ResearchProject, PROJECT_STATUSES, ProjectStatus } from '../../lib/researchProject';
 import { getResearchProject, updateResearchProject } from '../../connectors/researchProjectIpc';
 import { generateResearchKeywordsFromTopic , generateResearchQuestionsFromTopic} from '../../connectors/aiAgentsIpc';
 import PageLayout from '../../components/layout/PageLayout';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import { Label } from '../../components/ui/label';
+import { Badge } from '../../components/ui/badge';
 import { motion } from 'framer-motion';
 import { Brain } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -47,11 +50,18 @@ export default function ResearchProjectDetailPage() {
   const { uid } = useParams<{ uid: string }>();
   const navigate = useNavigate();
   const [project, setProject] = useState<ResearchProject | null>(null);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    title: string;
+    keywords: string[];
+    description: string;
+    research_questions: string[];
+    status: ProjectStatus;
+  }>({
     title: '',
     keywords: [] as string[],
     description: '',
     research_questions: [] as string[],
+    status: PROJECT_STATUSES[0],
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -73,6 +83,7 @@ export default function ResearchProjectDetailPage() {
             keywords: proj.keywords || [],
             description: proj.description || '',
             research_questions: proj.research_questions || [],
+            status: proj.status || PROJECT_STATUSES[0] as ProjectStatus,
           });
         }
         setLoading(false);
@@ -186,6 +197,22 @@ export default function ResearchProjectDetailPage() {
               placeholder={t('projects.details.addQuestion')} 
             />
           </div>
+          <div>
+            <Label htmlFor="status" className="block font-medium text-gray-800 mb-1">{t('projects.details.status')}</Label>
+            <Select
+              value={form.status}
+              onValueChange={(value) => setForm(f => ({ ...f, status: value as ProjectStatus }))}
+            >
+              <SelectTrigger id="status">
+                <SelectValue placeholder={t('projects.details.selectStatus')} />
+              </SelectTrigger>
+              <SelectContent>
+                {PROJECT_STATUSES.map(status => (
+                  <SelectItem key={status} value={status}>{t(`projectStatus.${status}`, status)}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex justify-end gap-2">
             <Button type="submit" disabled={saving || !form.title.trim()}>
               {saving ? t('common.saving') : t('projects.details.saveChanges')}
@@ -196,7 +223,8 @@ export default function ResearchProjectDetailPage() {
         </form>
         <div className="text-xs text-muted-foreground mt-4">
           {t('projects.details.createdAt')}: {project.created_at ? new Date(project.created_at).toLocaleString() : ''}<br />
-          {t('projects.details.updatedAt')}: {project.updated_at ? new Date(project.updated_at).toLocaleString() : ''}
+          {t('projects.details.updatedAt')}: {project.updated_at ? new Date(project.updated_at).toLocaleString() : ''}<br />
+          {t('projects.details.currentStatus')}: <Badge variant="outline">{t(`projectStatus.${form.status}`, form.status)}</Badge>
         </div>
       </motion.div>
     </PageLayout>
