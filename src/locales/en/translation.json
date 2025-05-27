@@ -1,0 +1,323 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "saving": "Saving...",
+    "saved": "Saved!",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "add": "Add",
+    "search": "Search",
+    "settings": "Settings",
+    "language": "Language",
+    "name": "Name",
+    "email": "Email",
+    "select": "Select..."
+  },
+  "navigation": {
+    "home": "Home",
+    "projects": "Projects",
+    "literature": "Literature",
+    "literatureDiscover": "Discover",
+    "literatureManage": "Manage",
+    "writing": "Writing",
+    "settings": "Settings",
+    "toggleNavigation": "Toggle navigation",
+    "toggleTheme": "Toggle theme",
+    "defaultUser": "Default User",
+    "defaultEmail": "user@rwiz.eu",
+    "appName": "Research Wizard"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": {
+      "title": "Language Settings",
+      "uiLanguage": "Interface Language",
+      "reportLanguage": "Report Language"
+    },
+    "general": {
+      "title": "General Settings",
+      "description": "Configure your general application settings",
+      "error": {
+        "loadFailed": "Failed to load settings.",
+        "saveFailed": "Failed to save settings."
+      }
+    },
+    "integrations": {
+      "title": "Integrations",
+      "description": "Manage your external service integrations",
+      "retrieverTitle": "Search Retriever Integrations",
+      "loadingRetrievers": "Loading search retrievers..."
+    },
+    "reportParameters": {
+      "title": "Report Parameters",
+      "description": "Configure default report parameters"
+    },
+    "aiAgents": {
+      "title": "AI Agents",
+      "description": "Configure your AI agents"
+    }
+  },
+  "projects": {
+    "title": "Research Projects",
+    "createNew": "Create New Project",
+    "noProjects": "No research projects found.",
+    "create": {
+      "title": "Create Research Project",
+      "titleLabel": "Title",
+      "required": "Required",
+      "keywords": "Keywords",
+      "addKeyword": "Add keyword...",
+      "description": "Description",
+      "researchQuestions": "Research Questions",
+      "addQuestion": "Add question...",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "list": {
+      "researchQuestions": "Research Questions:",
+      "created": "Created:"
+    },
+    "details": {
+      "title": "Project Details",
+      "description": "Description",
+      "createdAt": "Created at",
+      "updatedAt": "Updated at",
+      "status": "Status",
+      "viewEdit": "View/Edit Project",
+      "back": "Back",
+      "titleLabel": "Title",
+      "required": "Required",
+      "keywords": "Keywords",
+      "addKeyword": "Add keyword...",
+      "researchQuestions": "Research Questions",
+      "addQuestion": "Add question...",
+      "generateWithAI": "Generate with AI",
+      "saveChanges": "Save Changes",
+      "error": {
+        "notFound": "Project not found.",
+        "loadFailed": "Failed to load project.",
+        "updateFailed": "Failed to update project."
+      }
+    }
+  },
+  "literature": {
+    "title": "Literature",
+    "discover": {
+      "title": "Literature Search",
+      "searchPlaceholder": "Search papers...",
+      "noResults": "No results found",
+      "searchRetriever": "Search Retriever",
+      "selectRetriever": "Select a search retriever",
+      "researchProject": "Research Project",
+      "selectProject": "Select a project",
+      "searching": "Searching...",
+      "search": "Search Literature",
+      "results": "Search Results",
+      "saveResults": "Save Results",
+      "error": {
+        "selectBoth": "Please select both a project and a search retriever",
+        "questionsRequired": "Research questions are required to perform the search",
+        "searchFailed": "An error occurred during the search",
+        "saveFailed": "Failed to save results: {{error}}"
+      },
+      "success": {
+        "saved": "Results saved successfully!"
+      },
+      "confirm": {
+        "generateQuestions": "This project does not have research questions. Would you like to generate them now?"
+      }
+    },
+    "manage": {
+      "title": "Manage Literature",
+      "addPaper": "Add Paper",
+      "noPapers": "No papers found",
+      "filterByProjects": "Filter by Research Projects",
+      "selectProjects": "Select Projects",
+      "papers": "Papers",
+      "exportPapers": "Export Papers",
+      "exportFormats": {
+        "bibtex": "BibTeX",
+        "endnote": "EndNote XML",
+        "ris": "RIS"
+      },
+      "table": {
+        "index": "Index",
+        "title": "Title",
+        "authors": "Authors",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "actions": {
+        "openLink": "Open Link",
+        "copyUrl": "Copy URL",
+        "view": "View",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "success": {
+        "urlCopied": "URL copied to clipboard",
+        "paperUpdated": "Paper updated successfully",
+        "paperDeleted": "Paper deleted successfully",
+        "paperAdded": "Paper added successfully"
+      },
+      "error": {
+        "updateFailed": "Failed to update paper",
+        "deleteFailed": "Failed to delete paper",
+        "addFailed": "Failed to add paper",
+        "duplicatePaper": "A paper with this title and URL already exists."
+      }
+    },
+    "paper": {
+      "title": "Title",
+      "authors": "Authors",
+      "abstract": "Abstract",
+      "keywords": "Keywords",
+      "published": "Published",
+      "doi": "DOI",
+      "source": "Source"
+    }
+  },
+  "writing": {
+    "title": "Writing",
+    "createDraft": "Create New Draft",
+    "drafts": "Drafts",
+    "reports": "Reports",
+    "noDrafts": "No drafts found",
+    "noReports": "No reports found",
+    "draft": {
+      "title": "Draft Details",
+      "content": "Content",
+      "lastEdited": "Last edited",
+      "status": "Status",
+      "outline": "Outline",
+      "report": "Report",
+      "regenerate": "Regenerate Report",
+      "viewReport": "View Report",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "saved": "Saved!",
+      "error": "Error!",
+      "addSection": "Add Section",
+      "sectionTitle": "Section Title",
+      "addSubsection": "Add Subsection",
+      "subsection": "Add subsection",
+      "currentOutline": "Current Outline",
+      "aiAssist": "AI Assist",
+      "manual": "Manual",
+      "topic": "Topic",
+      "language": "Language",
+      "generateOutline": "Generate Outline",
+      "generating": "Generating...",
+      "generatedOutline": "Generated Outline",
+      "step1": "Step 1: Create Outline",
+      "step2": "Step 2: Generate Report",
+      "reportTitle": "Report Title",
+      "enterTitle": "Enter report title",
+      "enterSection": "Enter section title",
+      "enterTopic": "Enter research topic",
+      "enterLanguage": "e.g. English",
+      "success": {
+        "outlineGenerated": "Outline generated!",
+        "draftSaved": "Draft saved successfully!",
+        "draftRegenerated": "Draft regenerated and saved!"
+      },
+      "error": {
+        "enterTopic": "Please enter a topic.",
+        "generateFailed": "Failed to generate outline.",
+        "initiateFailed": "Failed to initiate draft.",
+        "generateContentFailed": "Failed to generate subsection content.",
+        "saveFailed": "Failed to save draft.",
+        "regenerateFailed": "Failed to save regenerated draft"
+      }
+    },
+    "report": {
+      "title": "Report Details",
+      "generated": "Generated",
+      "download": "Download Report",
+      "raw": "Raw",
+      "formatted": "Formatted",
+      "hideRaw": "Hide Raw",
+      "showRaw": "Show Raw",
+      "copyRaw": "Copy raw text",
+      "copyFormatted": "Copy formatted text",
+      "export": {
+        "md": "Export .md",
+        "docs": "Export .docs",
+        "pdf": "Export .pdf"
+      },
+      "success": {
+        "rawCopied": "Raw report copied!",
+        "formattedCopied": "Formatted report copied as rich text!"
+      }
+    },
+    "filterByResearchProjects": "Filter by Research Projects",
+    "selectProjects": "Select Projects",
+    "researchDrafts": "Research Drafts",
+    "addDraft": "Add Draft",
+    "noResearchDraftsFound": "No research drafts found.",
+    "created": "Created",
+    "updated": "Updated",
+    "delete": "Delete",
+    "draftDetail": {
+      "title": "View/Edit Draft",
+      "back": "Back",
+      "form": {
+        "title": "Title",
+        "required": "Required",
+        "outline": "Outline",
+        "report": "Report",
+        "addSection": "Add Section",
+        "sectionTitle": "Section title",
+        "addSubsection": "Add subsection",
+        "addSubsectionButton": "Add Subsection",
+        "addSectionButton": "Add Section",
+        "currentOutline": "Current Outline",
+        "viewReport": "View Report",
+        "regenerateReport": "Regenerate Report",
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes",
+        "saving": "Saving...",
+        "saved": "Saved!",
+        "created": "Created"
+      },
+      "error": {
+        "notFound": "Draft not found.",
+        "loadFailed": "Failed to load draft.",
+        "updateFailed": "Failed to update draft.",
+        "regenerateFailed": "Failed to generate subsection content.",
+        "saveRegeneratedFailed": "Failed to save regenerated draft"
+      },
+      "success": {
+        "regenerated": "Draft regenerated and saved!"
+      }
+    }
+  },
+  "home": {
+    "aiAgentAlert": {
+      "title": "Information",
+      "description": "Please go to Settings to configure an AI agent for the application to work properly.",
+      "settingsLink": "Settings"
+    },
+    "recentProjects": {
+      "title": "Recent Research Projects",
+      "noProjects": "No recent projects found.",
+      "createdAt": "Created: {{date}}"
+    }
+  },
+  "datePicker": {
+    "selectDates": "Select dates",
+    "clear": "Clear",
+    "presets": {
+      "7days": "7 days",
+      "30days": "30 days",
+      "90days": "90 days"
+    }
+  }
+} 

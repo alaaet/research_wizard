@@ -1,0 +1,288 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "save": "保存",
+    "saving": "保存中...",
+    "saved": "已保存！",
+    "cancel": "取消",
+    "close": "关闭",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "add": "添加",
+    "search": "搜索",
+    "settings": "设置",
+    "language": "语言",
+    "name": "名称",
+    "email": "电子邮件",
+    "select": "选择..."
+  },
+  "navigation": {
+    "home": "首页",
+    "projects": "项目",
+    "literature": "文献",
+    "literatureDiscover": "发现",
+    "literatureManage": "管理",
+    "writing": "写作",
+    "settings": "设置",
+    "toggleNavigation": "切换导航",
+    "toggleTheme": "切换主题",
+    "defaultUser": "默认用户",
+    "defaultEmail": "user@rwiz.eu",
+    "appName": "研究向导"
+  },
+  "settings": {
+    "title": "设置",
+    "language": {
+      "title": "语言设置",
+      "uiLanguage": "界面语言",
+      "reportLanguage": "报告语言"
+    },
+    "general": {
+      "title": "常规设置",
+      "description": "配置应用程序常规设置",
+      "error": {
+        "loadFailed": "加载设置失败。",
+        "saveFailed": "保存设置失败。"
+      }
+    },
+    "integrations": {
+      "title": "集成",
+      "description": "管理外部服务集成",
+      "retrieverTitle": "搜索引擎集成",
+      "loadingRetrievers": "正在加载搜索引擎..."
+    },
+    "reportParameters": {
+      "title": "报告参数",
+      "description": "配置默认报告参数"
+    },
+    "aiAgents": {
+      "title": "AI代理",
+      "description": "配置您的AI代理"
+    }
+  },
+  "projects": {
+    "title": "研究项目",
+    "createNew": "创建新项目",
+    "noProjects": "未找到研究项目。",
+    "create": {
+      "title": "创建研究项目",
+      "titleLabel": "标题",
+      "required": "必填",
+      "keywords": "关键词",
+      "addKeyword": "添加关键词...",
+      "description": "描述",
+      "researchQuestions": "研究问题",
+      "addQuestion": "添加问题...",
+      "cancel": "取消",
+      "save": "保存",
+      "saving": "保存中..."
+    },
+    "list": {
+      "researchQuestions": "研究问题：",
+      "created": "创建于："
+    },
+    "details": {
+      "title": "项目详情",
+      "description": "描述",
+      "createdAt": "创建于",
+      "updatedAt": "更新于",
+      "status": "状态",
+      "viewEdit": "查看/编辑项目",
+      "back": "返回",
+      "titleLabel": "标题",
+      "required": "必填",
+      "keywords": "关键词",
+      "addKeyword": "添加关键词...",
+      "researchQuestions": "研究问题",
+      "addQuestion": "添加问题...",
+      "generateWithAI": "使用AI生成",
+      "saveChanges": "保存更改",
+      "error": {
+        "notFound": "未找到项目。",
+        "loadFailed": "加载项目失败。",
+        "updateFailed": "更新项目失败。"
+      }
+    }
+  },
+  "literature": {
+    "title": "文献",
+    "discover": {
+      "title": "文献搜索",
+      "searchPlaceholder": "搜索论文...",
+      "noResults": "未找到结果",
+      "searchRetriever": "搜索检索器",
+      "selectRetriever": "选择搜索检索器",
+      "researchProject": "研究项目",
+      "selectProject": "选择项目",
+      "searching": "搜索中...",
+      "search": "搜索文献",
+      "results": "搜索结果",
+      "saveResults": "保存结果",
+      "error": {
+        "selectBoth": "请选择项目和搜索检索器",
+        "questionsRequired": "需要研究问题才能执行搜索",
+        "searchFailed": "搜索过程中发生错误",
+        "saveFailed": "保存结果失败：{{error}}"
+      },
+      "success": {
+        "saved": "结果保存成功！"
+      },
+      "confirm": {
+        "generateQuestions": "该项目没有研究问题。是否现在生成？"
+      }
+    },
+    "manage": {
+      "title": "管理文献",
+      "addPaper": "添加论文",
+      "noPapers": "未找到论文"
+    },
+    "paper": {
+      "title": "标题",
+      "authors": "作者",
+      "abstract": "摘要",
+      "keywords": "关键词",
+      "published": "发布日期",
+      "doi": "DOI",
+      "source": "来源"
+    }
+  },
+  "writing": {
+    "title": "写作",
+    "createDraft": "创建新草稿",
+    "drafts": "草稿",
+    "reports": "报告",
+    "noDrafts": "未找到草稿",
+    "noReports": "未找到报告",
+    "draft": {
+      "title": "草稿详情",
+      "content": "内容",
+      "lastEdited": "最后编辑",
+      "status": "状态",
+      "outline": "大纲",
+      "report": "报告",
+      "regenerate": "重新生成报告",
+      "viewReport": "查看报告",
+      "saveChanges": "保存更改",
+      "saving": "保存中...",
+      "saved": "已保存！",
+      "error": "错误！",
+      "addSection": "添加章节",
+      "sectionTitle": "章节标题",
+      "addSubsection": "添加小节",
+      "subsection": "添加小节",
+      "currentOutline": "当前大纲",
+      "aiAssist": "AI 辅助",
+      "manual": "手动",
+      "topic": "主题",
+      "language": "语言",
+      "generateOutline": "生成大纲",
+      "generating": "生成中...",
+      "generatedOutline": "生成的大纲",
+      "step1": "步骤 1：创建大纲",
+      "step2": "步骤 2：生成报告",
+      "reportTitle": "报告标题",
+      "enterTitle": "输入报告标题",
+      "enterSection": "输入章节标题",
+      "enterTopic": "输入研究主题",
+      "enterLanguage": "例如：中文",
+      "success": {
+        "outlineGenerated": "大纲已生成！",
+        "draftSaved": "草稿保存成功！",
+        "draftRegenerated": "草稿重新生成并保存成功！"
+      },
+      "error": {
+        "enterTopic": "请输入主题。",
+        "generateFailed": "生成大纲失败。",
+        "initiateFailed": "初始化草稿失败。",
+        "generateContentFailed": "生成小节内容失败。",
+        "saveFailed": "保存草稿失败。",
+        "regenerateFailed": "保存重新生成的草稿失败"
+      }
+    },
+    "report": {
+      "title": "报告详情",
+      "generated": "生成时间",
+      "download": "下载报告",
+      "raw": "原始",
+      "formatted": "格式化",
+      "hideRaw": "隐藏原始文本",
+      "showRaw": "显示原始文本",
+      "copyRaw": "复制原始文本",
+      "copyFormatted": "复制格式化文本",
+      "export": {
+        "md": "导出 .md",
+        "docs": "导出 .docs",
+        "pdf": "导出 .pdf"
+      },
+      "success": {
+        "rawCopied": "原始报告已复制！",
+        "formattedCopied": "格式化报告已作为富文本复制！"
+      }
+    },
+    "filterByResearchProjects": "按研究项目筛选",
+    "selectProjects": "选择项目",
+    "researchDrafts": "研究草稿",
+    "addDraft": "添加草稿",
+    "noResearchDraftsFound": "未找到研究草稿。",
+    "created": "创建于",
+    "updated": "更新于",
+    "delete": "删除",
+    "draftDetail": {
+      "title": "查看/编辑草稿",
+      "back": "返回",
+      "form": {
+        "title": "标题",
+        "required": "必填",
+        "outline": "大纲",
+        "report": "报告",
+        "addSection": "添加章节",
+        "sectionTitle": "章节标题",
+        "addSubsection": "添加小节",
+        "addSubsectionButton": "添加小节",
+        "addSectionButton": "添加章节",
+        "currentOutline": "当前大纲",
+        "viewReport": "查看报告",
+        "regenerateReport": "重新生成报告",
+        "cancel": "取消",
+        "saveChanges": "保存更改",
+        "saving": "保存中...",
+        "saved": "已保存！",
+        "created": "创建于"
+      },
+      "error": {
+        "notFound": "未找到草稿。",
+        "loadFailed": "加载草稿失败。",
+        "updateFailed": "更新草稿失败。",
+        "regenerateFailed": "生成小节内容失败。",
+        "saveRegeneratedFailed": "保存重新生成的草稿失败"
+      },
+      "success": {
+        "regenerated": "草稿已重新生成并保存！"
+      }
+    }
+  },
+  "home": {
+    "aiAgentAlert": {
+      "title": "信息",
+      "description": "请前往设置配置AI代理以使应用程序正常工作。",
+      "settingsLink": "设置"
+    },
+    "recentProjects": {
+      "title": "最近的研究项目",
+      "noProjects": "未找到最近的项目。",
+      "createdAt": "创建于：{{date}}"
+    }
+  },
+  "datePicker": {
+    "selectDates": "选择日期",
+    "clear": "清除",
+    "presets": {
+      "7days": "7天",
+      "30days": "30天",
+      "90days": "90天"
+    }
+  }
+} 

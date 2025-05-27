@@ -1,0 +1,323 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجاح",
+    "save": "حفظ",
+    "saving": "جاري الحفظ...",
+    "saved": "تم الحفظ!",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "add": "إضافة",
+    "search": "بحث",
+    "settings": "الإعدادات",
+    "language": "اللغة",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "select": "اختر..."
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "projects": "المشاريع",
+    "literature": "الدراسات السابقة",
+    "literatureDiscover": "اكتشف",
+    "literatureManage": "إدارة",
+    "writing": "الكتابة",
+    "settings": "الإعدادات",
+    "toggleNavigation": "تبديل التنقل",
+    "toggleTheme": "تبديل المظهر",
+    "defaultUser": "مستخدم افتراضي",
+    "defaultEmail": "user@rwiz.eu",
+    "appName": "معالج البحث"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "language": {
+      "title": "إعدادات اللغة",
+      "uiLanguage": "لغة الواجهة",
+      "reportLanguage": "لغة التقارير"
+    },
+    "general": {
+      "title": "الإعدادات العامة",
+      "description": "تكوين إعدادات التطبيق العامة",
+      "error": {
+        "loadFailed": "فشل تحميل الإعدادات.",
+        "saveFailed": "فشل حفظ الإعدادات."
+      }
+    },
+    "integrations": {
+      "title": "الإضافات",
+      "description": "إدارة الإضافات الخارجية",
+      "retrieverTitle": "إضافات محركات البحث",
+      "loadingRetrievers": "جاري تحميل محركات البحث..."
+    },
+    "reportParameters": {
+      "title": "اعدادات التقارير",
+      "description": "اعدادات التقارير الافتراضية"
+    },
+    "aiAgents": {
+      "title": "محركات الذكاء الاصطناعي",
+      "description": "تكوين محركات الذكاء الاصطناعي"
+    }
+  },
+  "projects": {
+    "title": "مشاريع البحث",
+    "createNew": "إنشاء مشروع جديد",
+    "noProjects": "لم يتم العثور على مشاريع بحث.",
+    "create": {
+      "title": "إنشاء مشروع بحث",
+      "titleLabel": "العنوان",
+      "required": "مطلوب",
+      "keywords": "الكلمات المفتاحية",
+      "addKeyword": "إضافة كلمة مفتاحية...",
+      "description": "الوصف",
+      "researchQuestions": "أسئلة البحث",
+      "addQuestion": "إضافة سؤال...",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جاري الحفظ..."
+    },
+    "list": {
+      "researchQuestions": "أسئلة البحث:",
+      "created": "تم الإنشاء:"
+    },
+    "details": {
+      "title": "تفاصيل المشروع",
+      "description": "الوصف",
+      "createdAt": "تم الإنشاء في",
+      "updatedAt": "تم التحديث في",
+      "status": "الحالة",
+      "viewEdit": "عرض/تعديل المشروع",
+      "back": "رجوع",
+      "titleLabel": "العنوان",
+      "required": "مطلوب",
+      "keywords": "الكلمات المفتاحية",
+      "addKeyword": "إضافة كلمة مفتاحية...",
+      "researchQuestions": "أسئلة البحث",
+      "addQuestion": "إضافة سؤال...",
+      "generateWithAI": "إنشاء باستخدام الذكاء الاصطناعي",
+      "saveChanges": "حفظ التغييرات",
+      "error": {
+        "notFound": "لم يتم العثور على المشروع.",
+        "loadFailed": "فشل تحميل المشروع.",
+        "updateFailed": "فشل تحديث المشروع."
+      }
+    }
+  },
+  "literature": {
+    "title": "الدراسات السابقة",
+    "discover": {
+      "title": "البحث في الدراسات السابقة",
+      "searchPlaceholder": "البحث عن الأوراق...",
+      "noResults": "لم يتم العثور على نتائج",
+      "searchRetriever": "محرك البحث",
+      "selectRetriever": "اختر محرك البحث",
+      "researchProject": "مشروع البحث",
+      "selectProject": "اختر مشروعاً",
+      "searching": "جاري البحث...",
+      "search": "البحث في الدراسات السابقة",
+      "results": "نتائج البحث",
+      "saveResults": "حفظ النتائج",
+      "error": {
+        "selectBoth": "يرجى اختيار المشروع ومحرك البحث",
+        "questionsRequired": "أسئلة البحث مطلوبة لإجراء البحث",
+        "searchFailed": "حدث خطأ أثناء البحث",
+        "saveFailed": "فشل حفظ النتائج: {{error}}"
+      },
+      "success": {
+        "saved": "تم حفظ النتائج بنجاح!"
+      },
+      "confirm": {
+        "generateQuestions": "هذا المشروع لا يحتوي على أسئلة بحث. هل تريد إنشاءها الآن؟"
+      }
+    },
+    "manage": {
+      "title": "إدارة الدراسات السابقة",
+      "addPaper": "إضافة ورقة علمية",
+      "noPapers": "لم يتم العثور على اوراق علمية",
+      "filterByProjects": "تصفية حسب مشاريع البحث",
+      "selectProjects": "اختر المشاريع",
+      "papers": "الأوراق العلمية",
+      "exportPapers": "تصدير الأوراق العلمية",
+      "exportFormats": {
+        "bibtex": "BibTeX",
+        "endnote": "EndNote XML",
+        "ris": "RIS"
+      },
+      "table": {
+        "index": "الترتيب",
+        "title": "العنوان",
+        "authors": "المؤلفون",
+        "date": "التاريخ",
+        "actions": "الإجراءات"
+      },
+      "actions": {
+        "openLink": "فتح الرابط",
+        "copyUrl": "نسخ الرابط",
+        "view": "عرض",
+        "edit": "تعديل",
+        "delete": "حذف"
+      },
+      "success": {
+        "urlCopied": "تم نسخ الرابط إلى الحافظة",
+        "paperUpdated": "تم تحديث الورقة العلمية بنجاح",
+        "paperDeleted": "تم حذف الورقة العلمية بنجاح",
+        "paperAdded": "تمت إضافة الورقة العلمية بنجاح"
+      },
+      "error": {
+        "updateFailed": "فشل تحديث الورقة العلمية",
+        "deleteFailed": "فشل حذف الورقة العلمية",
+        "addFailed": "فشل إضافة الورقة العلمية",
+        "duplicatePaper": "يوجد ورقة علمية بنفس العنوان والرابط"
+      }
+    },
+    "paper": {
+      "title": "العنوان",
+      "authors": "المؤلفون",
+      "abstract": "الملخص",
+      "keywords": "الكلمات المفتاحية",
+      "published": "تاريخ النشر",
+      "doi": "DOI",
+      "source": "المصدر"
+    }
+  },
+  "writing": {
+    "title": "الكتابة",
+    "createDraft": "إنشاء مسودة جديدة",
+    "drafts": "المسودات",
+    "reports": "التقارير",
+    "noDrafts": "لم يتم العثور على مسودات",
+    "noReports": "لم يتم العثور على تقارير",
+    "draft": {
+      "title": "تفاصيل المسودة",
+      "content": "المحتوى",
+      "lastEdited": "آخر تعديل",
+      "status": "الحالة",
+      "outline": "المخطط",
+      "report": "التقرير",
+      "regenerate": "إعادة إنشاء التقرير",
+      "viewReport": "عرض التقرير",
+      "saveChanges": "حفظ التغييرات",
+      "saving": "جاري الحفظ...",
+      "saved": "تم الحفظ!",
+      "error": "خطأ!",
+      "addSection": "إضافة قسم",
+      "sectionTitle": "عنوان القسم",
+      "addSubsection": "إضافة قسم فرعي",
+      "subsection": "إضافة قسم فرعي",
+      "currentOutline": "المخطط الحالي",
+      "aiAssist": "المساعدة بالذكاء الاصطناعي",
+      "manual": "يدوي",
+      "topic": "الموضوع",
+      "language": "اللغة",
+      "generateOutline": "إنشاء مخطط",
+      "generating": "جاري الإنشاء...",
+      "generatedOutline": "المخطط المنشأ",
+      "step1": "الخطوة 1: إنشاء مخطط",
+      "step2": "الخطوة 2: إنشاء التقرير",
+      "reportTitle": "عنوان التقرير",
+      "enterTitle": "أدخل عنوان التقرير",
+      "enterSection": "أدخل عنوان القسم",
+      "enterTopic": "أدخل موضوع البحث",
+      "enterLanguage": "مثال: العربية",
+      "success": {
+        "outlineGenerated": "تم إنشاء المخطط!",
+        "draftSaved": "تم حفظ المسودة بنجاح!",
+        "draftRegenerated": "تم إعادة إنشاء وحفظ المسودة!"
+      },
+      "error": {
+        "enterTopic": "الرجاء إدخال موضوع.",
+        "generateFailed": "فشل إنشاء المخطط.",
+        "initiateFailed": "فشل بدء المسودة.",
+        "generateContentFailed": "فشل إنشاء محتوى القسم الفرعي.",
+        "saveFailed": "فشل حفظ المسودة.",
+        "regenerateFailed": "فشل حفظ المسودة المعاد إنشاؤها"
+      }
+    },
+    "report": {
+      "title": "تفاصيل التقرير",
+      "generated": "تم الإنشاء",
+      "download": "تحميل التقرير",
+      "raw": "خام",
+      "formatted": "منسق",
+      "hideRaw": "إخفاء النص الخام",
+      "showRaw": "عرض النص الخام",
+      "copyRaw": "نسخ النص الخام",
+      "copyFormatted": "نسخ النص المنسق",
+      "export": {
+        "md": "تصدير .md",
+        "docs": "تصدير .docs",
+        "pdf": "تصدير .pdf"
+      },
+      "success": {
+        "rawCopied": "تم نسخ التقرير الخام!",
+        "formattedCopied": "تم نسخ التقرير المنسق كنص غني!"
+      }
+    },
+    "filterByResearchProjects": "تصفية حسب مشاريع البحث",
+    "selectProjects": "اختر المشاريع",
+    "researchDrafts": "مسودات البحث",
+    "addDraft": "إضافة مسودة",
+    "noResearchDraftsFound": "لم يتم العثور على مسودات بحث.",
+    "created": "تم الإنشاء",
+    "updated": "تم التحديث",
+    "delete": "حذف",
+    "draftDetail": {
+      "title": "عرض/تعديل المسودة",
+      "back": "رجوع",
+      "form": {
+        "title": "العنوان",
+        "required": "مطلوب",
+        "outline": "المخطط",
+        "report": "التقرير",
+        "addSection": "إضافة قسم",
+        "sectionTitle": "عنوان القسم",
+        "addSubsection": "إضافة قسم فرعي",
+        "addSubsectionButton": "إضافة قسم فرعي",
+        "addSectionButton": "إضافة قسم",
+        "currentOutline": "المخطط الحالي",
+        "viewReport": "عرض التقرير",
+        "regenerateReport": "إعادة توليد التقرير",
+        "cancel": "إلغاء",
+        "saveChanges": "حفظ التغييرات",
+        "saving": "جاري الحفظ...",
+        "saved": "تم الحفظ!",
+        "created": "تم الإنشاء"
+      },
+      "error": {
+        "notFound": "لم يتم العثور على المسودة.",
+        "loadFailed": "فشل تحميل المسودة.",
+        "updateFailed": "فشل تحديث المسودة.",
+        "regenerateFailed": "فشل توليد محتوى القسم الفرعي.",
+        "saveRegeneratedFailed": "فشل حفظ المسودة المعاد توليدها"
+      },
+      "success": {
+        "regenerated": "تم إعادة توليد المسودة وحفظها!"
+      }
+    }
+  },
+  "home": {
+    "aiAgentAlert": {
+      "title": "معلومات",
+      "description": "يُرجى الانتقال إلى 'الإعدادات' لتكوين محرك ذكاء اصطناعي حتى يعمل التطبيق بشكل صحيح.",
+      "settingsLink": "الإعدادات"
+    },
+    "recentProjects": {
+      "title": "مشاريع البحث الأخيرة",
+      "noProjects": "لم يتم العثور على مشاريع حديثة.",
+      "createdAt": "تم الإنشاء: {{date}}"
+    }
+  },
+  "datePicker": {
+    "selectDates": "اختر التواريخ",
+    "clear": "مسح",
+    "presets": {
+      "7days": "7 أيام",
+      "30days": "30 يوم",
+      "90days": "90 يوم"
+    }
+  }
+} 

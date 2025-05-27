@@ -1,0 +1,323 @@
+{
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успех",
+    "save": "Сохранить",
+    "saving": "Сохранение...",
+    "saved": "Сохранено!",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "create": "Создать",
+    "add": "Добавить",
+    "search": "Поиск",
+    "settings": "Настройки",
+    "language": "Язык",
+    "name": "Название",
+    "email": "Электронная почта",
+    "select": "Выбрать..."
+  },
+  "navigation": {
+    "home": "Главная",
+    "projects": "Проекты",
+    "literature": "Литература",
+    "literatureDiscover": "Обзор",
+    "literatureManage": "Управление",
+    "writing": "Письмо",
+    "settings": "Настройки",
+    "toggleNavigation": "Переключить навигацию",
+    "toggleTheme": "Переключить тему",
+    "defaultUser": "Пользователь по умолчанию",
+    "defaultEmail": "user@rwiz.eu",
+    "appName": "Исследовательский Ассистент"
+  },
+  "settings": {
+    "title": "Настройки",
+    "language": {
+      "title": "Настройки языка",
+      "uiLanguage": "Язык интерфейса",
+      "reportLanguage": "Язык отчетов"
+    },
+    "general": {
+      "title": "Общие настройки",
+      "description": "Настройте общие параметры приложения",
+      "error": {
+        "loadFailed": "Не удалось загрузить настройки.",
+        "saveFailed": "Не удалось сохранить настройки."
+      }
+    },
+    "integrations": {
+      "title": "Интеграции",
+      "description": "Управление внешними сервисами",
+      "retrieverTitle": "Интеграции поисковых систем",
+      "loadingRetrievers": "Загрузка поисковых систем..."
+    },
+    "reportParameters": {
+      "title": "Параметры отчетов",
+      "description": "Настройте параметры отчетов по умолчанию"
+    },
+    "aiAgents": {
+      "title": "ИИ-агенты",
+      "description": "Настройте ваших ИИ-агентов"
+    }
+  },
+  "projects": {
+    "title": "Исследовательские проекты",
+    "createNew": "Создать новый проект",
+    "noProjects": "Исследовательские проекты не найдены.",
+    "create": {
+      "title": "Создать исследовательский проект",
+      "titleLabel": "Название",
+      "required": "Обязательно",
+      "keywords": "Ключевые слова",
+      "addKeyword": "Добавить ключевое слово...",
+      "description": "Описание",
+      "researchQuestions": "Исследовательские вопросы",
+      "addQuestion": "Добавить вопрос...",
+      "cancel": "Отмена",
+      "save": "Сохранить",
+      "saving": "Сохранение..."
+    },
+    "list": {
+      "researchQuestions": "Исследовательские вопросы:",
+      "created": "Создан:"
+    },
+    "details": {
+      "title": "Детали проекта",
+      "description": "Описание",
+      "createdAt": "Создан",
+      "updatedAt": "Обновлен",
+      "status": "Статус",
+      "viewEdit": "Просмотр/Редактирование проекта",
+      "back": "Назад",
+      "titleLabel": "Название",
+      "required": "Обязательно",
+      "keywords": "Ключевые слова",
+      "addKeyword": "Добавить ключевое слово...",
+      "researchQuestions": "Исследовательские вопросы",
+      "addQuestion": "Добавить вопрос...",
+      "generateWithAI": "Сгенерировать с помощью ИИ",
+      "saveChanges": "Сохранить изменения",
+      "error": {
+        "notFound": "Проект не найден.",
+        "loadFailed": "Не удалось загрузить проект.",
+        "updateFailed": "Не удалось обновить проект."
+      }
+    }
+  },
+  "literature": {
+    "title": "Литература",
+    "discover": {
+      "title": "Поиск литературы",
+      "searchPlaceholder": "Поиск статей...",
+      "noResults": "Результаты не найдены",
+      "searchRetriever": "Поисковый механизм",
+      "selectRetriever": "Выберите поисковый механизм",
+      "researchProject": "Исследовательский проект",
+      "selectProject": "Выберите проект",
+      "searching": "Поиск...",
+      "search": "Поиск литературы",
+      "results": "Результаты поиска",
+      "saveResults": "Сохранить результаты",
+      "error": {
+        "selectBoth": "Пожалуйста, выберите проект и поисковый механизм",
+        "questionsRequired": "Для выполнения поиска требуются исследовательские вопросы",
+        "searchFailed": "Произошла ошибка во время поиска",
+        "saveFailed": "Не удалось сохранить результаты: {{error}}"
+      },
+      "success": {
+        "saved": "Результаты успешно сохранены!"
+      },
+      "confirm": {
+        "generateQuestions": "У этого проекта нет исследовательских вопросов. Хотите сгенерировать их сейчас?"
+      }
+    },
+    "manage": {
+      "title": "Управление литературой",
+      "addPaper": "Добавить статью",
+      "noPapers": "Статьи не найдены",
+      "filterByProjects": "Фильтр по исследовательским проектам",
+      "selectProjects": "Выбрать проекты",
+      "papers": "Статьи",
+      "exportPapers": "Экспорт статей",
+      "exportFormats": {
+        "bibtex": "BibTeX",
+        "endnote": "EndNote XML",
+        "ris": "RIS"
+      },
+      "table": {
+        "index": "Индекс",
+        "title": "Название",
+        "authors": "Авторы",
+        "date": "Дата",
+        "actions": "Действия"
+      },
+      "actions": {
+        "openLink": "Открыть ссылку",
+        "copyUrl": "Копировать URL",
+        "view": "Просмотр",
+        "edit": "Редактировать",
+        "delete": "Удалить"
+      },
+      "success": {
+        "urlCopied": "URL скопирован в буфер обмена",
+        "paperUpdated": "Статья успешно обновлена",
+        "paperDeleted": "Статья успешно удалена",
+        "paperAdded": "Статья успешно добавлена"
+      },
+      "error": {
+        "updateFailed": "Не удалось обновить статью",
+        "deleteFailed": "Не удалось удалить статью",
+        "addFailed": "Не удалось добавить статью",
+        "duplicatePaper": "Статья с таким названием и URL уже существует"
+      }
+    },
+    "paper": {
+      "title": "Название",
+      "authors": "Авторы",
+      "abstract": "Аннотация",
+      "keywords": "Ключевые слова",
+      "published": "Дата публикации",
+      "doi": "DOI",
+      "source": "Источник"
+    }
+  },
+  "writing": {
+    "title": "Написание",
+    "createDraft": "Создать новый черновик",
+    "drafts": "Черновики",
+    "reports": "Отчеты",
+    "noDrafts": "Черновики не найдены",
+    "noReports": "Отчеты не найдены",
+    "draft": {
+      "title": "Детали черновика",
+      "content": "Содержание",
+      "lastEdited": "Последнее редактирование",
+      "status": "Статус",
+      "outline": "План",
+      "report": "Отчет",
+      "regenerate": "Перегенерировать отчет",
+      "viewReport": "Просмотреть отчет",
+      "saveChanges": "Сохранить изменения",
+      "saving": "Сохранение...",
+      "saved": "Сохранено!",
+      "error": "Ошибка!",
+      "addSection": "Добавить раздел",
+      "sectionTitle": "Название раздела",
+      "addSubsection": "Добавить подраздел",
+      "subsection": "Добавить подраздел",
+      "currentOutline": "Текущий план",
+      "aiAssist": "ИИ-помощник",
+      "manual": "Ручной",
+      "topic": "Тема",
+      "language": "Язык",
+      "generateOutline": "Сгенерировать план",
+      "generating": "Генерация...",
+      "generatedOutline": "Сгенерированный план",
+      "step1": "Шаг 1: Создать план",
+      "step2": "Шаг 2: Сгенерировать отчет",
+      "reportTitle": "Название отчета",
+      "enterTitle": "Введите название отчета",
+      "enterSection": "Введите название раздела",
+      "enterTopic": "Введите тему исследования",
+      "enterLanguage": "напр. Русский",
+      "success": {
+        "outlineGenerated": "План сгенерирован!",
+        "draftSaved": "Черновик успешно сохранен!",
+        "draftRegenerated": "Черновик перегенерирован и успешно сохранен!"
+      },
+      "error": {
+        "enterTopic": "Пожалуйста, введите тему.",
+        "generateFailed": "Не удалось сгенерировать план.",
+        "initiateFailed": "Не удалось инициализировать черновик.",
+        "generateContentFailed": "Не удалось сгенерировать содержимое подраздела.",
+        "saveFailed": "Не удалось сохранить черновик.",
+        "regenerateFailed": "Не удалось сохранить перегенерированный черновик"
+      }
+    },
+    "report": {
+      "title": "Детали отчета",
+      "generated": "Сгенерирован",
+      "download": "Скачать отчет",
+      "raw": "Исходный",
+      "formatted": "Форматированный",
+      "hideRaw": "Скрыть исходный текст",
+      "showRaw": "Показать исходный текст",
+      "copyRaw": "Копировать исходный текст",
+      "copyFormatted": "Копировать форматированный текст",
+      "export": {
+        "md": "Экспорт .md",
+        "docs": "Экспорт .docs",
+        "pdf": "Экспорт .pdf"
+      },
+      "success": {
+        "rawCopied": "Исходный отчет скопирован!",
+        "formattedCopied": "Форматированный отчет скопирован как форматированный текст!"
+      }
+    },
+    "filterByResearchProjects": "Фильтр по исследовательским проектам",
+    "selectProjects": "Выбрать проекты",
+    "researchDrafts": "Исследовательские черновики",
+    "addDraft": "Добавить черновик",
+    "noResearchDraftsFound": "Исследовательские черновики не найдены.",
+    "created": "Создан",
+    "updated": "Обновлен",
+    "delete": "Удалить",
+    "draftDetail": {
+      "title": "Просмотр/Редактирование черновика",
+      "back": "Назад",
+      "form": {
+        "title": "Название",
+        "required": "Обязательно",
+        "outline": "План",
+        "report": "Отчет",
+        "addSection": "Добавить раздел",
+        "sectionTitle": "Название раздела",
+        "addSubsection": "Добавить подраздел",
+        "addSubsectionButton": "Добавить подраздел",
+        "addSectionButton": "Добавить раздел",
+        "currentOutline": "Текущий план",
+        "viewReport": "Просмотреть отчет",
+        "regenerateReport": "Перегенерировать отчет",
+        "cancel": "Отмена",
+        "saveChanges": "Сохранить изменения",
+        "saving": "Сохранение...",
+        "saved": "Сохранено!",
+        "created": "Создано"
+      },
+      "error": {
+        "notFound": "Черновик не найден.",
+        "loadFailed": "Не удалось загрузить черновик.",
+        "updateFailed": "Не удалось обновить черновик.",
+        "regenerateFailed": "Не удалось сгенерировать содержимое подраздела.",
+        "saveRegeneratedFailed": "Не удалось сохранить перегенерированный черновик"
+      },
+      "success": {
+        "regenerated": "Черновик перегенерирован и сохранен!"
+      }
+    }
+  },
+  "home": {
+    "aiAgentAlert": {
+      "title": "Информация",
+      "description": "Пожалуйста, перейдите в настройки для настройки ИИ-агента, чтобы приложение работало корректно.",
+      "settingsLink": "Настройки"
+    },
+    "recentProjects": {
+      "title": "Недавние исследовательские проекты",
+      "noProjects": "Не найдено недавних проектов.",
+      "createdAt": "Создано: {{date}}"
+    }
+  },
+  "datePicker": {
+    "selectDates": "Выберите даты",
+    "clear": "Очистить",
+    "presets": {
+      "7days": "7 дней",
+      "30days": "30 дней",
+      "90days": "90 дней"
+    }
+  }
+} 

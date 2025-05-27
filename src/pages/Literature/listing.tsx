@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown-menu';
+import { useTranslation } from 'react-i18next';
 
 import { getLiteratureResults, exportLiterature, addPaper, updatePaper, deletePaper } from '@/connectors/literatureIpc';
 import { listResearchProjects } from '@/connectors/researchProjectIpc';
@@ -36,6 +37,7 @@ import AddPaperModal from '@/components/modals/addPaperModal';
 import { toast } from "sonner"
 
 export default function LiteratureListingPage() {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState<ResearchProject[]>([]);
   const [papers, setPapers] = useState<research_paper[]>([]);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
@@ -94,10 +96,10 @@ export default function LiteratureListingPage() {
     const res = await updatePaper(updated);
     if (res?.success) {
       setPapers(papers => papers.map(p => p.uid === updated.uid ? updated : p));
-      toast('Paper updated successfully');
+      toast(t('literature.manage.success.paperUpdated'));
     }
     else{
-      setError("Failed to update paper");
+      setError(t('literature.manage.error.updateFailed'));
     }
     setEditOpen(false);
   };
@@ -106,10 +108,10 @@ export default function LiteratureListingPage() {
     const res = await deletePaper(paper.uid);
     if (res?.success) {
       setPapers(papers => papers.filter(p => p.uid !== paper.uid));
-      toast('Paper deleted successfully');
+      toast(t('literature.manage.success.paperDeleted'));
     }
     else{
-      setError("Failed to delete paper");
+      setError(t('literature.manage.error.deleteFailed'));
     }
     setDeleteOpen(false);
   };
@@ -119,13 +121,13 @@ export default function LiteratureListingPage() {
     const res = await addPaper(paper.project_uid, paper);
     if (res?.success) {
       setPapers(papers => [...papers, paper]);
-      toast('Paper added successfully');
+      toast(t('literature.manage.success.paperAdded'));
       setError(null);
     } else {
       if (res?.error === 'A paper with this title and URL already exists.') {
-        setError('A paper with this title and URL already exists.');
+        setError(t('literature.manage.error.duplicatePaper'));
       } else {
-        setError('Failed to add paper');
+        setError(t('literature.manage.error.addFailed'));
       }
     }
     setAddOpen(false);
@@ -140,13 +142,13 @@ export default function LiteratureListingPage() {
       className="p-3 animate-enter w-full"
     >
     <div className="w-full px-4 space-y-6">
-      <h1 className="text-2xl font-bold">Saved Literature Papers</h1>
+      <h1 className="text-2xl font-bold">{t('literature.manage.title')}</h1>
       <Card className="p-4 space-y-4 w-full">
         <div className="flex items-center justify-between">
-          <Label>Filter by Research Projects</Label>
+          <Label>{t('literature.manage.filterByProjects')}</Label>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">Select Projects</Button>
+              <Button variant="outline" size="sm">{t('literature.manage.selectProjects')}</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="p-2">
               {projects.map((project) => (
@@ -168,20 +170,19 @@ export default function LiteratureListingPage() {
       {filteredPapers.length > 0 && (
         <>
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Papers</h2>
-            {/* add a button to add a new paper, and a button to export the papers , the export button should export the papers as : BibTeX, EndNote XML or RIS file format. */}
+            <h2 className="text-xl font-semibold">{t('literature.manage.papers')}</h2>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setAddOpen(true)}>
-                Add Paper
+                {t('literature.manage.addPaper')}
               </Button>
               <Select onValueChange={async (value) => { await exportLiterature(value, filteredPapers); }}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Export Papers" />
+                  <SelectValue placeholder={t('literature.manage.exportPapers')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="bibtex">BibTeX</SelectItem>
-                  <SelectItem value="endnote">EndNote XML</SelectItem>
-                  <SelectItem value="ris">RIS</SelectItem>
+                  <SelectItem value="bibtex">{t('literature.manage.exportFormats.bibtex')}</SelectItem>
+                  <SelectItem value="endnote">{t('literature.manage.exportFormats.endnote')}</SelectItem>
+                  <SelectItem value="ris">{t('literature.manage.exportFormats.ris')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -191,11 +192,11 @@ export default function LiteratureListingPage() {
               <Table className="w-full min-w-[900px]">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-2">Index</TableHead>
-                    <TableHead className="w-80">Title</TableHead>
-                    <TableHead className="w-40">Authors</TableHead>
-                    <TableHead className="w-20">Date</TableHead>
-                    <TableHead className="w-20">Actions</TableHead>
+                    <TableHead className="w-2">{t('literature.manage.table.index')}</TableHead>
+                    <TableHead className="w-80">{t('literature.manage.table.title')}</TableHead>
+                    <TableHead className="w-40">{t('literature.manage.table.authors')}</TableHead>
+                    <TableHead className="w-20">{t('literature.manage.table.date')}</TableHead>
+                    <TableHead className="w-20">{t('literature.manage.table.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -218,7 +219,7 @@ export default function LiteratureListingPage() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              title="Open Link"
+                              title={t('literature.manage.actions.openLink')}
                               onClick={e => {
                                 e.stopPropagation();
                                 window.open(paper.url, '_blank');
@@ -229,11 +230,11 @@ export default function LiteratureListingPage() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              title="Copy URL"
+                              title={t('literature.manage.actions.copyUrl')}
                               onClick={e => {
                                 e.stopPropagation();
                                 navigator.clipboard.writeText(paper.url);
-                                toast.success("URL copied to clipboard");
+                                toast.success(t('literature.manage.success.urlCopied'));
                               }}
                             >
                               <Copy className="w-5 h-5 text-blue-500" />
@@ -241,7 +242,7 @@ export default function LiteratureListingPage() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              title="View"
+                              title={t('literature.manage.actions.view')}
                               onClick={e => {
                                 e.stopPropagation();
                                 navigate(`/literature/view/${paper.project_uid}/${paper.uid}`);
@@ -252,7 +253,7 @@ export default function LiteratureListingPage() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              title="Edit"
+                              title={t('literature.manage.actions.edit')}
                               onClick={e => {
                                 e.stopPropagation();
                                 setPaperToEdit(paper);
@@ -264,7 +265,7 @@ export default function LiteratureListingPage() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              title="Delete"
+                              title={t('literature.manage.actions.delete')}
                               onClick={e => {
                                 e.stopPropagation();
                                 setPaperToDelete(paper);

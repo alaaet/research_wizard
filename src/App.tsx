@@ -13,8 +13,19 @@ import ResearchDrafts from "./pages/Writing";
 import CreateDraftPage from "./pages/Writing/CreateDraft";
 import ResearchDraftDetailPage from "./pages/Writing/ResearchDraftDetail";
 import ReportDetails from "./pages/Writing/ReportDetails";
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import './lib/i18n';
 
 const App = () => {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    // Set initial document direction based on language
+    document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
+
   return (
     <UserMetaDataProvider>
       <HashRouter>

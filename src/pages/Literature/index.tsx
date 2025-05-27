@@ -30,8 +30,10 @@ import { research_paper } from "@/lib/researchPaper";
 import { saveLiteratureResults } from "@/connectors/literatureIpc";
 import { listResearchProjects, getResearchProject, updateResearchProject } from "@/connectors/researchProjectIpc";
 import { generateResearchQuestionsFromTopic } from "@/connectors/aiAgentsIpc";
+import { useTranslation } from "react-i18next";
 
 export default function LiteraturePage() {
+  const { t } = useTranslation();
   const [retrievers, setRetrievers] = useState<SearchRetriever[]>([]);
   const [selectedRetrieverName, setSelectedRetrieverName] =
     useState<string>("");
@@ -55,7 +57,7 @@ export default function LiteraturePage() {
 
   const handleSearch = async () => {
     if (!selectedProject || !selectedRetrieverName) {
-      setError("Please select both a project and a search retriever");
+      setError(t('literature.discover.error.selectBoth'));
       return;
     }
 
@@ -69,7 +71,7 @@ export default function LiteraturePage() {
       // Check if research questions exist
       if (!project.research_questions?.length) {
         const generateQueries = confirm(
-          "This project does not have research questions. Would you like to generate them now?"
+          t('literature.discover.confirm.generateQuestions')
         );
 
         if (generateQueries) {
@@ -81,7 +83,7 @@ export default function LiteraturePage() {
             research_questions: questions,
           });
         } else {
-          setError("Research questions are required to perform the search");
+          setError(t('literature.discover.error.questionsRequired'));
           setLoading(false);
           return;
         }
@@ -97,7 +99,7 @@ export default function LiteraturePage() {
 
       setSearchResults(results);
     } catch (err) {
-      setError(err.message || "An error occurred during the search");
+      setError(err.message || t('literature.discover.error.searchFailed'));
     } finally {
       setLoading(false);
     }
@@ -106,9 +108,9 @@ export default function LiteraturePage() {
   const handleSaveResults = async () => {
     try {
       await saveLiteratureResults(selectedProject, searchResults);
-      alert("Results saved successfully!");
+      alert(t('literature.discover.success.saved'));
     } catch (err) {
-      setError("Failed to save results: " + err.message);
+      setError(t('literature.discover.error.saveFailed', { error: err.message }));
     }
   };
 
@@ -121,24 +123,24 @@ export default function LiteraturePage() {
         className="p-3 animate-enter w-full"
       >
         <div className="w-full px-4 space-y-6">
-          <h1 className="text-2xl font-bold">Literature Search</h1>
+          <h1 className="text-2xl font-bold">{t('literature.discover.title')}</h1>
 
           {error && (
             <Alert variant="destructive">
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>{t('common.error')}</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <Card className="p-4 space-y-4 w-full">
             <div className="space-y-2">
-              <Label>Search Retriever</Label>
+              <Label>{t('literature.discover.searchRetriever')}</Label>
               <Select
                 value={selectedRetrieverName}
                 onValueChange={setSelectedRetrieverName}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a search retriever" />
+                  <SelectValue placeholder={t('literature.discover.selectRetriever')} />
                 </SelectTrigger>
                 <SelectContent>
                   {retrievers.map((retriever) => (
@@ -151,14 +153,14 @@ export default function LiteraturePage() {
             </div>
 
             <div className="space-y-2">
-              <Label>Research Project</Label>
+              <Label>{t('literature.discover.researchProject')}</Label>
               <Select
                 value={selectedProject}
                 onValueChange={setSelectedProject}
               >
                 <SelectTrigger className="h-10 min-h-[2.5rem] max-h-10 overflow-hidden">
                   <SelectValue
-                    placeholder="Select a project"
+                    placeholder={t('literature.discover.selectProject')}
                     className="truncate"
                   />
                 </SelectTrigger>
@@ -181,24 +183,24 @@ export default function LiteraturePage() {
               onClick={handleSearch}
               disabled={loading || !selectedProject || !selectedRetrieverName}
             >
-              {loading ? "Searching..." : "Search Literature"}
+              {loading ? t('literature.discover.searching') : t('literature.discover.search')}
             </Button>
           </Card>
 
           {searchResults.length > 0 && (
             <Card className="p-4 space-y-4 w-full">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">Search Results</h2>
-                <Button onClick={handleSaveResults}>Save Results</Button>
+                <h2 className="text-xl font-semibold">{t('literature.discover.results')}</h2>
+                <Button onClick={handleSaveResults}>{t('literature.discover.saveResults')}</Button>
               </div>
               <div className="w-full overflow-x-auto">
                 <Table className="w-full min-w-[900px]">
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Authors</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Source</TableHead>
+                      <TableHead>{t('literature.paper.title')}</TableHead>
+                      <TableHead>{t('literature.paper.authors')}</TableHead>
+                      <TableHead>{t('literature.paper.published')}</TableHead>
+                      <TableHead>{t('literature.paper.source')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

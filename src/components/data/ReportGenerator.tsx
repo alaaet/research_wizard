@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { ResearchDraftOutline } from '../../lib/researchDraftOutline';
+import { useTranslation } from 'react-i18next';
 
 export type ReportGeneratorProps = {
   outline: ResearchDraftOutline,
@@ -22,11 +23,13 @@ export function ReportGenerator({
   handleSaveReport,
   footer,
 }: ReportGeneratorProps): React.ReactElement {
+  const { t } = useTranslation();
+  
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-2">Step 2: Draft Generation</h2>
+      <h2 className="text-lg font-semibold mb-2">{t('writing.draft.step2')}</h2>
       <Button onClick={handleGenerateReport} disabled={generating || Object.keys(report).length > 0} className="mb-4">
-        {generating ? 'Generating...' : 'Generate Report Content'}
+        {generating ? t('writing.draft.generating') : t('writing.draft.generateOutline')}
       </Button>
       <div className="space-y-4">
         {outline.sections.map((section, sIdx) => (
@@ -51,7 +54,7 @@ export function ReportGenerator({
       </div>
       {allDone && (
         <div className="flex justify-end mt-4">
-          <Button onClick={handleSaveReport} variant="default">Save Report to Draft</Button>
+          <Button onClick={handleSaveReport} variant="default">{t('writing.draft.saveChanges')}</Button>
         </div>
       )}
       {footer}

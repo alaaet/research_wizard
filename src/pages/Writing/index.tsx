@@ -15,10 +15,10 @@ import { ResearchProject } from '@/lib/researchProject';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown-menu';
 import ReactMarkdown from 'react-markdown';
-
-
+import { useTranslation } from 'react-i18next';
 
 export default function ResearchDraftsPage() {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState<ResearchProject[]>([]);
   const [drafts, setDrafts] = useState<ResearchDraft[]>([]);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
@@ -86,10 +86,10 @@ export default function ResearchDraftsPage() {
       >
         <Card className="p-4 space-y-4 w-full">
           <div className="flex items-center justify-between">
-            <Label>Filter by Research Projects</Label>
+            <Label>{t('writing.filterByResearchProjects')}</Label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">Select Projects</Button>
+                <Button variant="outline" size="sm">{t('writing.selectProjects')}</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="p-2">
                 {projects.map((project) => (
@@ -110,28 +110,26 @@ export default function ResearchDraftsPage() {
         </Card>
         <div className="mx-auto py-8 w-full">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">Research Drafts</h1>
-            <Button onClick={() => navigate(`/writing/${selectedProjects[0]}/create-draft`)} disabled={selectedProjects.length === 0}>Add Draft</Button>
+            <h1 className="text-2xl font-bold text-gray-800">{t('writing.researchDrafts')}</h1>
+            <Button onClick={() => navigate(`/writing/${selectedProjects[0]}/create-draft`)} disabled={selectedProjects.length === 0}>{t('writing.addDraft')}</Button>
           </div>
           <div className="space-y-4">
             {filteredDrafts.length === 0 ? (
-              <div className="text-muted-foreground text-gray-800">No research drafts found.</div>
+              <div className="text-muted-foreground text-gray-800">{t('writing.noResearchDraftsFound')}</div>
             ) : (
               filteredDrafts.map(draft => (
                 <Link to={`/writing/draft/${draft.uid}`} key={draft.uid}>
                   <Card className="p-4 mb-4 hover:bg-muted cursor-pointer">
                     <div className="font-semibold text-lg">{draft.title}</div>
-                    {/* <div className="prose prose-sm max-w-none text-muted-foreground mt-1 line-clamp-2">
-                      <ReactMarkdown>{draft.report?.slice(0, 500) || ''}</ReactMarkdown>
-                    </div> */}
                     <div className="flex items-center justify-between text-xs text-muted-foreground mt-2">
                       <span>
-                        Created: {draft.created_at ? new Date(draft.created_at).toLocaleString() : ''}{draft.updated_at ? `, Updated: ${draft.updated_at ? new Date(draft.updated_at).toLocaleString() : ''}` : ''}
+                        {t('writing.created')}: {draft.created_at ? new Date(draft.created_at).toLocaleString() : ''}
+                        {draft.updated_at ? `, ${t('writing.updated')}: ${draft.updated_at ? new Date(draft.updated_at).toLocaleString() : ''}` : ''}
                       </span>
                       <Button
                         size="icon"
                         variant="ghost"
-                        title="Delete"
+                        title={t('writing.delete')}
                         onClick={e => {
                           e.stopPropagation();
                           e.preventDefault();

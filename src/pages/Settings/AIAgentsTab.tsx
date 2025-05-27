@@ -10,7 +10,7 @@ import { getUserMetaDataByRef, setUserMetaData, type UserMetaData } from '../../
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 
-export default function AIAgentsTab() {
+export default function AIAgentsTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }) {
   const [aiAgents, setAIAgents] = useState<AIAgent[]>([]);
   const [loadingAgents, setLoadingAgents] = useState(true);
   const [editAgent, setEditAgent] = useState<AIAgent | null>(null);
@@ -58,7 +58,7 @@ export default function AIAgentsTab() {
       {loadingAgents ? (
         <div>Loading AI agents...</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" dir={dir}>
           {aiAgents.map(agent => {
             const iconUrl = `../assets/ai_providers/${agent.icon}`;
             return (
@@ -88,7 +88,8 @@ export default function AIAgentsTab() {
       )}
       <hr className='w-full my-4'/>
       <form
-        className="flex flex-col gap-4"
+        className={`flex flex-col gap-4`}
+        dir={dir}
         onSubmit={async (e) => {
           e.preventDefault();
           setAISavingKey('all');
@@ -106,19 +107,20 @@ export default function AIAgentsTab() {
           setAISavingKey(null);
         }}
       >
-        <Label className='text-lg font-bold text-center mb-4 w-full'>AI Params</Label>
+        <Label className={`text-lg font-bold text-center mb-4 w-full ${dir === 'rtl' ? 'text-right' : ''}`}>AI Params</Label>
         {aiParams.map(field => (
           <div key={field.Key} className="space-y-1">
-            <label className="block font-medium">{field.label || field.Key}</label>
+            <label className={`block font-medium ${dir === 'rtl' ? 'text-right' : ''}`}>{field.label || field.Key}</label>
             {field.Type === 'string' || field.Type === 'number' ? (
               <Input
                 value={aiEditValues[field.Key] ?? ''}
                 onChange={e => handleAIParamChange(field.Key, e.target.value)}
                 type={field.Type === 'number' ? 'number' : 'text'}
+                className={dir === 'rtl' ? 'text-right' : ''}
               />
             ) : (
               <textarea
-                className="w-full border rounded px-3 py-2 bg-background"
+                className={`w-full border rounded px-3 py-2 bg-background ${dir === 'rtl' ? 'text-right' : ''}`}
                 value={aiEditValues[field.Key] ?? ''}
                 onChange={e => handleAIParamChange(field.Key, e.target.value)}
                 rows={3}

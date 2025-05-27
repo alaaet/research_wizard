@@ -1,0 +1,323 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "saved": "Enregistré !",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "settings": "Paramètres",
+    "language": "Langue",
+    "name": "Nom",
+    "email": "Email",
+    "select": "Sélectionner..."
+  },
+  "navigation": {
+    "home": "Accueil",
+    "projects": "Projets",
+    "literature": "Littérature",
+    "literatureDiscover": "Découvrir",
+    "literatureManage": "Gérer",
+    "writing": "Écriture",
+    "settings": "Paramètres",
+    "toggleNavigation": "Basculer la navigation",
+    "toggleTheme": "Basculer le thème",
+    "defaultUser": "Utilisateur par défaut",
+    "defaultEmail": "user@rwiz.eu",
+    "appName": "Assistant de Recherche"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": {
+      "title": "Paramètres de langue",
+      "uiLanguage": "Langue de l'interface",
+      "reportLanguage": "Langue des rapports"
+    },
+    "general": {
+      "title": "Paramètres généraux",
+      "description": "Configurez les paramètres généraux de l'application",
+      "error": {
+        "loadFailed": "Échec du chargement des paramètres.",
+        "saveFailed": "Échec de l'enregistrement des paramètres."
+      }
+    },
+    "integrations": {
+      "title": "Intégrations",
+      "retrieverTitle": "Intégrations des moteurs de recherche",
+      "loadingRetrievers": "Chargement des moteurs de recherche...",
+      "description": "Gérez vos intégrations de services externes"
+    },
+    "reportParameters": {
+      "title": "Paramètres des rapports",
+      "description": "Configurez les paramètres par défaut des rapports"
+    },
+    "aiAgents": {
+      "title": "Agents IA",
+      "description": "Configurez vos agents IA"
+    }
+  },
+  "projects": {
+    "title": "Projets de recherche",
+    "createNew": "Créer un nouveau projet",
+    "noProjects": "Aucun projet de recherche trouvé.",
+    "create": {
+      "title": "Créer un projet de recherche",
+      "titleLabel": "Titre",
+      "required": "Requis",
+      "keywords": "Mots-clés",
+      "addKeyword": "Ajouter un mot-clé...",
+      "description": "Description",
+      "researchQuestions": "Questions de recherche",
+      "addQuestion": "Ajouter une question...",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement..."
+    },
+    "list": {
+      "researchQuestions": "Questions de recherche :",
+      "created": "Créé le :"
+    },
+    "details": {
+      "title": "Détails du projet",
+      "description": "Description",
+      "createdAt": "Créé le",
+      "updatedAt": "Mis à jour le",
+      "status": "Statut",
+      "viewEdit": "Voir/Modifier le projet",
+      "back": "Retour",
+      "titleLabel": "Titre",
+      "required": "Requis",
+      "keywords": "Mots-clés",
+      "addKeyword": "Ajouter un mot-clé...",
+      "researchQuestions": "Questions de recherche",
+      "addQuestion": "Ajouter une question...",
+      "generateWithAI": "Générer avec l'IA",
+      "saveChanges": "Enregistrer les modifications",
+      "error": {
+        "notFound": "Projet non trouvé.",
+        "loadFailed": "Échec du chargement du projet.",
+        "updateFailed": "Échec de la mise à jour du projet."
+      }
+    }
+  },
+  "literature": {
+    "title": "Littérature",
+    "discover": {
+      "title": "Recherche de littérature",
+      "searchPlaceholder": "Rechercher des articles...",
+      "noResults": "Aucun résultat trouvé",
+      "searchRetriever": "Moteur de recherche",
+      "selectRetriever": "Sélectionner un moteur de recherche",
+      "researchProject": "Projet de recherche",
+      "selectProject": "Sélectionner un projet",
+      "searching": "Recherche en cours...",
+      "search": "Rechercher dans la littérature",
+      "results": "Résultats de la recherche",
+      "saveResults": "Enregistrer les résultats",
+      "error": {
+        "selectBoth": "Veuillez sélectionner un projet et un moteur de recherche",
+        "questionsRequired": "Les questions de recherche sont nécessaires pour effectuer la recherche",
+        "searchFailed": "Une erreur s'est produite pendant la recherche",
+        "saveFailed": "Échec de l'enregistrement des résultats : {{error}}"
+      },
+      "success": {
+        "saved": "Résultats enregistrés avec succès !"
+      },
+      "confirm": {
+        "generateQuestions": "Ce projet n'a pas de questions de recherche. Voulez-vous les générer maintenant ?"
+      }
+    },
+    "manage": {
+      "title": "Gérer la littérature",
+      "addPaper": "Ajouter un article",
+      "noPapers": "Aucun article trouvé",
+      "filterByProjects": "Filtrer par projets de recherche",
+      "selectProjects": "Sélectionner les projets",
+      "papers": "Articles",
+      "exportPapers": "Exporter les articles",
+      "exportFormats": {
+        "bibtex": "BibTeX",
+        "endnote": "EndNote XML",
+        "ris": "RIS"
+      },
+      "table": {
+        "index": "Index",
+        "title": "Titre",
+        "authors": "Auteurs",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "actions": {
+        "openLink": "Ouvrir le lien",
+        "copyUrl": "Copier l'URL",
+        "view": "Voir",
+        "edit": "Modifier",
+        "delete": "Supprimer"
+      },
+      "success": {
+        "urlCopied": "URL copiée dans le presse-papiers",
+        "paperUpdated": "Article mis à jour avec succès",
+        "paperDeleted": "Article supprimé avec succès",
+        "paperAdded": "Article ajouté avec succès"
+      },
+      "error": {
+        "updateFailed": "Échec de la mise à jour de l'article",
+        "deleteFailed": "Échec de la suppression de l'article",
+        "addFailed": "Échec de l'ajout de l'article",
+        "duplicatePaper": "Un article avec ce titre et cette URL existe déjà"
+      }
+    },
+    "paper": {
+      "title": "Titre",
+      "authors": "Auteurs",
+      "abstract": "Résumé",
+      "keywords": "Mots-clés",
+      "published": "Date de publication",
+      "doi": "DOI",
+      "source": "Source"
+    }
+  },
+  "writing": {
+    "title": "Écriture",
+    "createDraft": "Créer un nouveau brouillon",
+    "drafts": "Brouillons",
+    "reports": "Rapports",
+    "noDrafts": "Aucun brouillon trouvé",
+    "noReports": "Aucun rapport trouvé",
+    "draft": {
+      "title": "Détails du brouillon",
+      "content": "Contenu",
+      "lastEdited": "Dernière modification",
+      "status": "Statut",
+      "outline": "Plan",
+      "report": "Rapport",
+      "regenerate": "Régénérer le rapport",
+      "viewReport": "Voir le rapport",
+      "saveChanges": "Enregistrer les modifications",
+      "saving": "Enregistrement...",
+      "saved": "Enregistré !",
+      "error": "Erreur !",
+      "addSection": "Ajouter une section",
+      "sectionTitle": "Titre de la section",
+      "addSubsection": "Ajouter une sous-section",
+      "subsection": "Ajouter une sous-section",
+      "currentOutline": "Plan actuel",
+      "aiAssist": "Assistance IA",
+      "manual": "Manuel",
+      "topic": "Sujet",
+      "language": "Langue",
+      "generateOutline": "Générer le plan",
+      "generating": "Génération...",
+      "generatedOutline": "Plan généré",
+      "step1": "Étape 1 : Créer le plan",
+      "step2": "Étape 2 : Générer le rapport",
+      "reportTitle": "Titre du rapport",
+      "enterTitle": "Entrez le titre du rapport",
+      "enterSection": "Entrez le titre de la section",
+      "enterTopic": "Entrez le sujet de recherche",
+      "enterLanguage": "ex. Français",
+      "success": {
+        "outlineGenerated": "Plan généré !",
+        "draftSaved": "Brouillon enregistré avec succès !",
+        "draftRegenerated": "Brouillon régénéré et enregistré avec succès !"
+      },
+      "error": {
+        "enterTopic": "Veuillez entrer un sujet.",
+        "generateFailed": "Échec de la génération du plan.",
+        "initiateFailed": "Échec de l'initialisation du brouillon.",
+        "generateContentFailed": "Échec de la génération du contenu de la sous-section.",
+        "saveFailed": "Échec de l'enregistrement du brouillon.",
+        "regenerateFailed": "Échec de l'enregistrement du brouillon régénéré"
+      }
+    },
+    "report": {
+      "title": "Détails du rapport",
+      "generated": "Généré",
+      "download": "Télécharger le rapport",
+      "raw": "Brut",
+      "formatted": "Formaté",
+      "hideRaw": "Masquer le texte brut",
+      "showRaw": "Afficher le texte brut",
+      "copyRaw": "Copier le texte brut",
+      "copyFormatted": "Copier le texte formaté",
+      "export": {
+        "md": "Exporter .md",
+        "docs": "Exporter .docs",
+        "pdf": "Exporter .pdf"
+      },
+      "success": {
+        "rawCopied": "Rapport brut copié !",
+        "formattedCopied": "Rapport formaté copié en tant que texte riche !"
+      }
+    },
+    "filterByResearchProjects": "Filtrer par projets de recherche",
+    "selectProjects": "Sélectionner les projets",
+    "researchDrafts": "Brouillons de recherche",
+    "addDraft": "Ajouter un brouillon",
+    "noResearchDraftsFound": "Aucun brouillon de recherche trouvé.",
+    "created": "Créé le",
+    "updated": "Mis à jour le",
+    "delete": "Supprimer",
+    "draftDetail": {
+      "title": "Voir/Modifier le brouillon",
+      "back": "Retour",
+      "form": {
+        "title": "Titre",
+        "required": "Requis",
+        "outline": "Plan",
+        "report": "Rapport",
+        "addSection": "Ajouter une section",
+        "sectionTitle": "Titre de la section",
+        "addSubsection": "Ajouter une sous-section",
+        "addSubsectionButton": "Ajouter une sous-section",
+        "addSectionButton": "Ajouter une section",
+        "currentOutline": "Plan actuel",
+        "viewReport": "Voir le rapport",
+        "regenerateReport": "Régénérer le rapport",
+        "cancel": "Annuler",
+        "saveChanges": "Enregistrer les modifications",
+        "saving": "Enregistrement...",
+        "saved": "Enregistré !",
+        "created": "Créé le"
+      },
+      "error": {
+        "notFound": "Brouillon non trouvé.",
+        "loadFailed": "Échec du chargement du brouillon.",
+        "updateFailed": "Échec de la mise à jour du brouillon.",
+        "regenerateFailed": "Échec de la génération du contenu de la sous-section.",
+        "saveRegeneratedFailed": "Échec de l'enregistrement du brouillon régénéré"
+      },
+      "success": {
+        "regenerated": "Brouillon régénéré et enregistré !"
+      }
+    }
+  },
+  "home": {
+    "aiAgentAlert": {
+      "title": "Information",
+      "description": "Veuillez vous rendre dans les paramètres pour configurer l'agent IA afin que l'application fonctionne correctement.",
+      "settingsLink": "Paramètres"
+    },
+    "recentProjects": {
+      "title": "Projets de recherche récents",
+      "noProjects": "Aucun projet récent trouvé.",
+      "createdAt": "Créé le : {{date}}"
+    }
+  },
+  "datePicker": {
+    "selectDates": "Sélectionner des dates",
+    "clear": "Effacer",
+    "presets": {
+      "7days": "7 jours",
+      "30days": "30 jours",
+      "90days": "90 jours"
+    }
+  }
+} 

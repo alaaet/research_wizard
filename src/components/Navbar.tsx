@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import rwiz from "../../assets/icons/png/rwiz.png";
 import {
   Home,
-  MapPin,
-  Wand,
   Package,
-  Wallet,
-  BarChart2,
   Menu,
   X,
   Sun,
   Moon,
   ChevronRight,
   Settings,
-  Users,
   FileText,
   Cog,
   BookOpenCheck,
@@ -22,6 +18,9 @@ import {
 import { useUserMetaData } from "../context/UserMetaDataContext";
 
 const Navbar = () => {
+  const { t } = useTranslation();
+  const selectedLanguage = localStorage.getItem("i18nextLng") || "en";
+  const isArabic = selectedLanguage === "ar";
   const [isOpen, setIsOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const location = useLocation();
@@ -69,18 +68,18 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { title: "Home", path: "/", icon: Home },
-    { title: "Projects", path: "/projects", icon: Package },
+    { title: t('navigation.home'), path: "/", icon: Home },
+    { title: t('navigation.projects'), path: "/projects", icon: Package },
     {
-      title: "Literature",
+      title: t('navigation.literature'),
       icon: FileText,
       children: [
-        { title: "Discover", path: "/literature", icon: ChevronRight },
-        { title: "Manage", path: "/literature/listing", icon: ChevronRight },
+        { title: t('navigation.literatureDiscover'), path: "/literature", icon: ChevronRight },
+        { title: t('navigation.literatureManage'), path: "/literature/listing", icon: ChevronRight },
       ],
     },
-    { title: "Writing", icon: BookOpenCheck, path: "/writing" },
-    { title: "Settings", path: "/settings", icon: Settings },
+    { title: t('navigation.writing'), icon: BookOpenCheck, path: "/writing" },
+    { title: t('navigation.settings'), path: "/settings", icon: Settings },
   ];
 
   const getCurrentPath = () => {
@@ -106,7 +105,7 @@ const Navbar = () => {
         <button
           onClick={toggleSidebar}
           className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-all active:scale-95 dark:bg-gray-800 dark:hover:bg-gray-700"
-          aria-label="Toggle navigation"
+          aria-label={t('navigation.toggleNavigation')}
         >
           {isOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -120,8 +119,7 @@ const Navbar = () => {
       >
         <div className="p-2 border-b border-border flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
-            {/* <Wand className="h-6 w-6 text-rwiz-primary" /> */}
-            <img src={rwiz} alt="Research Wizard" className="h-8 w-8" />
+            <img src={rwiz} alt={t('navigation.appName')} className="h-8 w-8" />
             <span className="text-lg font-bold text-foreground">
               Research Wizard
             </span>
@@ -129,7 +127,7 @@ const Navbar = () => {
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            aria-label="Toggle theme"
+            aria-label={t('navigation.toggleTheme')}
           >
             {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
@@ -148,7 +146,7 @@ const Navbar = () => {
                   }`}
                   onClick={() => toggleSection(item.title)}
                 >
-                  <item.icon className={`h-5 w-5 ${isActive(item.children.map(child => child.path).find(path => isActive(path)) || '') ? 'text-rwiz-primary' : ''}`} />
+                  <item.icon className={`h-5 w-5 ${isActive(item.children.map(child => child.path).find(path => isActive(path)) || '') ? 'text-rwiz-primary' : ''}  ${isArabic ? 'ml-2' : ''}`} />
                   <span>{item.title}</span>
                   {/* <span className="ml-auto">{openSections[item.title] ? '▼' : '▶'}</span> */}
                 </div>
@@ -165,7 +163,7 @@ const Navbar = () => {
                           }`}
                           onClick={() => setIsOpen(false)}
                         >
-                          <child.icon className={`h-5 w-5 ${isActive(child.path) ? 'text-rwiz-primary' : ''}`} />
+                          <child.icon className={`h-5 w-5 ${isActive(child.path) ? 'text-rwiz-primary' : ''} ${isArabic ? 'ml-2' : ''}`} />
                           <span>{child.title}</span>
                           {isActive(child.path) && (
                             <div className="ml-auto flex items-center">
@@ -190,7 +188,7 @@ const Navbar = () => {
                 }`}
                 onClick={() => setIsOpen(false)}
               >
-                <item.icon className={`h-5 w-5 ${isActive(item.path) ? 'text-rwiz-primary' : ''}`} />
+                <item.icon className={`h-5 w-5 ${isActive(item.path) ? 'text-rwiz-primary' : ''} ${isArabic ? 'ml-2' : ''}`} />
                 <span>{item.title}</span>
                 {isActive(item.path) && (
                   <div className="ml-auto flex items-center">
@@ -216,10 +214,10 @@ const Navbar = () => {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">
-                {name || "Default User"}
+                {name || t('navigation.defaultUser')}
               </p>
               <p className="text-xs text-muted-foreground truncate">
-                {email || "user@rwiz.eu"}
+                {email || t('navigation.defaultEmail')}
               </p>
             </div>
             <Link to="/settings">

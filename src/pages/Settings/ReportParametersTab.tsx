@@ -3,8 +3,10 @@ import { getUserMetaDataByRef, setUserMetaData, type UserMetaData } from '../../
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import { Separator } from "@/components/ui/separator";
+import { useTranslation } from 'react-i18next';
 
-export default function ReportParametersTab() {
+export default function ReportParametersTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }) {
+  const { t } = useTranslation();
   const [fields, setFields] = useState<UserMetaData[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -42,19 +44,19 @@ export default function ReportParametersTab() {
     setSaving(false);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>{t('common.loading')}</div>;
 
   return (
     <>
-      <h2 className="text-xl font-bold mb-2">Report Generation Parameters</h2>
-      <p className="text-muted-foreground mb-6">Adjust the parameters used for automatic report generation. Changes are saved for future reports.</p>
+      <h2 className={`text-xl font-bold mb-2 ${dir === 'rtl' ? 'text-right' : ''}`}>{t('settings.reportParameters.title')}</h2>
+      <p className={`text-muted-foreground mb-6 ${dir === 'rtl' ? 'text-right' : ''}`}>{t('settings.reportParameters.description')}</p>
       <Separator className="mb-6" />
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" dir={dir}>
         {fields.map(field => (
           <div key={field.Key} className="flex items-center gap-4">
             <label
               htmlFor={field.Key}
-              className="block font-medium min-w-[220px] text-right"
+              className={`block font-medium min-w-[220px] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
             >
               {field.label}
             </label>
@@ -64,12 +66,12 @@ export default function ReportParametersTab() {
                 value={editValues[field.Key] ?? ''}
                 onChange={e => handleChange(field.Key, e.target.value)}
                 type={field.Type === 'number' ? 'number' : 'text'}
-                className="flex-1"
+                className={`flex-1 ${dir === 'rtl' ? 'text-right' : ''}`}
               />
             ) : (
               <textarea
                 id={field.Key}
-                className="w-full border rounded px-3 py-2 bg-background flex-1"
+                className={`w-full border rounded px-3 py-2 bg-background flex-1 ${dir === 'rtl' ? 'text-right' : ''}`}
                 value={editValues[field.Key] ?? ''}
                 onChange={e => handleChange(field.Key, e.target.value)}
                 rows={3}
@@ -79,11 +81,11 @@ export default function ReportParametersTab() {
         ))}
         <div className="flex justify-end">
           <Button type="submit" className="mt-4" size="sm" disabled={saving}>
-            {saving ? 'Saving...' : 'Save All'}
+            {saving ? t('common.saving') : t('common.save')}
           </Button>
         </div>
-        {success && <span className="text-green-600 ml-2">Saved!</span>}
-        {error && <span className="text-red-500 ml-2">Error!</span>}
+        {success && <span className="text-green-600 ml-2">{t('common.saved')}</span>}
+        {error && <span className="text-red-500 ml-2">{t('common.error')}</span>}
       </form>
     </>
   );

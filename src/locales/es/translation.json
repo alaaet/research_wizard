@@ -1,0 +1,140 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "saved": "¡Guardado!",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "add": "Añadir",
+    "search": "Buscar",
+    "settings": "Configuración",
+    "language": "Idioma",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "select": "Seleccionar...",
+    "export": "Exportar",
+    "import": "Importar",
+    "print": "Imprimir",
+    "technicalSheet": "Ficha técnica",
+    "importData": "Importar datos",
+    "csvFile": "Archivo CSV",
+    "importDataDescription": "Los datos se importarán al módulo {{moduleName}}. Asegúrese de que el archivo esté en formato CSV.",
+    "titleUpdated": "Título actualizado",
+    "descriptionUpdated": "Descripción actualizada",
+    "monthUpdated": "Mes actualizado"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "projects": "Proyectos",
+    "reports": "Informes",
+    "settings": "Configuración"
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": {
+      "title": "Configuración de idioma",
+      "uiLanguage": "Idioma de la interfaz",
+      "reportLanguage": "Idioma de los informes"
+    },
+    "integrations": {
+      "title": "Integraciones",
+      "retrieverTitle": "Integraciones de motores de búsqueda",
+      "loadingRetrievers": "Cargando motores de búsqueda..."
+    }
+  },
+  "home": {
+    "aiAgentAlert": {
+      "title": "Información",
+      "description": "Por favor, vaya a la configuración para configurar el agente de IA para que la aplicación funcione correctamente.",
+      "settingsLink": "Configuración"
+    },
+    "recentProjects": {
+      "title": "Proyectos de investigación recientes",
+      "noProjects": "No se encontraron proyectos recientes.",
+      "createdAt": "Creado: {{date}}"
+    }
+  },
+  "dashboard": {
+    "welcomeTitle": "Hola, Agricultor de Guadalupe",
+    "welcomeDescription": "Aquí tienes una visión general de tu operación agrícola en Guadalupe",
+    "currentMonth": "Agosto 2023",
+    "noActiveAlerts": "No hay alertas activas",
+    "noUpcomingTasks": "No hay tareas próximas",
+    "addAlert": "Añadir alerta",
+    "addTask": "Añadir tarea",
+    "addWeatherAlert": "Añadir alerta meteorológica",
+    "alertType": "Tipo",
+    "alertTypes": {
+      "Cyclone": "Ciclón",
+      "Pluie": "Lluvia",
+      "Sécheresse": "Sequía",
+      "Vent": "Viento",
+      "info": "Información",
+      "warning": "Advertencia",
+      "danger": "Peligro"
+    },
+    "region": "Región",
+    "startDate": "Fecha de inicio",
+    "endDate": "Fecha de fin",
+    "severity": "Severidad",
+    "severityLevels": {
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta"
+    },
+    "description": "Descripción",
+    "message": "Mensaje",
+    "enterAlertMessage": "Introduce el mensaje de alerta",
+    "title": "Título",
+    "enterTaskTitle": "Introduce el título de la tarea",
+    "dueDate": "Fecha de vencimiento",
+    "dueDatePlaceholder": "ej: Hoy, Mañana, 15/06"
+  },
+  "technicalSheet": {
+    "title": "Ficha técnica",
+    "crop": "Cultivo",
+    "insufficientData": "Datos insuficientes para generar la ficha técnica",
+    "notSpecified": "No especificado",
+    "noNotes": "Sin notas",
+    "generatedSuccessfully": "Ficha técnica generada con éxito",
+    "generationError": "Error al generar la ficha técnica:",
+    "generalInfo": "Información general",
+    "family": "Familia",
+    "origin": "Origen",
+    "type": "Tipo",
+    "growingSeason": "Temporada de crecimiento",
+    "cultivationInfo": "Información de cultivo",
+    "soilType": "Tipo de suelo",
+    "waterNeeds": "Necesidades de agua",
+    "fertilization": "Fertilización",
+    "harvestPeriod": "Período de cosecha",
+    "yieldPerHectare": "Rendimiento por hectárea",
+    "phytosanitaryIssues": "Problemas fitosanitarios",
+    "pests": "Plagas",
+    "diseases": "Enfermedades",
+    "notes": "Notas",
+    "generatedOn": "Ficha técnica generada el {{date}}",
+    "downloadButton": "Descargar ficha técnica",
+    "preview": "Vista previa",
+    "print": "Imprimir",
+    "downloadPDF": "Descargar PDF",
+    "tooltip": "Generar ficha técnica detallada",
+    "previewTitle": "Ficha técnica - {{name}}",
+    "previewDescription": "Vista previa de la ficha técnica"
+  },
+  "datePicker": {
+    "selectDates": "Seleccionar fechas",
+    "clear": "Limpiar",
+    "presets": {
+      "7days": "7 días",
+      "30days": "30 días",
+      "90days": "90 días"
+    }
+  }
+} 

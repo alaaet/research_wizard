@@ -8,13 +8,15 @@ import { Label } from '@/components/ui/label';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import EditRetrieverModal from '../../components/modals/editRetrieverModal';
+import { useTranslation } from 'react-i18next';
 
-export default function IntegrationsTab() {
+export default function IntegrationsTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }) {
   const [retrievers, setRetrievers] = useState<SearchRetriever[]>([]);
   const [loading, setLoading] = useState(true);
   const [editRetriever, setEditRetriever] = useState<SearchRetriever | null>(null);
   const [editOpen, setEditOpen] = useState(false);
   const isDark = useIsDarkTheme();
+  const { t } = useTranslation();
 
   useEffect(() => {
     getSearchRetrievers().then(data => {
@@ -25,11 +27,11 @@ export default function IntegrationsTab() {
 
   return (
     <>
-      <Label className='text-lg font-bold text-center mb-4 w-full'>Search Retriever Integrations</Label>
+      <Label className={`text-lg font-bold text-center mb-4 w-full ${dir === 'rtl' ? 'text-right' : ''}`}>{t('settings.integrations.retrieverTitle')}</Label>
       {loading ? (
-        <div>Loading search retrievers...</div>
+        <div>{t('settings.integrations.loadingRetrievers')}</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" dir={dir}>
           {retrievers.map(retriever => {
             const iconUrl = `../assets/integrations/retrievers/${retriever.icon}`;
             return (

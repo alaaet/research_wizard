@@ -1,9 +1,9 @@
-
 import * as React from "react"
 import { addDays, format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
+import { useTranslation } from "react-i18next"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -18,9 +18,9 @@ interface DatePickerWithRangeProps {
   date: DateRange | undefined
   setDate: (date: DateRange | undefined) => void
   className?: string
-  align?: "center" | "start" | "end"
+  align?: "start" | "center" | "end"
   placeholderText?: string
-  presets?: { label: string; days: number }[]
+  presets?: Array<{ label: string; days: number }>
 }
 
 export function DatePickerWithRange({
@@ -28,13 +28,18 @@ export function DatePickerWithRange({
   setDate,
   className,
   align = "start",
-  placeholderText = "Sélectionner des dates",
-  presets = [
-    { label: "7 jours", days: 7 },
-    { label: "30 jours", days: 30 },
-    { label: "90 jours", days: 90 }
-  ]
+  placeholderText,
+  presets
 }: DatePickerWithRangeProps) {
+  const { t } = useTranslation();
+  
+  const defaultPlaceholderText = t('datePicker.selectDates');
+  const defaultPresets = [
+    { label: t('datePicker.presets.7days'), days: 7 },
+    { label: t('datePicker.presets.30days'), days: 30 },
+    { label: t('datePicker.presets.90days'), days: 90 }
+  ];
+  
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -58,7 +63,7 @@ export function DatePickerWithRange({
                 format(date.from, "dd/MM/yyyy", { locale: fr })
               )
             ) : (
-              <span>{placeholderText}</span>
+              <span>{placeholderText || defaultPlaceholderText}</span>
             )}
           </Button>
         </PopoverTrigger>
@@ -79,9 +84,9 @@ export function DatePickerWithRange({
               onClick={() => setDate(undefined)}
               className="text-xs"
             >
-              Effacer
+              {t('datePicker.clear')}
             </Button>
-            {presets.map((preset, i) => (
+            {(presets || defaultPresets).map((preset, i) => (
               <Button 
                 key={i}
                 variant="outline" 

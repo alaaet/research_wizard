@@ -9,6 +9,8 @@ import { Textarea } from '../../components/ui/textarea';
 import { Card } from '../../components/ui/card';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+
 function TagsInput({ value, onChange, placeholder }: { value: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
   const [input, setInput] = useState('');
   return (
@@ -41,6 +43,7 @@ function TagsInput({ value, onChange, placeholder }: { value: string[]; onChange
 }
 
 export default function ResearchProjectsPage() {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState<ResearchProject[]>([]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
@@ -69,7 +72,6 @@ export default function ResearchProjectsPage() {
       description: form.description,
       research_questions: form.research_questions,
     }
-    // await createResearchProject();
     createResearchProject(project)
       .then(result => console.log('Project creation result:', result))
       .catch(err => console.log('Project creation error:', err));
@@ -90,33 +92,47 @@ export default function ResearchProjectsPage() {
       >
         <div className="max-w-3xl mx-auto py-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-800">Research Projects</h1>
+            <h1 className="text-2xl font-bold text-gray-800">{t('projects.title')}</h1>
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button onClick={() => setOpen(true)}>Create New Project</Button>
+                <Button onClick={() => setOpen(true)}>{t('projects.createNew')}</Button>
               </DialogTrigger>
               <DialogContent>
-                <DialogTitle>Create Research Project</DialogTitle>
+                <DialogTitle>{t('projects.create.title')}</DialogTitle>
                 <form className="space-y-4" onSubmit={handleSubmit}>
                   <div>
-                    <label className="block font-medium mb-1">Title <span className="text-red-500">*</span></label>
+                    <label className="block font-medium mb-1">
+                      {t('projects.create.titleLabel')} <span className="text-red-500">*</span>
+                    </label>
                     <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />
                   </div>
                   <div>
-                    <label className="block font-medium mb-1">Keywords</label>
-                    <TagsInput value={form.keywords} onChange={v => setForm(f => ({ ...f, keywords: v }))} placeholder="Add keyword..." />
+                    <label className="block font-medium mb-1">{t('projects.create.keywords')}</label>
+                    <TagsInput 
+                      value={form.keywords} 
+                      onChange={v => setForm(f => ({ ...f, keywords: v }))} 
+                      placeholder={t('projects.create.addKeyword')} 
+                    />
                   </div>
                   <div>
-                    <label className="block font-medium mb-1">Description</label>
+                    <label className="block font-medium mb-1">{t('projects.create.description')}</label>
                     <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
                   </div>
                   <div>
-                    <label className="block font-medium mb-1">Research Questions</label>
-                    <TagsInput value={form.research_questions} onChange={v => setForm(f => ({ ...f, research_questions: v }))} placeholder="Add question..." />
+                    <label className="block font-medium mb-1">{t('projects.create.researchQuestions')}</label>
+                    <TagsInput 
+                      value={form.research_questions} 
+                      onChange={v => setForm(f => ({ ...f, research_questions: v }))} 
+                      placeholder={t('projects.create.addQuestion')} 
+                    />
                   </div>
                   <div className="flex justify-end gap-2">
-                    <Button type="button" variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
-                    <Button type="submit" disabled={loading || !form.title.trim()}>{loading ? 'Saving...' : 'Save'}</Button>
+                    <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
+                      {t('projects.create.cancel')}
+                    </Button>
+                    <Button type="submit" disabled={loading || !form.title.trim()}>
+                      {loading ? t('projects.create.saving') : t('projects.create.save')}
+                    </Button>
                   </div>
                 </form>
               </DialogContent>
@@ -124,11 +140,11 @@ export default function ResearchProjectsPage() {
           </div>
           <div className="space-y-4">
             {projects.length === 0 ? (
-              <div className="text-muted-foreground text-gray-800">No research projects found.</div>
+              <div className="text-muted-foreground text-gray-800">{t('projects.noProjects')}</div>
             ) : (
               projects.map(project => (
-                <Link to={`/projects/${project.uid}`}>
-                  <Card key={project.uid} className="p-4 hover:bg-muted cursor-pointer">
+                <Link to={`/projects/${project.uid}`} key={project.uid}>
+                  <Card className="p-4 hover:bg-muted cursor-pointer">
                     <div className="font-semibold text-lg">{project.title}</div>
                     {project.description && <div className="text-muted-foreground mt-1">{project.description}</div>}
                     {project.keywords && project.keywords.length > 0 && (
@@ -140,7 +156,7 @@ export default function ResearchProjectsPage() {
                     )}
                     {project.research_questions && project.research_questions.length > 0 && (
                       <div className="mt-2">
-                        <div className="font-medium text-sm">Research Questions:</div>
+                        <div className="font-medium text-sm">{t('projects.list.researchQuestions')}</div>
                         <ul className="list-disc list-inside text-sm">
                           {project.research_questions.map((q, i) => (
                             <li key={i}>{q}</li>
@@ -149,7 +165,7 @@ export default function ResearchProjectsPage() {
                       </div>
                     )}
                     <div className="text-xs text-muted-foreground mt-2">
-                      Created: {project.created_at ? new Date(project.created_at).toLocaleString() : ''}
+                      {t('projects.list.created')} {project.created_at ? new Date(project.created_at).toLocaleString() : ''}
                     </div>
                   </Card>
                 </Link>

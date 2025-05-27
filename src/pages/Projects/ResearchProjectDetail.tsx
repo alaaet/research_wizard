@@ -9,6 +9,7 @@ import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
 import { motion } from 'framer-motion';
 import { Brain } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 function TagsInput({ value, onChange, placeholder }: { value: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
   const [input, setInput] = useState('');
@@ -42,6 +43,7 @@ function TagsInput({ value, onChange, placeholder }: { value: string[]; onChange
 }
 
 export default function ResearchProjectDetailPage() {
+  const { t } = useTranslation();
   const { uid } = useParams<{ uid: string }>();
   const navigate = useNavigate();
   const [project, setProject] = useState<ResearchProject | null>(null);
@@ -62,7 +64,7 @@ export default function ResearchProjectDetailPage() {
     getResearchProject(uid)
       .then(proj => {
         if (!proj) {
-          setError('Project not found.');
+          setError(t('projects.details.error.notFound'));
           setProject(null);
         } else {
           setProject(proj);
@@ -76,10 +78,10 @@ export default function ResearchProjectDetailPage() {
         setLoading(false);
       })
       .catch(err => {
-        setError('Failed to load project.');
+        setError(t('projects.details.error.loadFailed'));
         setLoading(false);
       });
-  }, [uid]);
+  }, [uid, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,10 +99,10 @@ export default function ResearchProjectDetailPage() {
         setSuccess(true);
         setTimeout(() => setSuccess(false), 2000);
       } else {
-        setError(result.error || 'Failed to update project.');
+        setError(result.error || t('projects.details.error.updateFailed'));
       }
     } catch (err) {
-      setError('Failed to update project.');
+      setError(t('projects.details.error.updateFailed'));
     }
     setSaving(false);
   };
@@ -116,13 +118,13 @@ export default function ResearchProjectDetailPage() {
   };
 
   if (loading) {
-    return <PageLayout><div className="p-8">Loading...</div></PageLayout>;
+    return <PageLayout><div className="p-8">{t('common.loading')}</div></PageLayout>;
   }
   if (error) {
     return <PageLayout><div className="p-8 text-red-500">{error}</div></PageLayout>;
   }
   if (!project) {
-    return <PageLayout><div className="p-8">Project not found.</div></PageLayout>;
+    return <PageLayout><div className="p-8">{t('projects.details.error.notFound')}</div></PageLayout>;
   }
 
   return (
@@ -133,54 +135,68 @@ export default function ResearchProjectDetailPage() {
         transition={{ duration: 0.3 }}
         className="p-6 animate-enter max-w-2xl mx-auto"
       >
-        <Button variant="secondary" onClick={() => navigate(-1)} className="mb-4 bg-rwiz-primary-light hover:bg-rwiz-primary-dark">&larr; Back</Button>
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">View/Edit Project</h1>
+        <Button variant="secondary" onClick={() => navigate(-1)} className="mb-4 bg-rwiz-primary-light hover:bg-rwiz-primary-dark">
+          &larr; {t('projects.details.back')}
+        </Button>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">{t('projects.details.viewEdit')}</h1>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block font-medium text-gray-800 mb-1">Title <span className="text-red-500">*</span></label>
+            <label className="block font-medium text-gray-800 mb-1">
+              {t('projects.details.titleLabel')} <span className="text-red-500">*</span>
+            </label>
             <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />          
           </div>
           <div>
             <div className='flex flex-row items-center gap-2 mb-2'>
-              <label className="block font-medium text-gray-800 mb-1">Keywords</label>
+              <label className="block font-medium text-gray-800 mb-1">{t('projects.details.keywords')}</label>
               <Button 
                 variant="secondary" 
                 onClick={() => generateKeywordsFromTitle()} 
                 className='w-6 h-6 p-0 bg-rwiz-primary-light hover:bg-rwiz-primary-dark' 
-                title="Generate with AI"
+                title={t('projects.details.generateWithAI')}
               >
                 <Brain className="w-4 h-4" />
               </Button>
             </div>
-            <TagsInput value={form.keywords} onChange={v => setForm(f => ({ ...f, keywords: v }))} placeholder="Add keyword..." />
+            <TagsInput 
+              value={form.keywords} 
+              onChange={v => setForm(f => ({ ...f, keywords: v }))} 
+              placeholder={t('projects.details.addKeyword')} 
+            />
           </div>
           <div>
-            <label className="block font-medium text-gray-800 mb-1">Description</label>
+            <label className="block font-medium text-gray-800 mb-1">{t('projects.details.description')}</label>
             <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
           </div>
           <div>
             <div className='flex flex-row items-center gap-2 mb-2'>
-              <label className="block font-medium text-gray-800 mb-1">Research Questions</label>
+              <label className="block font-medium text-gray-800 mb-1">{t('projects.details.researchQuestions')}</label>
               <Button 
                 variant="secondary" 
                 onClick={() => generateResearchQuestionsFromTitle()} 
                 className='w-6 h-6 p-0 bg-rwiz-primary-light hover:bg-rwiz-primary-dark' 
-                title="Generate with AI"
+                title={t('projects.details.generateWithAI')}
               >
                 <Brain className="w-4 h-4" />
               </Button>
             </div>
-            <TagsInput value={form.research_questions} onChange={v => setForm(f => ({ ...f, research_questions: v }))} placeholder="Add question..." />
+            <TagsInput 
+              value={form.research_questions} 
+              onChange={v => setForm(f => ({ ...f, research_questions: v }))} 
+              placeholder={t('projects.details.addQuestion')} 
+            />
           </div>
           <div className="flex justify-end gap-2">
-            <Button type="submit" disabled={saving || !form.title.trim()}>{saving ? 'Saving...' : 'Save Changes'}</Button>
-            {success && <span className="text-green-600 self-center">Saved!</span>}
+            <Button type="submit" disabled={saving || !form.title.trim()}>
+              {saving ? t('common.saving') : t('projects.details.saveChanges')}
+            </Button>
+            {success && <span className="text-green-600 self-center">{t('common.saved')}</span>}
             {error && <span className="text-red-500 self-center">{error}</span>}
           </div>
         </form>
         <div className="text-xs text-muted-foreground mt-4">
-          Created: {project.created_at ? new Date(project.created_at).toLocaleString() : ''}<br />
-          Last updated: {project.updated_at ? new Date(project.updated_at).toLocaleString() : ''}
+          {t('projects.details.createdAt')}: {project.created_at ? new Date(project.created_at).toLocaleString() : ''}<br />
+          {t('projects.details.updatedAt')}: {project.updated_at ? new Date(project.updated_at).toLocaleString() : ''}
         </div>
       </motion.div>
     </PageLayout>

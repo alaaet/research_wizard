@@ -18,6 +18,7 @@ import { ReportGenerator } from '@/components/data/ReportGenerator';
 import { toast } from 'sonner';
 import { generateSubsectionContent } from "../../connectors/researchDraftIpc";
 import { Separator } from '@/components/ui/separator';
+import { useTranslation } from "react-i18next";
 
 function OutlineEditor({
   outline,
@@ -26,6 +27,7 @@ function OutlineEditor({
   outline: ResearchDraftOutline;
   onChange: (o: ResearchDraftOutline) => void;
 }) {
+  const { t } = useTranslation();
   // Simple outline editor for title and sections
   const [sectionTitle, setSectionTitle] = useState("");
   const [subsectionInput, setSubsectionInput] = useState("");
@@ -56,23 +58,18 @@ function OutlineEditor({
   };
   return (
     <div className="mb-4">
-      {/* <label className="block font-medium mb-1">Outline Title</label>
-      <Input
-        value={outline.title}
-        onChange={(e) => onChange({ ...outline, title: e.target.value })}
-      /> */}
       <div className="mt-2">
-        <label className="block font-medium mb-1">Add Section</label>
+        <label className="block font-medium mb-1">{t('writing.draftDetail.form.addSection')}</label>
         <Input
           value={sectionTitle}
           onChange={(e) => setSectionTitle(e.target.value)}
-          placeholder="Section title"
+          placeholder={t('writing.draftDetail.form.sectionTitle')}
         />
         <div className="flex gap-2 mt-2">
           <Input
             value={subsectionInput}
             onChange={(e) => setSubsectionInput(e.target.value)}
-            placeholder="Add subsection"
+            placeholder={t('writing.draftDetail.form.addSubsection')}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
@@ -81,7 +78,7 @@ function OutlineEditor({
             }}
           />
           <Button type="button" onClick={addSubsection} variant="outline">
-            Add Subsection
+            {t('writing.draftDetail.form.addSubsectionButton')}
           </Button>
         </div>
         <ul className="list-disc pl-5 mt-2">
@@ -99,12 +96,11 @@ function OutlineEditor({
           ))}
         </ul>
         <Button type="button" onClick={addSection} className="mt-2">
-          Add Section
+          {t('writing.draftDetail.form.addSectionButton')}
         </Button>
       </div>
       <div className="mt-4">
         <Card className="mb-4 border-l-4 border-primary bg-muted/40 rounded-lg shadow-sm p-4">
-          {/* <h3 className="font-serif text-lg font-bold mb-2 text-primary">Outline (Book Index)</h3> */}
           <ul className="list-none pl-6">
             {outline.sections.map((section, idx) => (
               <li key={idx} className="mb-2">
@@ -133,6 +129,7 @@ function OutlineEditor({
 }
 
 export default function ResearchDraftDetailPage() {
+  const { t } = useTranslation();
   const { uid } = useParams<{ uid: string }>();
   const navigate = useNavigate();
   const [draft, setDraft] = useState<ResearchDraft | null>(null);
@@ -158,7 +155,7 @@ export default function ResearchDraftDetailPage() {
     getResearchDraft(uid)
       .then((d) => {
         if (!d) {
-          setError("Draft not found.");
+          setError(t('writing.draftDetail.error.notFound'));
           setDraft(null);
         } else {
           setDraft(d);
@@ -171,10 +168,10 @@ export default function ResearchDraftDetailPage() {
         setLoading(false);
       })
       .catch((err) => {
-        setError("Failed to load draft.");
+        setError(t('writing.draftDetail.error.loadFailed'));
         setLoading(false);
       });
-  }, [uid]);
+  }, [uid, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -192,10 +189,10 @@ export default function ResearchDraftDetailPage() {
         setSuccess(true);
         setTimeout(() => setSuccess(false), 2000);
       } else {
-        setError(result.error || "Failed to update draft.");
+        setError(result.error || t('writing.draftDetail.error.updateFailed'));
       }
     } catch (err) {
-      setError("Failed to update draft.");
+      setError(t('writing.draftDetail.error.updateFailed'));
     }
     setSaving(false);
   };
@@ -224,13 +221,13 @@ export default function ResearchDraftDetailPage() {
           } else {
             newReport[key] = { status: 'error', content: '' };
             setRegenReport(r => ({ ...r, [key]: { status: 'error', content: '' } }));
-            toast.error('Failed to generate subsection content.');
+            toast.error(t('writing.draftDetail.error.regenerateFailed'));
             console.error('Failed to generate subsection content:', result);
           }
         } catch (err: any) {
           newReport[key] = { status: 'error', content: '' };
           setRegenReport(r => ({ ...r, [key]: { status: 'error', content: '' } }));
-          toast.error('Failed to generate subsection content.');
+          toast.error(t('writing.draftDetail.error.regenerateFailed'));
           console.error('Failed to generate subsection content:', err);
         }
       }
@@ -277,24 +274,24 @@ export default function ResearchDraftDetailPage() {
       
       const result = await updateResearchDraftReport(draftObj);
       if (result.success) {
-        toast.success('Draft regenerated and saved!');
+        toast.success(t('writing.draftDetail.success.regenerated'));
         setShowRegenerate(false);
         console.log(JSON.stringify(result, null, 2));
         // Optionally, reload the draft
         getResearchDraft(uid!).then(d => setDraft(d));
       } else {
-        throw new Error(result.error || 'Failed to save regenerated draft');
+        throw new Error(result.error || t('writing.draftDetail.error.saveRegeneratedFailed'));
       }
     } catch (error) {
       console.error('Error in handleSaveRegeneratedReport:', error);
-      toast.error(error.message || 'Failed to save regenerated draft');
+      toast.error(error.message || t('writing.draftDetail.error.saveRegeneratedFailed'));
     }
   };
 
   if (loading) {
     return (
       <PageLayout>
-        <div className="p-8">Loading...</div>
+        <div className="p-8">{t('common.loading')}</div>
       </PageLayout>
     );
   }
@@ -308,7 +305,7 @@ export default function ResearchDraftDetailPage() {
   if (!draft) {
     return (
       <PageLayout>
-        <div className="p-8">Draft not found.</div>
+        <div className="p-8">{t('writing.draftDetail.error.notFound')}</div>
       </PageLayout>
     );
   }
@@ -326,18 +323,18 @@ export default function ResearchDraftDetailPage() {
             size="icon"
             variant="ghost"
             onClick={() => navigate(-1)}
-            title="Back"
+            title={t('writing.draftDetail.back')}
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <h1 className="text-2xl font-bold text-gray-800">
-            View/Edit Draft
+            {t('writing.draftDetail.title')}
           </h1>
         </div>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block font-medium text-gray-800 mb-1">
-              Title <span className="text-red-500">*</span>
+              {t('writing.draftDetail.form.title')} <span className="text-red-500">*</span>
             </label>
             <Input
               value={form.title}
@@ -349,7 +346,7 @@ export default function ResearchDraftDetailPage() {
           </div>
           <div>
             <label className="block font-medium text-gray-800 mb-1">
-              Outline
+              {t('writing.draftDetail.form.outline')}
             </label>
             <OutlineEditor
               outline={form.outline}
@@ -358,7 +355,7 @@ export default function ResearchDraftDetailPage() {
           </div>
           <div>
             <label className="block font-medium text-gray-800 mb-1">
-              Report
+              {t('writing.draftDetail.form.report')}
             </label>
             <div className="mt-4">
               {showRegenerate ? (
@@ -370,7 +367,9 @@ export default function ResearchDraftDetailPage() {
                   handleGenerateReport={handleRegenerateReport}
                   handleSaveReport={handleSaveRegeneratedReport}
                   footer={
-                    <Button onClick={() => setShowRegenerate(false)} variant="outline" className="mt-4">Cancel</Button>
+                    <Button onClick={() => setShowRegenerate(false)} variant="outline" className="mt-4">
+                      {t('writing.draftDetail.form.cancel')}
+                    </Button>
                   }
                 />
               ) : (
@@ -390,14 +389,14 @@ export default function ResearchDraftDetailPage() {
                       variant="outline"
                       onClick={() => navigate(`/writing/draft/${uid}/report`)}
                     >
-                      View Report
+                      {t('writing.draftDetail.form.viewReport')}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setShowRegenerate(true)}
                     >
-                      Regenerate Report <RefreshCw className="w-4 h-4" />
+                      {t('writing.draftDetail.form.regenerateReport')} <RefreshCw className="w-4 h-4" />
                     </Button>
                   </CardFooter>
                 </Card>
@@ -406,16 +405,16 @@ export default function ResearchDraftDetailPage() {
           </div>
           <div className="flex justify-end gap-2">
             <Button type="submit" disabled={saving || !form.title.trim()}>
-              {saving ? "Saving..." : "Save Changes"}
+              {saving ? t('writing.draftDetail.form.saving') : t('writing.draftDetail.form.saveChanges')}
             </Button>
             {success && (
-              <span className="text-green-600 self-center">Saved!</span>
+              <span className="text-green-600 self-center">{t('writing.draftDetail.form.saved')}</span>
             )}
             {error && <span className="text-red-500 self-center">{error}</span>}
           </div>
         </form>
         <div className="text-xs text-muted-foreground mt-4">
-          Created:{" "}
+          {t('writing.draftDetail.form.created')}:{" "}
           {draft.created_at ? new Date(draft.created_at).toLocaleString() : ""}
         </div>
       </motion.div>
