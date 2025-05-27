@@ -90,6 +90,7 @@
       "createdAt": "تم الإنشاء في",
       "updatedAt": "تم التحديث في",
       "status": "الحالة",
+      "currentStatus": "الحالة الحالية",
       "viewEdit": "عرض/تعديل المشروع",
       "back": "رجوع",
       "titleLabel": "العنوان",

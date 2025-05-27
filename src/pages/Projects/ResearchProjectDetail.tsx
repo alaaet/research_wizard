@@ -83,7 +83,7 @@ export default function ResearchProjectDetailPage() {
             keywords: proj.keywords || [],
             description: proj.description || '',
             research_questions: proj.research_questions || [],
-            status: proj.status || PROJECT_STATUSES[0] as ProjectStatus,
+            status: (proj.status as ProjectStatus) || PROJECT_STATUSES[0],
           });
         }
         setLoading(false);

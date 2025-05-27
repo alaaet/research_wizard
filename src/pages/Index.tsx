@@ -8,6 +8,7 @@ import { listResearchProjects } from '../connectors/researchProjectIpc';
 import { useNavigate } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from 'react-i18next';
+import { FolderOpen } from 'lucide-react';
 
 export default function Index() {
   const { t, i18n } = useTranslation();
@@ -71,7 +72,7 @@ export default function Index() {
         </div>
         {recentProjects.length === 0 ? (
           <div className="flex flex-col items-center text-muted-foreground mt-8">
-            <span className="material-icons text-4xl mb-2" aria-hidden="true">folder_open</span>
+            <FolderOpen className="w-20 h-20 mb-2 text-muted-foreground" />
             <span>{t('home.recentProjects.noProjects')}</span>
           </div>
         ) : (

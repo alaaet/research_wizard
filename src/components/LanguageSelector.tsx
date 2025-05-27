@@ -25,10 +25,10 @@ const LanguageSelector = ({ value, onChange }: LanguageSelectorProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium">{t('settings.language.uiLanguage')}</label>
+    <div className="flex flex-col gap-2 w-full">
+      <label className="font-medium">{t('settings.language.uiLanguage')}</label>
       <Select value={value} onValueChange={handleLanguageChange}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder={t('settings.language.uiLanguage')} />
         </SelectTrigger>
         <SelectContent>
