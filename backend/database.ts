@@ -485,7 +485,29 @@ function getUserMetaDataByKey(key: string) {
               console.log('user_meta_data:getByKey error:', err);
               return resolve([]);
           }
-          resolve(rows);
+          if (rows.length > 0) {
+            const rowData = rows[0] as { Value: any, Type: string };
+            const dataType = rowData.Type;
+            console.log('Value:', rowData.Value);
+            console.log('Type:', dataType);
+            switch (dataType) {
+              case 'number':
+                resolve(Number(rowData.Value));
+                break;
+              case 'boolean':
+                resolve(rowData.Value === 'true');
+                break;
+              case 'array':
+                resolve(JSON.parse(rowData.Value));
+                break;
+              case 'string':
+              default:
+                resolve(rowData.Value);
+                break;
+            }
+          } else {
+            resolve(null);
+          }
       });
   });
 }

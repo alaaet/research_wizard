@@ -13,6 +13,14 @@ export async function processQuery(params: {
   model?: string;
 }) {
   try {
+    const defaultTemperature: number = await getUserMetaDataByKey('TEMPERATURE') as number || 0.7;
+    console.log('defaultTemperature:', defaultTemperature);
+    if (!params.temperature) {
+      params.temperature = defaultTemperature;
+    }
+    const defaultLanguage: string = await getUserMetaDataByKey('research_language') as string || 'English';
+    params.user += `\n\n Please respond in ${defaultLanguage} language`;
+    console.log('User prompt:', params.user);
     // Get the active AI agent
     const agents = await listAIAgents() as AIAgent[];
     const activeAgent = agents.find((a: AIAgent) => a.is_active);
@@ -103,10 +111,11 @@ export async function generateProjectOutline(
   topic: string,
   language: string = 'English'
 ) {
-  const minSections: number = Number((await getUserMetaDataByKey('MIN_SECTIONS_PER_REPORT') as any)?.Value) || 5;
-  const maxSections: number = Number((await getUserMetaDataByKey('MAX_SECTIONS_PER_REPORT') as any)?.Value) || 10;
-  const minSubSections: number = Number((await getUserMetaDataByKey('MIN_SUBSECTIONS_PER_SECTION') as any)?.Value) || 2;
-  const maxSubSections: number = Number((await getUserMetaDataByKey('MAX_SUBSECTIONS_PER_SECTION') as any)?.Value) || 5;
+  const minSections: number = await getUserMetaDataByKey('MIN_SECTIONS_PER_REPORT') as number || 5;
+  const maxSections: number = await getUserMetaDataByKey('MAX_SECTIONS_PER_REPORT') as number || 10;
+  const minSubSections: number = await getUserMetaDataByKey('MIN_SUBSECTIONS_PER_SECTION') as number || 2;
+  const maxSubSections: number = await getUserMetaDataByKey('MAX_SUBSECTIONS_PER_SECTION') as number || 5;
+
   console.log('Generating report outline...');
   const prompt = `Create a logical outline for a research report on the topic: "${topic}".\nThe outline should be structured as a JSON object with the following format:\n{\n  "title": "Report Title",\n  "sections": [ /* Aim for ${minSections}-${maxSections} sections */\n    {\n      "title": "Section 1 Title",\n      "subsections": [ /* Aim for ${minSubSections}-${maxSubSections} subsections */\n        "Subsection 1.1 Title", "Subsection 1.2 Title" /* ... */\n      ]\n    } /* ... more sections ... */\n  ]\n}\nEnsure the titles are descriptive and cover key aspects of the topic. Respond *only* in ${language} language with the valid JSON object, without any introductory text, comments, or explanations.`;
 
@@ -115,7 +124,6 @@ export async function generateProjectOutline(
   const response = await processQuery({
     user: prompt,
     system,
-    temperature: 0.5,
   });
 
   if (response.startsWith('[Error') || response.startsWith('[AI')) {
@@ -156,10 +164,10 @@ export async function generateSectionParagraph(
   language: string = 'English',
   model: string = '',
 ): Promise<{ success: boolean; text: string; citedIndices: number[] }> {
-  const minWords: number = Number((await getUserMetaDataByKey('MIN_WORDS_PER_PARAGRAPH') as any)?.Value) || 250;
-  const maxWords: number = Number((await getUserMetaDataByKey('MAX_WORDS_PER_PARAGRAPH') as any)?.Value) || 1500;
-  const maxRetries: number = Number((await getUserMetaDataByKey('MAX_PARAGRAPH_RETRIES') as any)?.Value) || 2;
-  const retryDelay: number = Number((await getUserMetaDataByKey('RETRY_DELAY_MS') as any)?.Value) || 5000;
+  const minWords: number = await getUserMetaDataByKey('MIN_WORDS_PER_PARAGRAPH') as number || 250;
+  const maxWords: number = await getUserMetaDataByKey('MAX_WORDS_PER_PARAGRAPH') as number || 1500;
+  const maxRetries: number = await getUserMetaDataByKey('MAX_PARAGRAPH_RETRIES') as number || 2;
+  const retryDelay: number = await getUserMetaDataByKey('RETRY_DELAY_MS') as number || 5000;
   const contentSlice = 1000;
 
   console.log(
@@ -182,7 +190,7 @@ export async function generateSectionParagraph(
     )
     .join('\n');
 
-  const userPrompt = `You are writing a research report on "${topic}". Outline context: ${sectionTitle} -> ${subsectionTitle}. Available Information (Input Data):\n${inputData}\nInstructions:\n1. Write a single, coherent paragraph focusing *only* on subsection "${subsectionTitle}" in ${language} language.\n2. Length: ${minWords}-${maxWords} words (STRICTLY ENFORCED).\n3. Base paragraph *strictly* on Input Data.\n4. Synthesize from multiple sources if relevant.\n5. Cite sources using footnote notation ([index]).\n6. You MUST include at least one citation.\n7. After the paragraph, on a NEW line, list cited source indices: "Cited sources: [index1, index2, ...]".\n8. If you cannot meet the word count or citation requirements, explain why in the response.\nBegin paragraph now:`;
+  const userPrompt = `You are writing a research report on "${topic}". Outline context: ${sectionTitle} -> ${subsectionTitle}. ${inputData?.length > 0 ? 'Available Information (Input Data):\n' + inputData : ''} \nInstructions:\n1. Write a single, coherent paragraph or multiple paragraphs focusing *only* on subsection "${subsectionTitle}" in ${language} language.\n2. Length: ${minWords}-${maxWords} words (STRICTLY ENFORCED).\n3. Base paragraph/paragraphs *strictly* on Input Data unless the Input Data is not relevant to the subsection, format the output text by including bullet points and other formatting to make it more readable.\n4. Synthesize from multiple sources if relevant.\n5. Cite sources using footnote notation ([index]).\n6. You MUST include at least one citation.\n7. After the paragraph, on a NEW line, if there are cited sources, list cited source indices: "Cited sources: [index1, index2, ...]".\n8. If you cannot meet the word count or citation requirements, explain why in the response.\nBegin paragraph now:`;
 
   const system = `You are a meticulous research assistant writing a specific paragraph for a report. Follow all instructions precisely: topic focus, word count (${minWords}-${maxWords}), strict adherence to provided data, citation format ([index]), and the final "Cited sources: [...]" line. You must include at least one citation and meet the word count requirements.`;
 
@@ -201,7 +209,6 @@ export async function generateSectionParagraph(
         model,
         system,
         user: userPrompt,
-        temperature: 0.6,
       });
 
       if (llmResponse.startsWith('[Error') || llmResponse.startsWith('[AI') || llmResponse.startsWith('[LLM')) {

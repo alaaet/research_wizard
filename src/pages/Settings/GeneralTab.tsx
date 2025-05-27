@@ -4,13 +4,13 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { useUserMetaData } from '../../context/UserMetaDataContext';
 
-const UN_LANGUAGES = [
-  { value: 'ar', label: 'Arabic' },
-  { value: 'zh', label: 'Chinese' },
-  { value: 'en', label: 'English' },
-  { value: 'fr', label: 'French' },
-  { value: 'ru', label: 'Russian' },
-  { value: 'es', label: 'Spanish' },
+const SUPPORTED_LANGUAGES = [
+  { value: 'Arabic', label: 'Arabic' },
+  { value: 'Chinese', label: 'Chinese' },
+  { value: 'English', label: 'English' },
+  { value: 'French', label: 'French' },
+  { value: 'Russian', label: 'Russian' },
+  { value: 'Spanish', label: 'Spanish' },
 ];
 
 const FIELDS = [
@@ -102,7 +102,7 @@ export default function GeneralTab() {
           required
         >
           <option value="" disabled>Select language...</option>
-          {UN_LANGUAGES.map(lang => (
+          {SUPPORTED_LANGUAGES.map(lang => (
             <option key={lang.value} value={lang.value}>{lang.label}</option>
           ))}
         </select>
