@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ResearchProject, PROJECT_STATUSES, ProjectStatus } from '../../lib/researchProject';
-import { research_paper } from '../../lib/researchPaper';
+import { Resource } from '../../lib/Resource';
 import { getResearchProject, updateResearchProject } from '../../connectors/researchProjectIpc';
 import {
   listResources,
@@ -70,18 +70,10 @@ export default function ResearchProjectDetailPage() {
     research_questions: string[];
     status: ProjectStatus;
   }>({
-  const [form, setForm] = useState<{
-    title: string;
-    keywords: string[];
-    description: string;
-    research_questions: string[];
-    status: ProjectStatus;
-  }>({
     title: '',
     keywords: [] as string[],
     description: '',
     research_questions: [] as string[],
-    status: PROJECT_STATUSES[0],
     status: PROJECT_STATUSES[0],
   });
   const [loading, setLoading] = useState(true);
@@ -90,10 +82,10 @@ export default function ResearchProjectDetailPage() {
   const [success, setSuccess] = useState(false);
   const { toast } = useToast();
 
-  const [resources, setResources] = useState<research_paper[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
   const [isAddUrlDialogOpen, setIsAddUrlDialogOpen] = useState(false);
   const [newUrlForm, setNewUrlForm] = useState({ title: '', url: '' });
-  // const [editingResource, setEditingResource] = useState<research_paper | null>(null); // For edit dialog
+  // const [editingResource, setEditingResource] = useState<Resource | null>(null); // For edit dialog
 
   const fetchResources = useCallback(async () => {
     if (!uid) return;
@@ -194,7 +186,14 @@ export default function ResearchProjectDetailPage() {
       const result = await addResource(project.uid, {
         title: newUrlForm.title.trim(),
         urlOrPath: newUrlForm.url.trim(),
-        // type: 'url', // Type is not stored in DB as per current design
+        url: newUrlForm.url.trim(),
+        author: '',
+        publishedDate: new Date(),
+        score: 0,
+        summary: '',
+        sourceQuery: '',
+        index: 0,
+        resource_type: 'paper',
       });
       if (result.success) {
         toast({ title: t('projects.details.resources.success.urlAdded') });
@@ -224,7 +223,14 @@ export default function ResearchProjectDetailPage() {
           const result = await addResource(project.uid, {
             title: derivedTitle,
             urlOrPath: filePath,
-            // type: 'file', // Type is not stored in DB
+            url: filePath,
+            author: '',
+            publishedDate: new Date(),
+            score: 0,
+            summary: '',
+            sourceQuery: '',
+            index: 0,
+            resource_type: 'paper',
           });
           if (!result.success) {
             allSucceeded = false;

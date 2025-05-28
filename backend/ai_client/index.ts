@@ -1,4 +1,4 @@
-import { getUserMetaDataByKey, listAIAgents, getLiteratureResults } from '../database';
+import { getUserMetaDataByKey, listAIAgents, getResourcesForProject } from '../database';
 import type { AIAgent } from '../../shared/aiAgentTypes';
 
 /**
@@ -180,7 +180,7 @@ export async function generateSectionParagraph(
     `   Generating paragraph for: ${sectionTitle} -> ${subsectionTitle}`
   );
 
-  const papers = (await getLiteratureResults(projectId)) as any[];
+  const papers = (await getResourcesForProject(projectId)) as any[];
   const inputData = papers.map((item) => ({
     index: item.index,
     url: item.url,

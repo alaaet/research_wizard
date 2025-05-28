@@ -72,7 +72,7 @@ ipcMain.handle('searchRetrievers:update', async (event, retriever) => {
 ipcMain.handle('searchRetrievers:search', async (event, { retriever, project_uid, project_title, queries }) => {
   // For now, use processSearch with queries and default options
   // Optionally, you could use retriever.slug to select a specific retriever
-  return await searchClient.getScientificPapers(project_uid, project_title, queries, { retriever });
+  return await searchClient.getResources(project_uid, project_title, queries, { retriever });
 });
 
 ipcMain.handle('literature:saveResults', async (event, { projectId, results }) => {
@@ -125,21 +125,7 @@ ipcMain.handle('resources:showOpenDialog', async () => {
 ipcMain.handle('resources:add', async (event, projectId, resourceData) => {
   console.log('[resources:add] Received projectId:', projectId, 'resourceData:', resourceData);
   try {
-    // The db.addResourceToProject function should handle UID generation if not provided.
-    // It expects a research_paper like object.
-    const resource = {
-      // uid: resourceData.uid || db.generateUID(), // generateUID is on researchProject.js, db.addResourceToProject handles it
-      title: resourceData.title,
-      url: resourceData.urlOrPath, // urlOrPath from frontend maps to url in DB
-      summary: resourceData.summary,
-      author: resourceData.author,
-      publishedDate: resourceData.publishedDate, // Needs to be ISO string or null
-      score: resourceData.score,
-      sourceQuery: resourceData.sourceQuery,
-      index: resourceData.index,
-      // type: resourceData.type, // Not storing type in DB as per previous task
-    };
-    const result = await db.addResourceToProject(projectId, resource);
+    const result = await db.addResourceToProject(projectId, resourceData);
     console.log('[resources:add] Result from DB:', result);
     return result;
   } catch (error) {

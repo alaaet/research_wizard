@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-import { research_paper } from '../lib/researchPaper'; // research_paper is used as the type for resources
+import { Resource } from '../lib/Resource'; // Resource is used as the type for resources
 
 // --- Resource IPC Connectors ---
 
@@ -29,30 +29,28 @@ export async function showOpenFileDialog(): Promise<string[] | undefined> {
 /**
  * Adds a new resource (URL or local file) to a project.
  * @param projectId The UID of the project.
- * @param resourceData Data for the new resource.
+ * @param resourceData Data for the new resource (Resource shape, urlOrPath allowed for backward compatibility).
  * @returns A promise that resolves to an object with success status, UID of the new resource, and optional error.
  */
 export async function addResource(
   projectId: string,
-  resourceData: {
-    title: string;
-    urlOrPath: string;
-    summary?: string;
-    author?: string;
-    publishedDate?: string | Date; // Allow Date object as well
-    score?: number;
-    sourceQuery?: string;
-    index?: number;
-    // Add other optional fields from research_paper as needed
-  }
+  resourceData: Omit<Resource, 'uid' | 'project_uid'> & { urlOrPath?: string }
 ): Promise<{ success: boolean; uid?: string; error?: string }> {
-  console.log('[addResource] Invoking resources:add with projectId:', projectId, 'resourceData:', resourceData);
+  // Map urlOrPath to url if present
+  const dataToSend: any = { ...resourceData };
+  if (dataToSend.urlOrPath && !dataToSend.url) {
+    dataToSend.url = dataToSend.urlOrPath;
+  }
+  delete dataToSend.urlOrPath;
+
+  // Ensure publishedDate is ISO string if it's a Date object
+  if (dataToSend.publishedDate && dataToSend.publishedDate instanceof Date) {
+    dataToSend.publishedDate = dataToSend.publishedDate.toISOString();
+  }
+
+  console.log('[addResource] Invoking resources:add with projectId:', projectId, 'resourceData:', dataToSend);
   try {
-    // Ensure publishedDate is ISO string if it's a Date object
-    if (resourceData.publishedDate && resourceData.publishedDate instanceof Date) {
-      resourceData.publishedDate = resourceData.publishedDate.toISOString();
-    }
-    const result = await window.electron?.invoke('resources:add', projectId, resourceData);
+    const result = await window.electron?.invoke('resources:add', projectId, dataToSend);
     console.log('[addResource] Result:', result);
     return result;
   } catch (err) {
@@ -66,13 +64,13 @@ export async function addResource(
  * @param projectId The UID of the project.
  * @returns A promise that resolves to an array of resources (research_paper objects).
  */
-export async function listResources(projectId: string): Promise<research_paper[]> {
+export async function listResources(projectId: string): Promise<Resource[]> {
   console.log('[listResources] Invoking resources:list with projectId:', projectId);
   try {
     const result = await window.electron?.invoke('resources:list', projectId);
     console.log('[listResources] Result:', result);
     // Ensure publishedDate is a string (ISO format) or null
-    return result.map((res: research_paper) => ({
+    return result.map((res: Resource) => ({
       ...res,
       publishedDate: res.publishedDate ? new Date(res.publishedDate).toISOString() : null,
     }));
@@ -88,7 +86,7 @@ export async function listResources(projectId: string): Promise<research_paper[]
  * @returns A promise that resolves to an object with success status and optional error.
  */
 export async function updateResource(
-  resourceData: research_paper
+  resourceData: Resource
 ): Promise<{ success: boolean; error?: string }> {
   console.log('[updateResource] Invoking resources:update with resourceData:', resourceData);
   try {
@@ -144,7 +142,7 @@ export async function openExternalResource(urlOrPath: string): Promise<{ success
 // but they should point to the new resource handlers if their functionality overlaps
 // or be removed if they are fully superseded.
 
-export async function saveLiteratureResults(projectId: string, results: research_paper[]) {
+export async function saveLiteratureResults(projectId: string, results: Resource[]) {
   console.warn('[saveLiteratureResults] Legacy function called. Consider migrating to addResource for individual items.');
   // This function was for bulk adding, which addResource doesn't directly replace.
   // For now, it might still call an old IPC handler or be refactored.
@@ -159,12 +157,12 @@ export async function saveLiteratureResults(projectId: string, results: research
   }
 }
 
-export async function exportLiterature(format: string, papers: research_paper[]) {
+export async function exportLiterature(format: string, resources: Resource[]) {
    console.warn('[exportLiterature] Legacy function called.');
   // This function is specific to "papers" and export format.
   // It might remain as is or be adapted for resources if applicable.
   try {
-    const result = await window.electron?.invoke('literature:export', { format, papers });
+    const result = await window.electron?.invoke('literature:export', { format, resources });
     console.log('[exportLiterature] Result:', result);
     return result;
   } catch (err) {

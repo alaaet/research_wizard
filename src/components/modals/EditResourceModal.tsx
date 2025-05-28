@@ -2,35 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import type { research_paper } from '@/lib/researchPaper';
+import type { Resource } from '@/lib/Resource';
 
-interface EditPaperModalProps {
+interface EditResourceModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  paper: research_paper | null;
-  onSave: (paper: research_paper) => void;
+  resource: Resource | null;
+  onSave: (resource: Resource) => void;
 }
 
-const EditPaperModal: React.FC<EditPaperModalProps> = ({ open, onOpenChange, paper, onSave }) => {
-  const [editPaper, setEditPaper] = useState<research_paper | null>(paper);
+const EditResourceModal: React.FC<EditResourceModalProps> = ({ open, onOpenChange, resource, onSave }) => {
+  const [editResource, setEditResource] = useState<Resource | null>(resource);
 
   useEffect(() => {
-    setEditPaper(paper);
-  }, [paper]);
+    setEditResource(resource);
+  }, [resource]);
 
-  if (!editPaper) return null;
+  if (!editResource) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Paper</DialogTitle>
-          <DialogDescription>Edit the details for this paper.</DialogDescription>
+          <DialogTitle>Edit Resource</DialogTitle>
+          <DialogDescription>Edit the details for this resource.</DialogDescription>
         </DialogHeader>
         <form
           onSubmit={e => {
             e.preventDefault();
-            onSave(editPaper);
+            onSave(editResource);
             onOpenChange(false);
           }}
           className="space-y-4"
@@ -38,23 +38,23 @@ const EditPaperModal: React.FC<EditPaperModalProps> = ({ open, onOpenChange, pap
           <div>
             <label className="block font-medium mb-1">Title</label>
             <Input
-              value={editPaper.title}
-              onChange={e => setEditPaper({ ...editPaper, title: e.target.value })}
+              value={editResource.title}
+              onChange={e => setEditResource({ ...editResource, title: e.target.value })}
             />
           </div>
           <div>
             <label className="block font-medium mb-1">Author</label>
             <Input
-              value={editPaper.author}
-              onChange={e => setEditPaper({ ...editPaper, author: e.target.value })}
+              value={editResource.author}
+              onChange={e => setEditResource({ ...editResource, author: e.target.value })}
             />
           </div>
           <div>
             <label className="block font-medium mb-1">Summary</label>
             <textarea
               className="w-full border rounded px-3 py-2 bg-background"
-              value={editPaper.summary}
-              onChange={e => setEditPaper({ ...editPaper, summary: e.target.value })}
+              value={editResource.summary}
+              onChange={e => setEditResource({ ...editResource, summary: e.target.value })}
               rows={3}
             />
           </div>
@@ -62,8 +62,8 @@ const EditPaperModal: React.FC<EditPaperModalProps> = ({ open, onOpenChange, pap
             <label className="block font-medium mb-1">Index</label>
             <Input
               type="number"
-              value={editPaper.index}
-              onChange={e => setEditPaper({ ...editPaper, index: Number(e.target.value) })}
+              value={editResource.index}
+              onChange={e => setEditResource({ ...editResource, index: Number(e.target.value) })}
             />
           </div>
           <DialogFooter>
@@ -75,4 +75,4 @@ const EditPaperModal: React.FC<EditPaperModalProps> = ({ open, onOpenChange, pap
   );
 };
 
-export default EditPaperModal; 
+export default EditResourceModal; 

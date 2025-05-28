@@ -1,4 +1,4 @@
-export interface research_paper {
+export interface Resource {
   uid: string;
   project_uid?: string | null; // Usually added on backend before DB insert, can be optional here
   title: string;
@@ -9,5 +9,5 @@ export interface research_paper {
   score?: number | null;
   sourceQuery?: string | null;
   index?: number | null; // For ordering
-  // No resource_type field
+  resource_type?: 'paper' | 'book' | 'web_article' | 'local_file' | 'url' | string;
 }

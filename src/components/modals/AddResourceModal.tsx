@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import type { research_paper } from '@/lib/researchPaper';
+import type { Resource } from '@/lib/Resource';
 import { generateUID } from '@/lib/researchProject';
 
-interface AddPaperModalProps {
+interface AddResourceModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAdd: (paper: research_paper) => void;
+  onAdd: (resource: Resource) => void;
 }
 
-const AddPaperModal: React.FC<AddPaperModalProps> = ({ open, onOpenChange, onAdd }) => {
-  const [form, setForm] = useState<Partial<research_paper>>({});
+const AddResourceModal: React.FC<AddResourceModalProps> = ({ open, onOpenChange, onAdd }) => {
+  const [form, setForm] = useState<Partial<Resource>>({});
 
-  const handleChange = (field: keyof research_paper, value: any) => {
+  const handleChange = (field: keyof Resource, value: any) => {
     if (field === 'publishedDate') {
       setForm(f => ({ ...f, publishedDate: value ? new Date(value) : undefined }));
     } else if (field === 'index') {
@@ -26,20 +26,21 @@ const AddPaperModal: React.FC<AddPaperModalProps> = ({ open, onOpenChange, onAdd
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.title || !form.author || !form.url) return;
-    const newPaper: research_paper = {
+    if (!form.title || !form.url) return;
+    const newResource: Resource = {
       uid: generateUID(),
       project_uid: '', // Should be set by parent if needed
       title: form.title!,
       url: form.url!,
       publishedDate: form.publishedDate instanceof Date ? form.publishedDate : new Date(),
-      author: form.author!,
+      author: form.author || '',
       score: form.score || 0,
       summary: form.summary || '',
       sourceQuery: form.sourceQuery || '',
       index: form.index || 0,
+      resource_type: form.resource_type || 'paper',
     };
-    onAdd(newPaper);
+    onAdd(newResource);
     setForm({});
     onOpenChange(false);
   };
@@ -48,8 +49,8 @@ const AddPaperModal: React.FC<AddPaperModalProps> = ({ open, onOpenChange, onAdd
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Paper</DialogTitle>
-          <DialogDescription>Enter the details for the new paper.</DialogDescription>
+          <DialogTitle>Add New Resource</DialogTitle>
+          <DialogDescription>Enter the details for the new resource (paper, book, web article, etc.).</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -58,11 +59,20 @@ const AddPaperModal: React.FC<AddPaperModalProps> = ({ open, onOpenChange, onAdd
           </div>
           <div>
             <label className="block font-medium mb-1">Author</label>
-            <Input value={form.author || ''} onChange={e => handleChange('author', e.target.value)} required />
+            <Input value={form.author || ''} onChange={e => handleChange('author', e.target.value)} />
           </div>
           <div>
             <label className="block font-medium mb-1">URL</label>
             <Input value={form.url || ''} onChange={e => handleChange('url', e.target.value)} required />
+          </div>
+          <div>
+            <label className="block font-medium mb-1">Type</label>
+            <select value={form.resource_type || 'paper'} onChange={e => handleChange('resource_type', e.target.value)}>
+              <option value="paper">Paper</option>
+              <option value="book">Book</option>
+              <option value="web_article">Web Article</option>
+              <option value="other">Other</option>
+            </select>
           </div>
           <div>
             <label className="block font-medium mb-1">Published Date</label>
@@ -77,7 +87,7 @@ const AddPaperModal: React.FC<AddPaperModalProps> = ({ open, onOpenChange, onAdd
             <textarea className="w-full border rounded px-3 py-2 bg-background" value={form.summary || ''} onChange={e => handleChange('summary', e.target.value)} rows={3} />
           </div>
           <DialogFooter>
-            <Button type="submit">Add Paper</Button>
+            <Button type="submit">Add Resource</Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -85,4 +95,4 @@ const AddPaperModal: React.FC<AddPaperModalProps> = ({ open, onOpenChange, onAdd
   );
 };
 
-export default AddPaperModal; 
+export default AddResourceModal; 

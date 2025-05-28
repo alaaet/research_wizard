@@ -23,30 +23,30 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 
-import { getLiteratureResults, exportLiterature, addPaper, updatePaper, deletePaper } from '@/connectors/literatureIpc';
+import { listResources, exportLiterature, addResource, updateResource, deleteResource } from '@/connectors/resourceIpc';
 import { listResearchProjects } from '@/connectors/researchProjectIpc';
-import type { research_paper } from '@/lib/researchPaper';
+import type { Resource } from '@/lib/Resource';
 import type { ResearchProject } from '../../lib/researchProject';
 import { Globe, Eye, Pencil, Trash2, Copy } from 'lucide-react';
-import EditPaperModal from '@/components/modals/editPaperModal';
-import DeletePaperModal from '@/components/modals/deletePaperModal';
+import EditPaperModal from '@/components/modals/EditResourceModal';
+import DeletePaperModal from '@/components/modals/DeleteResourceModal';
 import { useNavigate } from 'react-router-dom';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import AddPaperModal from '@/components/modals/addPaperModal';
+import AddPaperModal from '@/components/modals/AddResourceModal';
 import { toast } from "sonner"
 
 export default function LiteratureListingPage() {
   const { t } = useTranslation();
   const [projects, setProjects] = useState<ResearchProject[]>([]);
-  const [papers, setPapers] = useState<research_paper[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
-  const [paperToEdit, setPaperToEdit] = useState<research_paper | null>(null);
+  const [resourceToEdit, setResourceToEdit] = useState<Resource | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [paperToDelete, setPaperToDelete] = useState<research_paper | null>(null);
+  const [resourceToDelete, setResourceToDelete] = useState<Resource | null>(null);
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -65,12 +65,12 @@ export default function LiteratureListingPage() {
     // Load all papers for all projects
     async function fetchAllPapers() {
       setLoading(true);
-      let allPapers: research_paper[] = [];
+      let allResources: Resource[] = [];
       for (const project of projects) {
-        const projectPapers = await getLiteratureResults(project.uid);
-        if (projectPapers) allPapers = allPapers.concat(projectPapers);
+        const projectPapers = await listResources(project.uid);
+        if (projectPapers) allResources = allResources.concat(projectPapers);
       }
-      setPapers(allPapers);
+      setResources(allResources);
       setLoading(false);
     }
     if (projects.length > 0) fetchAllPapers();
@@ -88,44 +88,43 @@ export default function LiteratureListingPage() {
     );
   };
 
-  const filteredPapers = papers.filter(p => selectedProjects.includes(p.project_uid));
-  const totalPages = Math.ceil(filteredPapers.length / pageSize);
-  const paginatedPapers = filteredPapers.slice((page - 1) * pageSize, page * pageSize);
+  const filteredResources = resources.filter(r => selectedProjects.includes(r.project_uid));
+  const totalPages = Math.ceil(filteredResources.length / pageSize);
+  const paginatedResources = filteredResources.slice((page - 1) * pageSize, page * pageSize);
 
-  const handleEditSave = async (updated: research_paper) => {
-    const res = await updatePaper(updated);
+  const handleEditSave = async (updated: Resource) => {
+    const res = await updateResource(updated);
     if (res?.success) {
-      setPapers(papers => papers.map(p => p.uid === updated.uid ? updated : p));
-      toast(t('literature.manage.success.paperUpdated'));
-    }
-    else{
+      setResources(resources => resources.map(r => r.uid === updated.uid ? updated : r));
+      toast(t('literature.manage.success.resourceUpdated'));
+    } else {
       setError(t('literature.manage.error.updateFailed'));
     }
     setEditOpen(false);
   };
 
-  const handleDelete = async (paper: research_paper) => {
-    const res = await deletePaper(paper.uid);
+  const handleDelete = async (resource: Resource) => {
+    const res = await deleteResource(resource.uid);
     if (res?.success) {
-      setPapers(papers => papers.filter(p => p.uid !== paper.uid));
-      toast(t('literature.manage.success.paperDeleted'));
-    }
-    else{
+      setResources(resources => resources.filter(r => r.uid !== resource.uid));
+      toast(t('literature.manage.success.resourceDeleted'));
+    } else {
       setError(t('literature.manage.error.deleteFailed'));
     }
     setDeleteOpen(false);
   };
 
-  const handleAddPaper = async (paper: research_paper) => {
-    if (!selectedProjects.includes(paper.project_uid)) return;
-    const res = await addPaper(paper.project_uid, paper);
+  const handleAddResource = async (resource: Resource) => {
+    if (!selectedProjects.includes(resource.project_uid)) return;
+    const { uid, project_uid, ...rest } = resource;
+    const res = await addResource(resource.project_uid!, rest);
     if (res?.success) {
-      setPapers(papers => [...papers, paper]);
-      toast(t('literature.manage.success.paperAdded'));
+      setResources(resources => [...resources, resource]);
+      toast(t('literature.manage.success.resourceAdded'));
       setError(null);
     } else {
-      if (res?.error === 'A paper with this title and URL already exists.') {
-        setError(t('literature.manage.error.duplicatePaper'));
+      if (res?.error === 'A resource with this title and URL/path already exists.') {
+        setError(t('literature.manage.error.duplicateResource'));
       } else {
         setError(t('literature.manage.error.addFailed'));
       }
@@ -167,7 +166,7 @@ export default function LiteratureListingPage() {
           </DropdownMenu>
         </div>
       </Card>
-      {filteredPapers.length > 0 && (
+      {filteredResources.length > 0 && (
         <>
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">{t('literature.manage.papers')}</h2>
@@ -175,7 +174,7 @@ export default function LiteratureListingPage() {
               <Button variant="outline" onClick={() => setAddOpen(true)}>
                 {t('literature.manage.addPaper')}
               </Button>
-              <Select onValueChange={async (value) => { await exportLiterature(value, filteredPapers); }}>
+              <Select onValueChange={async (value) => { await exportLiterature(value, filteredResources); }}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder={t('literature.manage.exportPapers')} />
                 </SelectTrigger>
@@ -200,19 +199,19 @@ export default function LiteratureListingPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paginatedPapers.map((paper, idx) => {
+                  {paginatedResources.map((resource, idx) => {
                     let publishedDate = '';
-                    if (paper.publishedDate) {
-                      const dateObj = paper.publishedDate instanceof Date
-                        ? paper.publishedDate
-                        : new Date(paper.publishedDate);
+                    if (resource.publishedDate) {
+                      const dateObj = resource.publishedDate instanceof Date
+                        ? resource.publishedDate
+                        : new Date(resource.publishedDate);
                       publishedDate = isNaN(dateObj.getTime()) ? '' : dateObj.toLocaleDateString();
                     }
                     return (
-                      <TableRow key={paper.uid} className="hover:bg-gray-100 cursor-pointer" onClick={() => navigate(`/literature/view/${paper.project_uid}/${paper.uid}`)}>
+                      <TableRow key={resource.uid} className="hover:bg-gray-100 cursor-pointer" onClick={() => navigate(`/literature/view/${resource.project_uid}/${resource.uid}`)}>
                         <TableCell>{(page - 1) * pageSize + idx + 1}</TableCell>
-                        <TableCell>{paper.title}</TableCell>
-                        <TableCell>{paper.author && paper.author.length > 50 ? paper.author.slice(0, 50) + '...' : paper.author}</TableCell>
+                        <TableCell>{resource.title}</TableCell>
+                        <TableCell>{resource.author && resource.author.length > 50 ? resource.author.slice(0, 50) + '...' : resource.author}</TableCell>
                         <TableCell>{publishedDate}</TableCell>
                         <TableCell>
                           <div className="flex gap-2">
@@ -222,7 +221,7 @@ export default function LiteratureListingPage() {
                               title={t('literature.manage.actions.openLink')}
                               onClick={e => {
                                 e.stopPropagation();
-                                window.open(paper.url, '_blank');
+                                window.open(resource.url, '_blank');
                               }}
                             >
                               <Globe className="w-5 h-5 text-green-500" />
@@ -233,7 +232,7 @@ export default function LiteratureListingPage() {
                               title={t('literature.manage.actions.copyUrl')}
                               onClick={e => {
                                 e.stopPropagation();
-                                navigator.clipboard.writeText(paper.url);
+                                navigator.clipboard.writeText(resource.url);
                                 toast.success(t('literature.manage.success.urlCopied'));
                               }}
                             >
@@ -245,7 +244,7 @@ export default function LiteratureListingPage() {
                               title={t('literature.manage.actions.view')}
                               onClick={e => {
                                 e.stopPropagation();
-                                navigate(`/literature/view/${paper.project_uid}/${paper.uid}`);
+                                navigate(`/literature/view/${resource.project_uid}/${resource.uid}`);
                               }}
                             >
                               <Eye className="w-5 h-5 text-blue-500" />
@@ -256,7 +255,7 @@ export default function LiteratureListingPage() {
                               title={t('literature.manage.actions.edit')}
                               onClick={e => {
                                 e.stopPropagation();
-                                setPaperToEdit(paper);
+                                setResourceToEdit(resource);
                                 setEditOpen(true);
                               }}
                             >
@@ -268,7 +267,7 @@ export default function LiteratureListingPage() {
                               title={t('literature.manage.actions.delete')}
                               onClick={e => {
                                 e.stopPropagation();
-                                setPaperToDelete(paper);
+                                setResourceToDelete(resource);
                                 setDeleteOpen(true);
                               }}
                             >
@@ -319,19 +318,19 @@ export default function LiteratureListingPage() {
       <EditPaperModal
         open={editOpen}
         onOpenChange={setEditOpen}
-        paper={paperToEdit}
+        resource={resourceToEdit}
         onSave={handleEditSave}
       />
       <DeletePaperModal
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        paper={paperToDelete}
+        resource={resourceToDelete}
         onDelete={handleDelete}
       />
       <AddPaperModal
         open={addOpen}
         onOpenChange={setAddOpen}
-        onAdd={handleAddPaper}
+        onAdd={handleAddResource}
       />
     </div>
     </motion.div>

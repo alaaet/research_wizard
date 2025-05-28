@@ -8,6 +8,7 @@ import {
 } from "@jamesgopsill/crossref-client";
 import { getRetrieverBySlug } from "../../database";
 import { generateUID } from "../../../src/lib/researchProject";
+import { Resource } from '../../../src/lib/Resource';
 
 const DEFAULT_OPTIONS: SearchOptions = {
   maxResults: 10,
@@ -25,19 +26,6 @@ interface SearchOptions {
   filter?: string;
 }
 
-interface research_paper {
-  uid: string;
-  project_uid: string;
-  title: string;
-  url: string;
-  publishedDate: string;
-  author: string;
-  score: number;
-  summary: string;
-  sourceQuery: string;
-  index: number;
-}
-
 export class CrossrefRetriever extends BaseRetriever {
   private client: CrossrefClient;
 
@@ -52,7 +40,7 @@ export class CrossrefRetriever extends BaseRetriever {
     this.client = new CrossrefClient();
   }
 
-  async search(project_title: string, queries: string[], options: SearchOptions): Promise<research_paper[]> {
+  async search(project_title: string, queries: string[], options: SearchOptions): Promise<Resource[]> {
     let results: any[] = [];
     console.log(
       `Searching ${options.maxResults || DEFAULT_OPTIONS.maxResults} results per query for:`,
@@ -94,7 +82,7 @@ export class CrossrefRetriever extends BaseRetriever {
 
         // The items are in response.content.message.items
         const items = searchResponse.content.message.items;
-        const resultsWithQuery = items.map((item: Work) => ({
+        const resultsWithQuery: Resource[] = items.map((item: Work) => ({
           uid: generateUID(),
           project_uid: "", // This will be set by the index file
           title: item.title?.[0] || "",
@@ -102,9 +90,10 @@ export class CrossrefRetriever extends BaseRetriever {
           publishedDate: item.published?.dateParts?.[0]?.join("-") || "",
           author: item.author?.map((a) => `${a.given || ""} ${a.family || ""}`.trim()).join(", ") || "",
           score: 1.0, // Crossref doesn't provide relevance scores
-          summary: item.abstract || "", // Changed from text to summary to match index file
+          summary: item.abstract || "",
           sourceQuery: query,
           index: 0, // This will be set later
+          resource_type: 'paper',
         }));
 
         results.push(...resultsWithQuery);
@@ -116,7 +105,7 @@ export class CrossrefRetriever extends BaseRetriever {
       }
     }
 
-    const indexedResults = results
+    const indexedResults: Resource[] = results
       ?.filter((result) => result.title)
       ?.map((result, index) => ({ ...result, index: index + 1 }));
 

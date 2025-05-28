@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/layout/PageLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { getLiteratureResults } from '@/connectors/literatureIpc';
-import type { research_paper } from '@/lib/researchPaper';
+import { listResources } from '@/connectors/resourceIpc';
+import type { Resource } from '@/lib/Resource';
 import { Copy, Globe } from 'lucide-react';
 import { toast } from "sonner"
 
@@ -12,7 +12,7 @@ import { toast } from "sonner"
 export default function ViewPaperPage() {
   const { uid, projectId } = useParams();
   const navigate = useNavigate();
-  const [paper, setPaper] = useState<research_paper | null>(null);
+  const [resource, setResource] = useState<Resource | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,12 +24,12 @@ export default function ViewPaperPage() {
         return;
       }
       try {
-        const results = await getLiteratureResults(projectId);
-        const found = results.find((p: research_paper) => p.uid === uid);
+        const results = await listResources(projectId);
+        const found = results.find((r: Resource) => r.uid === uid);
         if (found) {
-          setPaper(found);
+          setResource(found);
         } else {
-          setError('Paper not found.');
+          setError('Resource not found.');
         }
       } catch (err: any) {
         setError(err.message || 'Failed to load paper.');
@@ -47,27 +47,28 @@ export default function ViewPaperPage() {
         <Card className="p-6 space-y-4">
           {loading && <div>Loading...</div>}
           {error && <div className="text-red-500">{error}</div>}
-          {paper && (
+          {resource && (
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold mb-2">{paper.title}</h2>
-              <div><strong>Authors:</strong> {paper.author}</div>
-              <div><strong>Published Date:</strong> {paper.publishedDate ? (paper.publishedDate instanceof Date ? paper.publishedDate.toLocaleDateString() : new Date(paper.publishedDate).toLocaleDateString()) : 'N/A'}</div>
-              <div className="flex items-center gap-2"><strong>URL:</strong> <a href={paper.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline flex items-center gap-1">Open Link <Globe className="w-5 h-5 text-blue-500" /></a>                             <Button
+              <h2 className="text-2xl font-bold mb-2">{resource.title}</h2>
+              <div><strong>Authors:</strong> {resource.author}</div>
+              <div><strong>Published Date:</strong> {resource.publishedDate ? (resource.publishedDate instanceof Date ? resource.publishedDate.toLocaleDateString() : new Date(resource.publishedDate).toLocaleDateString()) : 'N/A'}</div>
+              <div className="flex items-center gap-2"><strong>URL:</strong> <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline flex items-center gap-1">Open Link <Globe className="w-5 h-5 text-blue-500" /></a>                             <Button
                 size="icon"
                 variant="ghost"
                 title="Copy URL"
                 onClick={e => {
                   e.stopPropagation();
-                  navigator.clipboard.writeText(paper.url);
+                  navigator.clipboard.writeText(resource.url);
                   toast.success("URL copied to clipboard");
                 }}
               >
                 <Copy className="w-5 h-5 text-blue-500" />
               </Button></div>
-              <div><strong>Score:</strong> {paper.score ?? 'N/A'}</div>
-              <div><strong>Summary:</strong> <div className="whitespace-pre-line mt-1">{paper.summary || 'No summary provided.'}</div></div>
-              <div><strong>Source Query:</strong> {paper.sourceQuery || 'N/A'}</div>
-              <div><strong>Index:</strong> {paper.index ?? 'N/A'}</div>
+              <div><strong>Score:</strong> {resource.score ?? 'N/A'}</div>
+              <div><strong>Summary:</strong> <div className="whitespace-pre-line mt-1">{resource.summary || 'No summary provided.'}</div></div>
+              <div><strong>Source Query:</strong> {resource.sourceQuery || 'N/A'}</div>
+              <div><strong>Index:</strong> {resource.index ?? 'N/A'}</div>
+              <div><strong>Type:</strong> {resource.resource_type || 'N/A'}</div>
             </div>
           )}
         </Card>

@@ -4,7 +4,7 @@ import { getAIAgents } from '../../connectors/aiAgentsIpc';
 import { Card } from '../../components/ui/card';
 import { Check } from 'lucide-react';
 import { useIsDarkTheme } from '@/hooks/useIsDarkTheme';
-import EditAIAgentModal from '../../components/modals/editAIAgentModal';
+import EditAIAgentModal from '../../components/modals/EditAIAgentModal';
 import { Label } from '@/components/ui/label';
 import { getUserMetaDataByRef, setUserMetaData, type UserMetaData } from '../../connectors/userMetaDataIpc';
 import { Input } from '../../components/ui/input';
