@@ -31,7 +31,7 @@ function initializeTables() {
           keywords TEXT,
           description TEXT,
           research_questions TEXT,
-          status TEXT, -- New column
+          status TEXT,
           created_at TEXT NOT NULL DEFAULT (datetime('now')),
           updated_at TEXT NOT NULL DEFAULT (datetime('now'))
         );
