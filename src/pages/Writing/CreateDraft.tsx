@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import supportedLanguages from '../../../backend/default_settings/supported_languages.json';
 import type { ResearchProject } from '@/lib/researchProject';
+import { useReportGenerator } from '@/hooks/useReportGenerator';
 
 export default function CreateDraftPage() {
   const { t } = useTranslation();
@@ -32,11 +33,23 @@ export default function CreateDraftPage() {
   const [aiTopic, setAiTopic] = useState('');
   const [aiLanguage, setAiLanguage] = useState('English');
   const [aiLoading, setAiLoading] = useState(false);
-  const [report, setReport] = useState<{ [key: string]: { status: 'pending' | 'success' | 'error', content: string } }>({});
-  const [generating, setGenerating] = useState(false);
-  const [allDone, setAllDone] = useState(false);
   const [projects, setProjects] = useState<ResearchProject[]>([]);
   const navigate = useNavigate();
+
+  const {
+    report,
+    setReport,
+    generating,
+    allDone,
+    handleGenerateReport,
+    handleSaveReport,
+  } = useReportGenerator({
+    outline,
+    draft,
+    projectId,
+    language: aiLanguage,
+    navigate,
+  });
 
   useEffect(() => {
     async function fetchLanguage() {
@@ -142,99 +155,6 @@ export default function CreateDraftPage() {
       } else {
         toast.error('Failed to initiate draft.');
       }
-  };
-
-  // Step 2: Generate report content for each subsection
-  const handleGenerateReport = async () => {
-    setGenerating(true);
-    setAllDone(false);
-    const newReport: typeof report = {};
-    for (const section of outline.sections) {
-      for (const subsection of section.subsections) {
-        const key = `${section.title}|||${subsection}`;
-        setReport(r => ({ ...r, [key]: { status: 'pending', content: '' } }));
-        try {
-          const result = await generateSubsectionContent(
-            projectId!,
-            outline.title,
-            section.title,
-            subsection,
-            aiLanguage
-          );
-          if (result && result.success && result.text) {
-            console.log('Generated subsection content:', result.text);
-            newReport[key] = { status: 'success', content: result.text };
-            setReport(r => ({ ...r, [key]: { status: 'success', content: result.text } }));
-          } else {
-            newReport[key] = { status: 'error', content: '' };
-            setReport(r => ({ ...r, [key]: { status: 'error', content: '' } }));
-            toast.error('Failed to generate subsection content.');
-            console.error('Failed to generate subsection content:', result);
-          }
-        } catch (err: any) {
-          newReport[key] = { status: 'error', content: '' };
-          setReport(r => ({ ...r, [key]: { status: 'error', content: '' } }));
-          toast.error('Failed to generate subsection content.');
-          console.error('Failed to generate subsection content:', err);
-        }
-      }
-    }
-    setGenerating(false);
-    setAllDone(true);
-  };
-
-  // Save the report to the draft
-  const handleSaveReport = async () => {
-    try {
-      if (!outline?.sections || !Array.isArray(outline.sections)) {
-        throw new Error('Invalid outline structure: sections array is missing or invalid');
-      }
-
-      const reportText = outline.sections.map(section => {
-        if (!section.title || !Array.isArray(section.subsections)) {
-          throw new Error(`Invalid section structure: missing title or subsections in section "${section.title || 'unnamed'}"`);
-        }
-
-        const sectionText = section.subsections.map(subsection => {
-          if (!subsection) {
-            throw new Error(`Invalid subsection in section "${section.title}": subsection is empty`);
-          }
-
-          const key = `${section.title}|||${subsection}`;
-          const content = report[key]?.content;
-          
-          if (!content) {
-            console.warn(`Warning: No content found for subsection "${subsection}" in section "${section.title}"`);
-          }
-
-          return `### ${subsection}\n${content || ''}`;
-        }).join('\n\n');
-
-        return `## ${section.title}\n${sectionText}`;
-      }).join('\n\n');
-
-      if (!draft?.uid) {
-        throw new Error('Draft UID is missing');
-      }
-
-      console.log('Report text:', reportText);
-      const draftObj = {
-        uid: draft.uid,
-        report: reportText,
-      };
-      console.log('Draft object:', draftObj);
-
-      const result = await updateResearchDraftReport(draftObj);
-      if (result.success) {
-        toast.success('Draft saved successfully!');
-        navigate(-1);
-      } else {
-        throw new Error(result.error || 'Failed to save draft');
-      }
-    } catch (error) {
-      console.error('Error in handleSaveReport:', error);
-      toast.error(error.message || 'Failed to save draft');
-    }
   };
 
   return (

@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { generateSubsectionContent } from "../../connectors/researchDraftIpc";
 import { Separator } from '@/components/ui/separator';
 import { useTranslation } from "react-i18next";
+import { useReportGenerator } from '@/hooks/useReportGenerator';
 
 function OutlineEditor({
   outline,
@@ -144,10 +145,23 @@ export default function ResearchDraftDetailPage() {
   const [success, setSuccess] = useState(false);
   const [showRegenerate, setShowRegenerate] = useState(false);
 
-  // Draft generation state for regeneration
-  const [regenReport, setRegenReport] = useState<{ [key: string]: { status: 'pending' | 'success' | 'error', content: string } }>({});
-  const [regenGenerating, setRegenGenerating] = useState(false);
-  const [regenAllDone, setRegenAllDone] = useState(false);
+  // Use the hook for report regeneration
+  const {
+    report: regenReport,
+    setReport: setRegenReport,
+    generating: regenGenerating,
+    allDone: regenAllDone,
+    handleGenerateReport: handleRegenerateReport,
+    handleSaveReport: handleSaveRegeneratedReport,
+  } = useReportGenerator({
+    outline: form.outline,
+    draft,
+    projectId: draft?.project_uid,
+    language: 'English',
+    navigate: () => {}, // No navigation on save in detail page
+    initialReport: {},
+    setReport: undefined,
+  });
 
   useEffect(() => {
     if (!uid) return;
@@ -195,97 +209,6 @@ export default function ResearchDraftDetailPage() {
       setError(t('writing.draftDetail.error.updateFailed'));
     }
     setSaving(false);
-  };
-
-  // Handler for regeneration (reuse logic from CreateDraft)
-  const handleRegenerateReport = async () => {
-    setRegenGenerating(true);
-    setRegenAllDone(false);
-    const newReport: typeof regenReport = {};
-    for (const section of form.outline.sections) {
-      for (const subsection of section.subsections) {
-        const key = `${section.title}|||${subsection}`;
-        setRegenReport(r => ({ ...r, [key]: { status: 'pending', content: '' } }));
-        try {
-          const result = await generateSubsectionContent(
-            draft!.project_uid,
-            form.outline.title,
-            section.title,
-            subsection,
-            'English' // or use a language selector if available
-          );
-          if (result && result.success && result.text) {
-            console.log('Generated subsection content:', result.text);
-            newReport[key] = { status: 'success', content: result.text };
-            setRegenReport(r => ({ ...r, [key]: { status: 'success', content: result.text } }));
-          } else {
-            newReport[key] = { status: 'error', content: '' };
-            setRegenReport(r => ({ ...r, [key]: { status: 'error', content: '' } }));
-            toast.error(t('writing.draftDetail.error.regenerateFailed'));
-            console.error('Failed to generate subsection content:', result);
-          }
-        } catch (err: any) {
-          newReport[key] = { status: 'error', content: '' };
-          setRegenReport(r => ({ ...r, [key]: { status: 'error', content: '' } }));
-          toast.error(t('writing.draftDetail.error.regenerateFailed'));
-          console.error('Failed to generate subsection content:', err);
-        }
-      }
-    }
-    setRegenGenerating(false);
-    setRegenAllDone(true);
-  };
-
-  // Handler to save regenerated report
-  const handleSaveRegeneratedReport = async () => {
-    try {
-      if (!form.outline?.sections || !Array.isArray(form.outline.sections)) {
-        throw new Error('Invalid outline structure: sections array is missing or invalid');
-      }
-
-      const reportText = form.outline.sections.map(section => {
-        if (!section.title || !Array.isArray(section.subsections)) {
-          throw new Error(`Invalid section structure: missing title or subsections in section "${section.title || 'unnamed'}"`);
-        }
-
-        const sectionText = section.subsections.map(subsection => {
-          if (!subsection) {
-            throw new Error(`Invalid subsection in section "${section.title}": subsection is empty`);
-          }
-
-          const key = `${section.title}|||${subsection}`;
-          const content = regenReport[key]?.content;
-          
-          if (!content) {
-            console.warn(`Warning: No content found for subsection "${subsection}" in section "${section.title}"`);
-          }
-
-          return `### ${subsection}\n${content || ''}`;
-        }).join('\n\n');
-
-        return `## ${section.title}\n${sectionText}`;
-      }).join('\n\n');
-
-      const draftObj = {
-        uid: draft?.uid,
-        report: reportText,
-      };
-      console.log('Draft object:', draftObj);
-      
-      const result = await updateResearchDraftReport(draftObj);
-      if (result.success) {
-        toast.success(t('writing.draftDetail.success.regenerated'));
-        setShowRegenerate(false);
-        console.log(JSON.stringify(result, null, 2));
-        // Optionally, reload the draft
-        getResearchDraft(uid!).then(d => setDraft(d));
-      } else {
-        throw new Error(result.error || t('writing.draftDetail.error.saveRegeneratedFailed'));
-      }
-    } catch (error) {
-      console.error('Error in handleSaveRegeneratedReport:', error);
-      toast.error(error.message || t('writing.draftDetail.error.saveRegeneratedFailed'));
-    }
   };
 
   if (loading) {
