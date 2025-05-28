@@ -117,7 +117,10 @@ export async function generateProjectOutline(
   const maxSections: number = await getUserMetaDataByKey('MAX_SECTIONS_PER_REPORT') as number || 10;
   const minSubSections: number = await getUserMetaDataByKey('MIN_SUBSECTIONS_PER_SECTION') as number || 2;
   const maxSubSections: number = await getUserMetaDataByKey('MAX_SUBSECTIONS_PER_SECTION') as number || 5;
-
+  console.log('minSections:', minSections);
+  console.log('maxSections:', maxSections);
+  console.log('minSubSections:', minSubSections);
+  console.log('maxSubSections:', maxSubSections);
   console.log('Generating report outline...');
   const prompt = `Create a logical outline for a research report on the topic: "${topic}".\nThe outline should be structured as a JSON object with the following format:\n{\n  "title": "Report Title",\n  "sections": [ /* Aim for ${minSections}-${maxSections} sections */\n    {\n      "title": "Section 1 Title",\n      "subsections": [ /* Aim for ${minSubSections}-${maxSubSections} subsections */\n        "Subsection 1.1 Title", "Subsection 1.2 Title" /* ... */\n      ]\n    } /* ... more sections ... */\n  ]\n}\nEnsure the titles are descriptive and cover key aspects of the topic. while the JSON property keys should always be in English, the values should be *only* in ${language} language with the valid JSON object, without any introductory text, comments, or explanations.`;
 

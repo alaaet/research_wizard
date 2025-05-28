@@ -42,8 +42,11 @@ export default function CreateDraftPage() {
     async function fetchLanguage() {
       try {
         const meta = await getUserMetaData('research_language');
+        console.log('default language from meta:', meta.Value);
         if (meta && meta.Value) {
           setAiLanguage(meta.Value?.toLowerCase());
+        }else{
+          setAiLanguage('english');
         }
       } catch {}
     }
@@ -369,8 +372,8 @@ export default function CreateDraftPage() {
                 {outline.title && outline.sections.length > 0 && (
                   <div className="mt-4">
                     <Label>{t('writing.createDraft.generatedOutline')}</Label>
+                      {/* <Label className="mb-2 font-semibold">{t('writing.createDraft.reportTitle')}: {outline.title}</Label> */}
                     <ul className="list-decimal pl-5">
-                      <li className="mb-2 font-semibold">{outline.title}</li>
                       {outline.sections.map((section, idx) => (
                         <li key={idx} className="mb-2">
                           <div className="font-semibold">{section.title}</div>

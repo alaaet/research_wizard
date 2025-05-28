@@ -109,7 +109,7 @@ export default function GeneralTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }) {
           </SelectTrigger>
           <SelectContent>
             {supportedLanguages.languages.map(lang => (
-              <SelectItem key={lang.code} value={lang.code}>{lang.label}</SelectItem>
+              <SelectItem key={lang.code} value={lang.name}>{lang.label}</SelectItem>
             ))}
           </SelectContent>
         </Select>
