@@ -1,0 +1,34 @@
+{
+  "languages": [
+    {
+      "code": "en",
+      "name": "English",
+      "label": "English"
+    },
+    {
+      "code": "ar",
+      "name": "Arabic",
+      "label": "العربية"
+    },
+    {
+      "code": "zh",
+      "name": "Chinese",
+      "label": "中文"
+    },
+    {
+      "code": "fr",
+      "name": "French",
+      "label": "Français"
+    },
+    {
+      "code": "ru",
+      "name": "Russian",
+      "label": "Русский"
+    },
+    {
+      "code": "es",
+      "name": "Spanish",
+      "label": "Español"
+    }
+  ]
+} 

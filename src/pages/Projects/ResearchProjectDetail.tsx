@@ -70,10 +70,18 @@ export default function ResearchProjectDetailPage() {
     research_questions: string[];
     status: ProjectStatus;
   }>({
+  const [form, setForm] = useState<{
+    title: string;
+    keywords: string[];
+    description: string;
+    research_questions: string[];
+    status: ProjectStatus;
+  }>({
     title: '',
     keywords: [] as string[],
     description: '',
     research_questions: [] as string[],
+    status: PROJECT_STATUSES[0],
     status: PROJECT_STATUSES[0],
   });
   const [loading, setLoading] = useState(true);
@@ -120,7 +128,7 @@ export default function ResearchProjectDetailPage() {
             keywords: proj.keywords || [],
             description: proj.description || '',
             research_questions: proj.research_questions || [],
-            status: proj.status || PROJECT_STATUSES[0] as ProjectStatus,
+            status: (proj.status as ProjectStatus) || PROJECT_STATUSES[0],
           });
         }
       })

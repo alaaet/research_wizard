@@ -5,15 +5,8 @@ import { Input } from '../../components/ui/input';
 import { useUserMetaData } from '../../context/UserMetaDataContext';
 import LanguageSelector from '@/components/LanguageSelector';
 import { useTranslation } from 'react-i18next';
-
-const SUPPORTED_LANGUAGES = [
-  { value: 'Arabic', label: 'العربية' },
-  { value: 'Chinese', label: '中文' },
-  { value: 'English', label: 'English' },
-  { value: 'French', label: 'Français' },
-  { value: 'Russian', label: 'Русский' },
-  { value: 'Spanish', label: 'Español' },
-];
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import supportedLanguages from '../../../backend/default_settings/supported_languages.json';
 
 const FIELDS = [
   { key: 'name', label: 'Name', type: 'string' },
@@ -107,17 +100,19 @@ export default function GeneralTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }) {
       </div>
       <div>
         <label className={`block font-medium mb-1 ${dir === 'rtl' ? 'text-right' : ''}`}>{t('settings.language.reportLanguage')}</label>
-        <select
-          className={`w-full border rounded px-3 py-2 bg-background ${dir === 'rtl' ? 'text-right' : ''}`}
+        <Select
           value={form.research_language}
-          onChange={e => handleChange('research_language', e.target.value)}
-          required
+          onValueChange={(value) => handleChange('research_language', value)}
         >
-          <option value="" disabled>{t('common.select')}</option>
-          {SUPPORTED_LANGUAGES.map(lang => (
-            <option key={lang.value} value={lang.value}>{lang.label}</option>
-          ))}
-        </select>
+          <SelectTrigger className={dir === 'rtl' ? 'text-right' : ''}>
+            <SelectValue placeholder={t('common.select')} />
+          </SelectTrigger>
+          <SelectContent>
+            {supportedLanguages.languages.map(lang => (
+              <SelectItem key={lang.code} value={lang.name}>{lang.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div>
         <LanguageSelector 
@@ -126,7 +121,6 @@ export default function GeneralTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }) {
             handleChange('ui_language', value);
             i18n.changeLanguage(value);
           }}
-          dir={dir}
         />
       </div>
       <div className="flex justify-end gap-2">

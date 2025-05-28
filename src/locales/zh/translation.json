@@ -192,14 +192,6 @@
         "outlineGenerated": "大纲已生成！",
         "draftSaved": "草稿保存成功！",
         "draftRegenerated": "草稿重新生成并保存成功！"
-      },
-      "error": {
-        "enterTopic": "请输入主题。",
-        "generateFailed": "生成大纲失败。",
-        "initiateFailed": "初始化草稿失败。",
-        "generateContentFailed": "生成小节内容失败。",
-        "saveFailed": "保存草稿失败。",
-        "regenerateFailed": "保存重新生成的草稿失败"
       }
     },
     "report": {

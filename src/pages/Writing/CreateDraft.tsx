@@ -10,13 +10,18 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { getResearchProject } from '@/connectors/researchProjectIpc';
+import { getResearchProject, listResearchProjects } from '@/connectors/researchProjectIpc';
 import { getUserMetaData } from '@/connectors/userMetaDataIpc';
 import { ResearchDraft } from '@/lib/researchDraft';
 import { generateUID } from '@/lib/researchProject';
 import { ReportGenerator } from '@/components/data/ReportGenerator';
+import { useTranslation } from 'react-i18next';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import supportedLanguages from '../../../backend/default_settings/supported_languages.json';
+import type { ResearchProject } from '@/lib/researchProject';
 
 export default function CreateDraftPage() {
+  const { t } = useTranslation();
   const { projectId } = useParams();
   const [step, setStep] = useState(1);
   const [draft, setDraft] = useState<ResearchDraft | null>(null);
@@ -30,18 +35,27 @@ export default function CreateDraftPage() {
   const [report, setReport] = useState<{ [key: string]: { status: 'pending' | 'success' | 'error', content: string } }>({});
   const [generating, setGenerating] = useState(false);
   const [allDone, setAllDone] = useState(false);
+  const [projects, setProjects] = useState<ResearchProject[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchLanguage() {
       try {
         const meta = await getUserMetaData('research_language');
+        console.log('default language from meta:', meta.Value);
         if (meta && meta.Value) {
-          setAiLanguage(meta.Value);
+          setAiLanguage(meta.Value?.toLowerCase());
+        }else{
+          setAiLanguage('english');
         }
       } catch {}
     }
     fetchLanguage();
+
+    // Load research projects
+    listResearchProjects().then((data) => {
+      setProjects(data || []);
+    });
   }, []);
 
   useEffect(() => {
@@ -233,39 +247,39 @@ export default function CreateDraftPage() {
     >
     <div className="max-w-3xl mx-auto py-8">
       <Card className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Create Research Draft</h1>
+        <h1 className="text-2xl font-bold mb-4">{t('writing.createDraft.title')}</h1>
         {step === 1 && (
           <>
-            <h2 className="text-lg font-semibold mb-2">Step 1: Create Outline</h2>
+            <h2 className="text-lg font-semibold mb-2">{t('writing.createDraft.step1')}</h2>
             <Tabs defaultValue="ai" className="mb-4">
               <TabsList>
-                <TabsTrigger value="ai">AI Assist</TabsTrigger>
-                <TabsTrigger value="manual">Manual</TabsTrigger>
+                <TabsTrigger value="ai">{t('writing.draft.aiAssist')}</TabsTrigger>
+                <TabsTrigger value="manual">{t('writing.draft.manual')}</TabsTrigger>
               </TabsList>
               <TabsContent value="manual">
                 <div className="mb-2">
-                  <Label>Report Title</Label>
+                  <Label>{t('writing.createDraft.reportTitle')}</Label>
                   <Input
                     value={outline.title}
                     onChange={e => setOutline(o => ({ ...o, title: e.target.value }))}
-                    placeholder="Enter report title"
+                    placeholder={t('writing.createDraft.enterTitle')}
                   />
                 </div>
                 <div className="mb-2">
-                  <Label>Section Title</Label>
+                  <Label>{t('writing.createDraft.sectionTitle')}</Label>
                   <Input
                     value={manualSectionTitle}
                     onChange={e => setManualSectionTitle(e.target.value)}
-                    placeholder="Enter section title"
+                    placeholder={t('writing.createDraft.enterSection')}
                   />
                 </div>
                 <div className="mb-2">
-                  <Label>Subsections</Label>
+                  <Label>{t('writing.createDraft.subsections')}</Label>
                   <div className="flex gap-2 mb-2">
                     <Input
                       value={manualSubsectionInput}
                       onChange={e => setManualSubsectionInput(e.target.value)}
-                      placeholder="Add subsection"
+                      placeholder={t('writing.createDraft.addSubsection')}
                       onKeyDown={e => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
@@ -273,7 +287,7 @@ export default function CreateDraftPage() {
                         }
                       }}
                     />
-                    <Button type="button" onClick={addManualSubsection} variant="outline">Add</Button>
+                    <Button type="button" onClick={addManualSubsection} variant="outline">{t('writing.createDraft.add')}</Button>
                   </div>
                   <ul className="list-disc pl-5">
                     {manualSubsections.map((sub, idx) => (
@@ -286,9 +300,9 @@ export default function CreateDraftPage() {
                     ))}
                   </ul>
                 </div>
-                <Button type="button" onClick={addManualSection} className="mb-4">Add Section</Button>
+                <Button type="button" onClick={addManualSection} className="mb-4">{t('writing.createDraft.addSection')}</Button>
                 <div className="mb-4">
-                  <Label>Current Outline</Label>
+                  <Label>{t('writing.createDraft.currentOutline')}</Label>
                   <ul className="list-decimal pl-5">
                     {outline.sections.map((section, idx) => (
                       <li key={idx} className="mb-2">
@@ -308,29 +322,58 @@ export default function CreateDraftPage() {
               </TabsContent>
               <TabsContent value="ai">
                 <div className="mb-2">
-                  <Label>Topic</Label>
-                  <Input
+                  <Label>{t('writing.createDraft.topic')}</Label>
+                  <Select
                     value={aiTopic}
-                    onChange={e => setAiTopic(e.target.value)}
-                    placeholder="Enter research topic"
-                  />
+                    onValueChange={(value) => {
+                      setAiTopic(value);
+                      setOutline(o => ({ ...o, title: value }));
+                    }}
+                  >
+                    <SelectTrigger className="h-10 min-h-[2.5rem] max-h-10 overflow-hidden">
+                      <SelectValue
+                        placeholder={t('writing.createDraft.enterTopic')}
+                        className="truncate"
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projects.map((project) => (
+                        <SelectItem
+                          key={project.uid}
+                          value={project.title}
+                          title={project.title}
+                          className="truncate"
+                        >
+                          {project.title.length > 100 ? project.title.slice(0, 100) + "..." : project.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="mb-2">
-                  <Label>Language</Label>
-                  <Input
+                  <Label>{t('writing.createDraft.language')}</Label>
+                  <Select
                     value={aiLanguage}
-                    onChange={e => setAiLanguage(e.target.value)}
-                    placeholder="e.g. English"
-                  />
+                    onValueChange={(value) => setAiLanguage(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t('writing.createDraft.enterLanguage')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {supportedLanguages.languages.map(lang => (
+                        <SelectItem key={lang.code} value={lang.name.toLowerCase()}>{lang.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button type="button" onClick={handleGenerateAIOutline} disabled={aiLoading}>
-                  {aiLoading ? 'Generating...' : 'Generate Outline'}
+                  {aiLoading ? t('writing.createDraft.generating') : t('writing.createDraft.generateOutline')}
                 </Button>
                 {outline.title && outline.sections.length > 0 && (
                   <div className="mt-4">
-                    <Label>Generated Outline</Label>
+                    <Label>{t('writing.createDraft.generatedOutline')}</Label>
+                      {/* <Label className="mb-2 font-semibold">{t('writing.createDraft.reportTitle')}: {outline.title}</Label> */}
                     <ul className="list-decimal pl-5">
-                      <li className="mb-2 font-semibold">{outline.title}</li>
                       {outline.sections.map((section, idx) => (
                         <li key={idx} className="mb-2">
                           <div className="font-semibold">{section.title}</div>
@@ -347,8 +390,10 @@ export default function CreateDraftPage() {
               </TabsContent>
             </Tabs>
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
-              <Button onClick={() => initiateDraftAndContinueToStep2()} disabled={!outline.title || outline.sections.length === 0}>Save & Generate Report</Button>
+              <Button variant="outline" onClick={() => navigate(-1)}>{t('writing.createDraft.cancel')}</Button>
+              <Button onClick={() => initiateDraftAndContinueToStep2()} disabled={!outline.title || outline.sections.length === 0}>
+                {t('writing.createDraft.saveAndGenerate')}
+              </Button>
             </div>
           </>
         )}
@@ -361,7 +406,7 @@ export default function CreateDraftPage() {
             handleGenerateReport={handleGenerateReport}
             handleSaveReport={handleSaveReport}
             footer={
-              <Button onClick={() => setStep(1)} variant="outline" className="mt-4">Back</Button>
+              <Button onClick={() => setStep(1)} variant="outline" className="mt-4">{t('writing.createDraft.back')}</Button>
             }
           />
         )}

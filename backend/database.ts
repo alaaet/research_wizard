@@ -31,7 +31,7 @@ function initializeTables() {
           keywords TEXT,
           description TEXT,
           research_questions TEXT,
-          status TEXT, -- New column
+          status TEXT,
           created_at TEXT NOT NULL DEFAULT (datetime('now')),
           updated_at TEXT NOT NULL DEFAULT (datetime('now'))
         );
@@ -277,7 +277,7 @@ function createResearchProject(project: any) {
   return new Promise((resolve) => {
     const now = new Date().toISOString();
     db.run(
-      `INSERT INTO research_projects (uid, title, keywords, description, research_questions, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO research_projects (uid, title, keywords, description, research_questions, status, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         project.uid,
         project.title,

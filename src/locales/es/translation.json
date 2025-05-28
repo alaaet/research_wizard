@@ -32,8 +32,16 @@
   "navigation": {
     "home": "Inicio",
     "projects": "Proyectos",
-    "reports": "Informes",
-    "settings": "Configuración"
+    "literature": "Literatura",
+    "literatureDiscover": "Descubrir",
+    "literatureManage": "Gestionar",
+    "writing": "Escritura",
+    "settings": "Configuración",
+    "toggleNavigation": "Alternar navegación",
+    "toggleTheme": "Alternar tema",
+    "defaultUser": "Usuario predeterminado",
+    "defaultEmail": "usuario@rwiz.eu",
+    "appName": "Research Wizard"
   },
   "settings": {
     "title": "Configuración",
@@ -42,16 +50,286 @@
       "uiLanguage": "Idioma de la interfaz",
       "reportLanguage": "Idioma de los informes"
     },
+    "general": {
+      "title": "Configuración general",
+      "description": "Configure los ajustes generales de la aplicación",
+      "error": {
+        "loadFailed": "Error al cargar la configuración.",
+        "saveFailed": "Error al guardar la configuración."
+      }
+    },
     "integrations": {
       "title": "Integraciones",
-      "retrieverTitle": "Integraciones de motores de búsqueda",
-      "loadingRetrievers": "Cargando motores de búsqueda..."
+      "description": "Gestione sus integraciones con servicios externos",
+      "retrieverTitle": "Integraciones de búsqueda",
+      "loadingRetrievers": "Cargando buscadores..."
+    },
+    "reportParameters": {
+      "title": "Parámetros del informe",
+      "description": "Configure los parámetros predeterminados del informe"
+    },
+    "aiAgents": {
+      "title": "Agentes de IA",
+      "description": "Configure sus agentes de IA"
+    }
+  },
+  "projects": {
+    "title": "Proyectos de investigación",
+    "createNew": "Crear nuevo proyecto",
+    "noProjects": "No se encontraron proyectos de investigación.",
+    "create": {
+      "title": "Crear proyecto de investigación",
+      "titleLabel": "Título",
+      "required": "Requerido",
+      "keywords": "Palabras clave",
+      "addKeyword": "Añadir palabra clave...",
+      "description": "Descripción",
+      "researchQuestions": "Preguntas de investigación",
+      "addQuestion": "Añadir pregunta...",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando..."
+    },
+    "list": {
+      "researchQuestions": "Preguntas de investigación:",
+      "created": "Creado:",
+      "updated": "Actualizado:"
+    },
+    "details": {
+      "title": "Detalles del proyecto",
+      "description": "Descripción",
+      "createdAt": "Creado el",
+      "updatedAt": "Actualizado el",
+      "status": "Estado",
+      "currentStatus": "Estado actual",
+      "viewEdit": "Ver/Editar proyecto",
+      "back": "Atrás",
+      "titleLabel": "Título",
+      "required": "Requerido",
+      "keywords": "Palabras clave",
+      "addKeyword": "Añadir palabra clave...",
+      "researchQuestions": "Preguntas de investigación",
+      "addQuestion": "Añadir pregunta...",
+      "generateWithAI": "Generar con IA",
+      "saveChanges": "Guardar cambios",
+      "error": {
+        "notFound": "Proyecto no encontrado.",
+        "loadFailed": "Error al cargar el proyecto.",
+        "updateFailed": "Error al actualizar el proyecto."
+      }
+    }
+  },
+  "literature": {
+    "title": "Literatura",
+    "discover": {
+      "title": "Búsqueda de literatura",
+      "searchPlaceholder": "Buscar artículos...",
+      "noResults": "No se encontraron resultados",
+      "searchRetriever": "Buscador",
+      "selectRetriever": "Seleccione un buscador",
+      "researchProject": "Proyecto de investigación",
+      "selectProject": "Seleccione un proyecto",
+      "searching": "Buscando...",
+      "search": "Buscar literatura",
+      "results": "Resultados de búsqueda",
+      "saveResults": "Guardar resultados",
+      "error": {
+        "selectBoth": "Por favor, seleccione un proyecto y un buscador",
+        "questionsRequired": "Se requieren preguntas de investigación para realizar la búsqueda",
+        "searchFailed": "Ocurrió un error durante la búsqueda",
+        "saveFailed": "Error al guardar resultados: {{error}}"
+      },
+      "success": {
+        "saved": "¡Resultados guardados con éxito!"
+      },
+      "confirm": {
+        "generateQuestions": "Este proyecto no tiene preguntas de investigación. ¿Desea generarlas ahora?"
+      }
+    },
+    "manage": {
+      "title": "Gestionar literatura",
+      "addPaper": "Añadir artículo",
+      "noPapers": "No se encontraron artículos",
+      "filterByProjects": "Filtrar por proyectos de investigación",
+      "selectProjects": "Seleccionar proyectos",
+      "papers": "Artículos",
+      "exportPapers": "Exportar artículos",
+      "exportFormats": {
+        "bibtex": "BibTeX",
+        "endnote": "EndNote XML",
+        "ris": "RIS"
+      },
+      "table": {
+        "index": "Índice",
+        "title": "Título",
+        "authors": "Autores",
+        "date": "Fecha",
+        "actions": "Acciones"
+      },
+      "actions": {
+        "openLink": "Abrir enlace",
+        "copyUrl": "Copiar URL",
+        "view": "Ver",
+        "edit": "Editar",
+        "delete": "Eliminar"
+      },
+      "success": {
+        "urlCopied": "URL copiada al portapapeles",
+        "paperUpdated": "Artículo actualizado con éxito",
+        "paperDeleted": "Artículo eliminado con éxito",
+        "paperAdded": "Artículo añadido con éxito"
+      },
+      "error": {
+        "updateFailed": "Error al actualizar el artículo",
+        "deleteFailed": "Error al eliminar el artículo",
+        "addFailed": "Error al añadir el artículo",
+        "duplicatePaper": "Ya existe un artículo con este título y URL."
+      }
+    },
+    "paper": {
+      "title": "Título",
+      "authors": "Autores",
+      "abstract": "Resumen",
+      "keywords": "Palabras clave",
+      "published": "Publicado",
+      "doi": "DOI",
+      "source": "Fuente"
+    }
+  },
+  "writing": {
+    "title": "Escritura",
+    "createDraft": {
+      "title": "Crear nuevo borrador",
+      "step1": "Paso 1: Crear esquema",
+      "step2": "Paso 2: Generar informe",
+      "reportTitle": "Título del informe",
+      "enterTitle": "Ingrese el título del informe",
+      "sectionTitle": "Título de la sección",
+      "enterSection": "Ingrese el título de la sección",
+      "subsections": "Subsecciones",
+      "addSubsection": "Añadir subsección",
+      "add": "Añadir",
+      "addSection": "Añadir sección",
+      "currentOutline": "Esquema actual",
+      "topic": "Tema",
+      "enterTopic": "Ingrese el tema de investigación",
+      "language": "Idioma",
+      "enterLanguage": "ej. Español",
+      "generateOutline": "Generar esquema",
+      "generating": "Generando...",
+      "generatedOutline": "Esquema generado",
+      "cancel": "Cancelar",
+      "saveAndGenerate": "Guardar y generar informe",
+      "back": "Atrás"
+    },
+    "drafts": "Borradores",
+    "reports": "Informes",
+    "noDrafts": "No se encontraron borradores",
+    "noReports": "No se encontraron informes",
+    "draft": {
+      "title": "Detalles del borrador",
+      "content": "Contenido",
+      "lastEdited": "Última edición",
+      "status": "Estado",
+      "outline": "Esquema",
+      "report": "Informe",
+      "regenerate": "Regenerar informe",
+      "viewReport": "Ver informe",
+      "saveChanges": "Guardar cambios",
+      "saving": "Guardando...",
+      "saved": "¡Guardado!",
+      "error": "¡Error!",
+      "addSection": "Añadir sección",
+      "sectionTitle": "Título de la sección",
+      "addSubsection": "Añadir subsección",
+      "subsection": "Añadir subsección",
+      "currentOutline": "Esquema actual",
+      "aiAssist": "Asistente IA",
+      "manual": "Manual",
+      "topic": "Tema",
+      "language": "Idioma",
+      "generateOutline": "Generar esquema",
+      "generating": "Generando...",
+      "generatedOutline": "Esquema generado",
+      "step1": "Paso 1: Crear esquema",
+      "step2": "Paso 2: Generar informe",
+      "reportTitle": "Título del informe",
+      "enterTitle": "Ingrese el título del informe",
+      "enterSection": "Ingrese el título de la sección",
+      "enterTopic": "Ingrese el tema de investigación",
+      "enterLanguage": "ej. Español",
+      "success": {
+        "outlineGenerated": "¡Esquema generado!",
+        "draftSaved": "¡Borrador guardado con éxito!",
+        "draftRegenerated": "¡Borrador regenerado y guardado!"
+      }
+    },
+    "report": {
+      "title": "Detalles del informe",
+      "generated": "Generado",
+      "download": "Descargar informe",
+      "raw": "Texto plano",
+      "formatted": "Formateado",
+      "hideRaw": "Ocultar texto plano",
+      "showRaw": "Mostrar texto plano",
+      "copyRaw": "Copiar texto plano",
+      "copyFormatted": "Copiar texto formateado",
+      "export": {
+        "md": "Exportar .md",
+        "docs": "Exportar .docs",
+        "pdf": "Exportar .pdf"
+      },
+      "success": {
+        "rawCopied": "¡Texto plano copiado!",
+        "formattedCopied": "¡Texto formateado copiado como texto enriquecido!"
+      }
+    },
+    "filterByResearchProjects": "Filtrar por proyectos de investigación",
+    "selectProjects": "Seleccionar proyectos",
+    "researchDrafts": "Borradores de investigación",
+    "addDraft": "Añadir borrador",
+    "noResearchDraftsFound": "No se encontraron borradores de investigación.",
+    "created": "Creado",
+    "updated": "Actualizado",
+    "delete": "Eliminar",
+    "draftDetail": {
+      "title": "Ver/Editar borrador",
+      "back": "Atrás",
+      "form": {
+        "title": "Título",
+        "required": "Requerido",
+        "outline": "Esquema",
+        "report": "Informe",
+        "addSection": "Añadir sección",
+        "sectionTitle": "Título de la sección",
+        "addSubsection": "Añadir subsección",
+        "addSubsectionButton": "Añadir subsección",
+        "addSectionButton": "Añadir sección",
+        "currentOutline": "Esquema actual",
+        "viewReport": "Ver informe",
+        "regenerateReport": "Regenerar informe",
+        "cancel": "Cancelar",
+        "saveChanges": "Guardar cambios",
+        "saving": "Guardando...",
+        "saved": "¡Guardado!",
+        "created": "Creado"
+      },
+      "error": {
+        "notFound": "Borrador no encontrado.",
+        "loadFailed": "Error al cargar el borrador.",
+        "updateFailed": "Error al actualizar el borrador.",
+        "regenerateFailed": "Error al generar el contenido de la subsección.",
+        "saveRegeneratedFailed": "Error al guardar el borrador regenerado"
+      },
+      "success": {
+        "regenerated": "¡Borrador regenerado y guardado!"
+      }
     }
   },
   "home": {
     "aiAgentAlert": {
       "title": "Información",
-      "description": "Por favor, vaya a la configuración para configurar el agente de IA para que la aplicación funcione correctamente.",
+      "description": "Por favor, vaya a Configuración para configurar un agente de IA para que la aplicación funcione correctamente.",
       "settingsLink": "Configuración"
     },
     "recentProjects": {
@@ -59,74 +337,6 @@
       "noProjects": "No se encontraron proyectos recientes.",
       "createdAt": "Creado: {{date}}"
     }
-  },
-  "dashboard": {
-    "welcomeTitle": "Hola, Agricultor de Guadalupe",
-    "welcomeDescription": "Aquí tienes una visión general de tu operación agrícola en Guadalupe",
-    "currentMonth": "Agosto 2023",
-    "noActiveAlerts": "No hay alertas activas",
-    "noUpcomingTasks": "No hay tareas próximas",
-    "addAlert": "Añadir alerta",
-    "addTask": "Añadir tarea",
-    "addWeatherAlert": "Añadir alerta meteorológica",
-    "alertType": "Tipo",
-    "alertTypes": {
-      "Cyclone": "Ciclón",
-      "Pluie": "Lluvia",
-      "Sécheresse": "Sequía",
-      "Vent": "Viento",
-      "info": "Información",
-      "warning": "Advertencia",
-      "danger": "Peligro"
-    },
-    "region": "Región",
-    "startDate": "Fecha de inicio",
-    "endDate": "Fecha de fin",
-    "severity": "Severidad",
-    "severityLevels": {
-      "low": "Baja",
-      "medium": "Media",
-      "high": "Alta"
-    },
-    "description": "Descripción",
-    "message": "Mensaje",
-    "enterAlertMessage": "Introduce el mensaje de alerta",
-    "title": "Título",
-    "enterTaskTitle": "Introduce el título de la tarea",
-    "dueDate": "Fecha de vencimiento",
-    "dueDatePlaceholder": "ej: Hoy, Mañana, 15/06"
-  },
-  "technicalSheet": {
-    "title": "Ficha técnica",
-    "crop": "Cultivo",
-    "insufficientData": "Datos insuficientes para generar la ficha técnica",
-    "notSpecified": "No especificado",
-    "noNotes": "Sin notas",
-    "generatedSuccessfully": "Ficha técnica generada con éxito",
-    "generationError": "Error al generar la ficha técnica:",
-    "generalInfo": "Información general",
-    "family": "Familia",
-    "origin": "Origen",
-    "type": "Tipo",
-    "growingSeason": "Temporada de crecimiento",
-    "cultivationInfo": "Información de cultivo",
-    "soilType": "Tipo de suelo",
-    "waterNeeds": "Necesidades de agua",
-    "fertilization": "Fertilización",
-    "harvestPeriod": "Período de cosecha",
-    "yieldPerHectare": "Rendimiento por hectárea",
-    "phytosanitaryIssues": "Problemas fitosanitarios",
-    "pests": "Plagas",
-    "diseases": "Enfermedades",
-    "notes": "Notas",
-    "generatedOn": "Ficha técnica generada el {{date}}",
-    "downloadButton": "Descargar ficha técnica",
-    "preview": "Vista previa",
-    "print": "Imprimir",
-    "downloadPDF": "Descargar PDF",
-    "tooltip": "Generar ficha técnica detallada",
-    "previewTitle": "Ficha técnica - {{name}}",
-    "previewDescription": "Vista previa de la ficha técnica"
   },
   "datePicker": {
     "selectDates": "Seleccionar fechas",
@@ -136,5 +346,15 @@
       "30days": "30 días",
       "90days": "90 días"
     }
+  },
+  "projectStatus": {
+    "Not Started": "No Iniciado",
+    "Planning": "Planificación",
+    "Data Collection": "Recolección de Datos",
+    "Analysis": "Análisis",
+    "Writing": "Redacción",
+    "Submitted": "Enviado",
+    "Completed": "Completado",
+    "On Hold": "En Pausa"
   }
 } 

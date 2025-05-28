@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { dialog, app } from 'electron';
+import { dialog, app, shell } from 'electron';
 import path from 'path';
 import { research_paper } from '../../src/lib/researchPaper';
 import { ResearchDraft } from '../../src/lib/researchDraft';
@@ -7,7 +7,8 @@ import { getResearchDraft } from '../database';
 import MarkdownIt from 'markdown-it';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import htmlToDocx from 'html-to-docx';
-import puppeteer from 'puppeteer';
+import pdf from 'html-pdf';
+import { CreateOptions } from 'html-pdf';
 
 function toBibTeX(papers: research_paper[]): string {
   return papers.map(paper => `@article{${paper.uid || paper.title.replace(/\W/g, '')},
@@ -81,41 +82,34 @@ async function convertMarkdownToDocx(markdown: string): Promise<Buffer> {
     return await htmlToDocxBuffer(html);
 }
 
-// Function to convert Markdown to PDF Buffer using puppeteer
+// Function to convert Markdown to PDF Buffer using html-pdf
 async function convertMarkdownToPDF(markdown: string): Promise<Buffer> {
     const html = markdownToHtml(markdown);
-    const browser = await puppeteer.launch({ 
-        headless: true,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--disable-gpu',
-            '--disable-software-rasterizer',
-            '--disable-gpu-compositing',
-            '--disable-gpu-rasterization',
-            '--disable-gpu-sandbox',
-            '--disable-software-rasterizer',
-            '--disable-vsync',
-            '--single-process'
-        ]
+    
+    return new Promise((resolve, reject) => {
+        const options: CreateOptions = {
+            format: 'A4',
+            border: {
+                top: '1in',
+                right: '1in',
+                bottom: '1in',
+                left: '1in'
+            },
+            type: 'pdf',
+            quality: '100',
+            timeout: 60000,
+            phantomPath: require('phantomjs-prebuilt').path
+        };
+
+        pdf.create(html, options).toBuffer((err: Error | null, buffer: Buffer) => {
+            if (err) {
+                console.error('Error generating PDF:', err);
+                reject(err);
+            } else {
+                resolve(buffer);
+            }
+        });
     });
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-    const pdfUint8Array = await page.pdf({
-        format: 'A4',
-        margin: {
-            top: '1in',
-            right: '1in',
-            bottom: '1in',
-            left: '1in'
-        },
-        preferCSSPageSize: true,
-        printBackground: true
-    });
-    await browser.close();
-    return Buffer.from(pdfUint8Array);
 }
 
 export async function exportDraftReportHelper(uid: string, format: 'md' | 'docs' | 'pdf') {
@@ -153,12 +147,21 @@ export async function exportDraftReportHelper(uid: string, format: 'md' | 'docs'
       { name: 'All Files', extensions: ['*'] }
     ]
   });
+  
   if (filePath) {
     if (format === 'pdf' || format === 'docs') {
       fs.writeFileSync(filePath, content);
     } else {
       fs.writeFileSync(filePath, content, 'utf8');
     }
+    
+    // Open the file with the default system application
+    try {
+      await shell.openPath(filePath);
+    } catch (error) {
+      console.error('Error opening file:', error);
+    }
+    
     return { success: true, filePath };
   }
   return { success: false, error: 'Export cancelled' };
