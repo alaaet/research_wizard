@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { dialog, app, shell } from 'electron';
 import path from 'path';
-import { research_paper } from '../../src/lib/researchPaper';
+import { Resource } from '../../src/lib/Resource';
 import { ResearchDraft } from '../../src/lib/researchDraft';
 import { getResearchDraft } from '../database';
 import MarkdownIt from 'markdown-it';
@@ -10,7 +10,7 @@ import htmlToDocx from 'html-to-docx';
 import pdf from 'html-pdf';
 import { CreateOptions } from 'html-pdf';
 
-function toBibTeX(papers: research_paper[]): string {
+function toBibTeX(papers: Resource[]): string {
   return papers.map(paper => `@article{${paper.uid || paper.title.replace(/\W/g, '')},
   title={${paper.title}},
   author={${paper.author}},
@@ -20,17 +20,17 @@ function toBibTeX(papers: research_paper[]): string {
 }`).join('\n\n');
 }
 
-function toEndNoteXML(papers: research_paper[]): string {
+function toEndNoteXML(papers: Resource[]): string {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<xml>\n` +
     papers.map(paper => `  <record>\n    <ref-type name="Journal Article">17</ref-type>\n    <title>${paper.title}</title>\n    <authors>${paper.author}</authors>\n    <year>${paper.publishedDate ? new Date(paper.publishedDate).getFullYear() : ''}</year>\n    <url>${paper.url}</url>\n    <notes>${paper.summary || ''}</notes>\n  </record>`).join('\n') +
     '\n</xml>';
 }
 
-function toRIS(papers: research_paper[]): string {
+function toRIS(papers: Resource[]): string {
   return papers.map(paper => `TY  - JOUR\nTI  - ${paper.title}\nAU  - ${paper.author}\nPY  - ${paper.publishedDate ? new Date(paper.publishedDate).getFullYear() : ''}\nUR  - ${paper.url}\nN1  - ${paper.summary || ''}\nER  -`).join('\n\n');
 }
 
-export async function exportLiteratureFile(format: string, papers: research_paper[]) {
+export async function exportLiteratureFile(format: string, papers: Resource[]) {
   let content = '';
   let ext = '';
   let filterName = '';

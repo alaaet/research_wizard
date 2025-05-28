@@ -26,8 +26,8 @@ import {
 } from "@/connectors/integrationsIpc";
 import type { SearchRetriever } from "../../../shared/searchRetrieverTypes";
 import type { ResearchProject } from "../../lib/researchProject";
-import { research_paper } from "@/lib/researchPaper";
-import { saveLiteratureResults } from "@/connectors/literatureIpc";
+import type { Resource } from "@/lib/Resource";
+import { saveLiteratureResults } from "@/connectors/resourceIpc";
 import { listResearchProjects, getResearchProject, updateResearchProject } from "@/connectors/researchProjectIpc";
 import { generateResearchQuestionsFromTopic } from "@/connectors/aiAgentsIpc";
 import { useTranslation } from "react-i18next";
@@ -39,7 +39,7 @@ export default function LiteraturePage() {
     useState<string>("");
   const [projects, setProjects] = useState<ResearchProject[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<research_paper[]>([]);
+  const [searchResults, setSearchResults] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -90,7 +90,7 @@ export default function LiteraturePage() {
       }
 
       // Perform the search using the selected retriever
-      const results: research_paper[] = await searchWithRetriever(
+      const results: Resource[] = await searchWithRetriever(
         selectedRetrieverName,
         projects.find((p) => p.title === selectedProject)?.uid,
         project.title,

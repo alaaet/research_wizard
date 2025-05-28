@@ -1,6 +1,7 @@
 import { BaseRetriever } from "./BaseRetriever";
 import Exa from "exa-js";
 import { getRetrieverBySlug } from "../../database";
+import { Resource } from '../../../src/lib/Resource';
 
 /* 
 DEFAULT OPTIONS FOR EXA SEARCH  
@@ -22,18 +23,6 @@ interface SearchOptions {
   type?: string;
   category?: string;
 }
-
-interface research_paper {
-    id: string;
-    title: string;
-    url: string;
-    publishedDate: string;
-    author: string;
-    score: number;
-    text: string;
-    sourceQuery: string;
-    index: number;
-  }
 
 export class ExaRetriever extends BaseRetriever {
   private client: any;
@@ -60,7 +49,7 @@ export class ExaRetriever extends BaseRetriever {
   /*
   Search for queries using Exa and return a list of scientific papers
   */
-  async search(project_title: string, queries: string[] = [], options: SearchOptions): Promise<research_paper[]> {
+  async search(project_title: string, queries: string[] = [], options: SearchOptions): Promise<Resource[]> {
     let results: any[] = [];
     console.log(
       `Workspaceing ${options.linksPerQuery} results per query for:`,
@@ -97,9 +86,20 @@ export class ExaRetriever extends BaseRetriever {
         );
       }
     }
-    const indexedResults = results
+    const indexedResults: Resource[] = results
       ?.filter((result) => result.title)
-      ?.map((result, index) => ({ ...result, index: index + 1 }));
+      ?.map((result, index) => ({
+        uid: result.id || '',
+        title: result.title,
+        url: result.url,
+        publishedDate: result.publishedDate,
+        author: result.author,
+        score: result.score,
+        summary: result.text,
+        sourceQuery: result.sourceQuery,
+        index: index + 1,
+        resource_type: 'paper',
+      }));
     console.log(`Found ${indexedResults.length} search results.`);
     console.info("Indexed search results:", indexedResults);
     return indexedResults;

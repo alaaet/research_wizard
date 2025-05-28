@@ -7,7 +7,7 @@ import { useIsDarkTheme } from '@/hooks/useIsDarkTheme';
 import { Label } from '@/components/ui/label';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
-import EditRetrieverModal from '../../components/modals/editRetrieverModal';
+import EditRetrieverModal from '../../components/modals/EditRetrieverModal';
 import { useTranslation } from 'react-i18next';
 
 export default function IntegrationsTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }) {

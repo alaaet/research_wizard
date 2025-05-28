@@ -1,5 +1,5 @@
 import { listSearchRetrievers, getUserMetaDataByKey } from '../database';
-import { research_paper } from '../../src/lib/researchPaper';
+import { Resource } from '../../src/lib/Resource';
 import { generateUID } from '../../src/lib/researchProject';
 /**
  * Processes a search query by routing it to the active search retriever.
@@ -54,27 +54,27 @@ export async function processSearch(project_title: string, queries: string[], op
   }
 }
 
-export async function getScientificPapers(project_uid: string, project_title: string, queries: string[], options: any): Promise<research_paper[]> {
+export async function getResources(project_uid: string, project_title: string, queries: string[], options: any): Promise<Resource[]> {
     const linksPerQueryObject: any = await getUserMetaDataByKey('LINKS_PER_SEARCH_QUERY');
     const linksPerQuery = linksPerQueryObject?.value || 10;
-    const papers = await processSearch(project_title, queries, {
+    const resources = await processSearch(project_title, queries, {
         linksPerQuery,
         useAutoprompt: false,
-        type: 'neural',
-        category: 'research paper',
+        type: options.type || 'neural',
+        category: options.category || 'resource',
         ...options,
     });
-    // console.log(papers);
-    return papers?.map((paper: any) => ({
+    return resources?.map((resource: any) => ({
         uid: generateUID(),
         project_uid,
-        title: paper.title,
-        url: paper.url,
-        publishedDate: paper.publishedDate,
-        author: paper.author,
-        score: paper.score,
-        summary: paper.summary,
-        sourceQuery: paper.sourceQuery,
-        index: paper.index,
+        title: resource.title,
+        url: resource.url,
+        publishedDate: resource.publishedDate,
+        author: resource.author,
+        score: resource.score,
+        summary: resource.summary,
+        sourceQuery: resource.sourceQuery,
+        index: resource.index,
+        resource_type: resource.resource_type || 'paper',
     }));
 }

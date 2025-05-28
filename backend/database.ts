@@ -2,7 +2,7 @@ import path from 'path';
 import sqlite3 from 'sqlite3';
 import fs from 'fs';
 import { app } from 'electron';
-import { research_paper } from '../src/lib/researchPaper';
+import type { Resource } from '../src/lib/Resource';
 import { ResearchDraft } from '../src/lib/researchDraft';
 import { generateUID } from '../src/lib/researchProject';
 
@@ -213,22 +213,23 @@ function initializeTables() {
             });
           });
           db.run(`
-            CREATE TABLE IF NOT EXISTS research_papers (
+            CREATE TABLE IF NOT EXISTS research_resources (
               uid TEXT PRIMARY KEY UNIQUE,
               project_uid TEXT,
-              title TEXT,
-              url TEXT,
+              title TEXT NOT NULL,
+              url TEXT NOT NULL,
+              summary TEXT,
               publishedDate TEXT,
               author TEXT,
               score REAL,
-              summary TEXT,
               sourceQuery TEXT,
               idx INTEGER,
+              resource_type TEXT,
               UNIQUE(title, url)
             );
           `, [], (err) => {
             if (err) {
-              console.log('Failed to create research_papers table:', err);
+              console.log('Failed to create research_resources table:', err);
               return reject(err);
             }
             resolve([]);
@@ -277,7 +278,7 @@ function createResearchProject(project: any) {
   return new Promise((resolve) => {
     const now = new Date().toISOString();
     db.run(
-      `INSERT INTO research_projects (uid, title, keywords, description, research_questions, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO research_projects (uid, title, keywords, description, research_questions, status, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         project.uid,
         project.title,
@@ -580,33 +581,34 @@ function getRetrieverBySlug(slug: string) {
   });
 }
 
-// --- Literature CRUD ---
-function saveLiteratureResults(projectId: string, results: research_paper[]) {
+// --- Resource (Literature/Files) CRUD ---
+function saveLiteratureResults(projectId: string, results: Resource[]) {
   return new Promise((resolve) => {
     if (!Array.isArray(results)) return resolve({ success: false, error: 'Results must be an array' });
     const now = new Date().toISOString();
     let completed = 0;
     let hasError = false;
-    results.forEach((paper) => {
+    results.forEach((resource) => {
       db.run(
-        `INSERT OR IGNORE INTO research_papers (uid, project_uid, title, url, publishedDate, author, score, summary, sourceQuery, idx) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT OR IGNORE INTO research_resources (uid, project_uid, title, url, summary, publishedDate, author, score, sourceQuery, idx, resource_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          paper.uid,
+          resource.uid,
           projectId,
-          paper.title,
-          paper.url,
-          paper.publishedDate ? (typeof paper.publishedDate === 'string' ? paper.publishedDate : new Date(paper.publishedDate).toISOString()) : now,
-          paper.author,
-          paper.score,
-          paper.summary,
-          paper.sourceQuery,
-          paper.index
+          resource.title,
+          resource.url,
+          resource.summary || null,
+          resource.publishedDate ? (typeof resource.publishedDate === 'string' ? resource.publishedDate : new Date(resource.publishedDate).toISOString()) : now,
+          resource.author || null,
+          resource.score || null,
+          resource.sourceQuery || null,
+          resource.index || null,
+          resource.resource_type || null
         ],
         (err) => {
           completed++;
           if (err) {
             hasError = true;
-            console.log('Failed to save research paper:', err);
+            console.log('Failed to save research resource:', err);
           }
           if (completed === results.length) {
             resolve({ success: !hasError });
@@ -618,76 +620,77 @@ function saveLiteratureResults(projectId: string, results: research_paper[]) {
   });
 }
 
-function getLiteratureResults(projectId: string) {
+function getResourcesForProject(projectId: string) {
   return new Promise((resolve) => {
     db.all(
-      `SELECT * FROM research_papers WHERE project_uid = ? ORDER BY idx ASC`,
+      `SELECT * FROM research_resources WHERE project_uid = ? ORDER BY idx ASC`,
       [projectId],
       (err, rows: any[]) => {
         if (err) {
-          console.log('Failed to get research papers:', err);
+          console.log('Failed to get resources for project:', err);
           return resolve([]);
         }
-        // Parse publishedDate as ISO string
-        const papers = rows.map(row => ({
+        const resources = rows.map(row => ({
           ...row,
-          publishedDate: row.publishedDate ? new Date(row.publishedDate) : null,
+          publishedDate: row.publishedDate ? new Date(row.publishedDate).toISOString() : null,
         }));
-        resolve(papers);
+        resolve(resources);
       }
     );
   });
 }
 
-function addPaperToProject(projectId: string, paper: research_paper) {
-  if (!paper.uid) paper.uid = generateUID();
+function addResourceToProject(projectId: string, resource: Resource) {
+  if (!resource.uid) resource.uid = generateUID();
   return new Promise((resolve) => {
     db.run(
-      `INSERT INTO research_papers (uid, project_uid, title, url, publishedDate, author, score, summary, sourceQuery, idx) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO research_resources (uid, project_uid, title, url, summary, publishedDate, author, score, sourceQuery, idx, resource_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        paper.uid,
+        resource.uid,
         projectId,
-        paper.title,
-        paper.url,
-        paper.publishedDate ? (typeof paper.publishedDate === 'string' ? paper.publishedDate : new Date(paper.publishedDate).toISOString()) : Date.now(),
-        paper.author,
-        paper.score,
-        paper.summary,
-        paper.sourceQuery,
-        paper.index
+        resource.title,
+        resource.url,
+        resource.summary || null,
+        resource.publishedDate ? (typeof resource.publishedDate === 'string' ? resource.publishedDate : new Date(resource.publishedDate).toISOString()) : null,
+        resource.author || null,
+        resource.score || null,
+        resource.sourceQuery || null,
+        resource.index || null,
+        resource.resource_type || null
       ],
-      function (err) {
+      function (err: Error) {
         if (err) {
-          console.log('Failed to add paper to project:', err);
+          console.log('Failed to add resource to project:', err);
           if ((err as any).code === 'SQLITE_CONSTRAINT') {
-            return resolve({ success: false, error: 'A paper with this title and URL already exists.' });
+            return resolve({ success: false, error: 'A resource with this title and URL/path already exists.' });
           }
           return resolve({ success: false, error: err.message });
         }
-        resolve({ success: true });
+        resolve({ success: true, uid: resource.uid });
       }
     );
   });
 }
 
-function updatePaper(paper: research_paper) {
+function updateResource(resource: Resource) {
   return new Promise((resolve) => {
     db.run(
-      `UPDATE research_papers SET title = ?, url = ?, publishedDate = ?, author = ?, score = ?, summary = ?, sourceQuery = ?, idx = ? WHERE uid = ?`,
+      `UPDATE research_resources SET title = ?, url = ?, summary = ?, publishedDate = ?, author = ?, score = ?, sourceQuery = ?, idx = ?, resource_type = ? WHERE uid = ?`,
       [
-        paper.title,
-        paper.url,
-        paper.publishedDate ? (typeof paper.publishedDate === 'string' ? paper.publishedDate : new Date(paper.publishedDate).toISOString()) : Date.now(),
-        paper.author,
-        paper.score,
-        paper.summary,
-        paper.sourceQuery, 
-        paper.index,
-        paper.uid
+        resource.title,
+        resource.url,
+        resource.summary || null,
+        resource.publishedDate ? (typeof resource.publishedDate === 'string' ? resource.publishedDate : new Date(resource.publishedDate).toISOString()) : null,
+        resource.author || null,
+        resource.score || null,
+        resource.sourceQuery || null,
+        resource.index || null,
+        resource.resource_type || null,
+        resource.uid
       ],
-      function (err) {
+      function (err: Error) {
         if (err) {
-          console.log('Failed to update paper:', err);
+          console.log('Failed to update resource:', err);
           return resolve({ success: false, error: err.message });
         }
         resolve({ success: true });
@@ -696,14 +699,14 @@ function updatePaper(paper: research_paper) {
   });
 }
 
-function deletePaper(paperId: string) {
+function deleteResource(resourceId: string) {
   return new Promise((resolve) => {
     db.run(
-      `DELETE FROM research_papers WHERE uid = ?`,
-      [paperId],
-      function (err) {
+      `DELETE FROM research_resources WHERE uid = ?`,
+      [resourceId],
+      function (err: Error) {
         if (err) {
-          console.log('Failed to delete paper:', err);
+          console.log('Failed to delete resource:', err);
           return resolve({ success: false, error: err.message });
         }
         resolve({ success: true });
@@ -879,10 +882,10 @@ export {
   updateSearchRetriever,
   getRetrieverBySlug,
   saveLiteratureResults,
-  getLiteratureResults,
-  addPaperToProject,
-  updatePaper,
-  deletePaper,
+  getResourcesForProject,
+  addResourceToProject,
+  updateResource,
+  deleteResource,
   getAllResearchDrafts,
   getResearchDraft,
   addResearchDraftToProject,
