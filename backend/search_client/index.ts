@@ -48,6 +48,11 @@ export async function processSearch(project_title: string, queries: string[], ke
         RetrieverClass = mod.OpenAlexRetriever;
         break;
       }
+      case 'europmc': {
+        const mod = await import('./retrievers/europmc');
+        RetrieverClass = mod.EuropePMCRetriever;
+        break;
+      }
       // Add more cases for other retrievers as you implement them
       default:
         throw new Error(`Search retriever '${slug}' is not supported.`);
