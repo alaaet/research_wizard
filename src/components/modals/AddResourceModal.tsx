@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import type { Resource } from '@/lib/Resource';
 import { generateUID } from '@/lib/researchProject';
+import { showOpenFileDialog } from '../../connectors/resourceIpc';
 
 interface AddResourceModalProps {
   open: boolean;
@@ -45,6 +46,20 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({ open, onOpenChange,
     onOpenChange(false);
   };
 
+  const handleAddLocalFile = async () => {
+    const filePaths = await showOpenFileDialog();
+    if (filePaths && filePaths.length > 0) {
+      const filePath = filePaths[0];
+      const fileName = filePath.split(/[/\\]/).pop() || filePath;
+      setForm(f => ({
+        ...f,
+        title: fileName,
+        url: filePath,
+        resource_type: 'local_file',
+      }));
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -52,6 +67,11 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({ open, onOpenChange,
           <DialogTitle>Add New Resource</DialogTitle>
           <DialogDescription>Enter the details for the new resource (paper, book, web article, etc.).</DialogDescription>
         </DialogHeader>
+        <div className="mb-2">
+          <Button type="button" onClick={handleAddLocalFile}>
+            Add Local File
+          </Button>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block font-medium mb-1">Title</label>

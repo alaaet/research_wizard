@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogD
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import type { Resource } from '@/lib/Resource';
+import { showOpenFileDialog } from '../../connectors/resourceIpc';
 
 interface EditResourceModalProps {
   open: boolean;
@@ -18,6 +19,20 @@ const EditResourceModal: React.FC<EditResourceModalProps> = ({ open, onOpenChang
     setEditResource(resource);
   }, [resource]);
 
+  const handleSetLocalFile = async () => {
+    const filePaths = await showOpenFileDialog();
+    if (filePaths && filePaths.length > 0 && editResource) {
+      const filePath = filePaths[0];
+      const fileName = filePath.split(/[/\\]/).pop() || filePath;
+      setEditResource({
+        ...editResource,
+        title: fileName,
+        url: filePath,
+        resource_type: 'local_file',
+      });
+    }
+  };
+
   if (!editResource) return null;
 
   return (
@@ -27,6 +42,11 @@ const EditResourceModal: React.FC<EditResourceModalProps> = ({ open, onOpenChang
           <DialogTitle>Edit Resource</DialogTitle>
           <DialogDescription>Edit the details for this resource.</DialogDescription>
         </DialogHeader>
+        <div className="mb-2">
+          <Button type="button" onClick={handleSetLocalFile}>
+            Set Local File
+          </Button>
+        </div>
         <form
           onSubmit={e => {
             e.preventDefault();
