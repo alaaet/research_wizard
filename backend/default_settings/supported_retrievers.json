@@ -48,5 +48,14 @@
         "icon": "europmc",
         "type": "search",
         "recommendation": "Europe PMC mainly depends on keywords and queries, project title is optional."
+    },
+    {
+        "name": "CoreAPI",
+        "description": "CORE provides access to millions of open access research papers from repositories and journals worldwide.",
+        "url": "https://core.ac.uk",
+        "icon": "coreapi",
+        "type": "search",
+        "key_name": "CORE_API_KEY",
+        "recommendation": "CORE API requires an API key. It mainly depends on keywords and queries, project title is optional."
     }
 ] 

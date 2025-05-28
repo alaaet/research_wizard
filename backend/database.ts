@@ -5,12 +5,27 @@ import { app } from 'electron';
 import type { Resource } from '../src/lib/Resource';
 import { ResearchDraft } from '../src/lib/researchDraft';
 import { generateUID } from '../src/lib/researchProject';
+import * as os from 'os';
 
 // Path for the SQLite database file
-const dbPath = path.join(app.getPath('userData'), 'research_management.sqlite');
+// const dbPath = path.join(app.getPath('userData'), 'research_management.sqlite');
+// Try to import app from electron, but fallback if not available
+let userDataPath: string;
+try {
+  // Only works in Electron
+  const { app } = require('electron');
+  userDataPath = app.getPath('userData');
+} catch (e) {
+  // Fallback for Node.js/ts-node
+  const homeDir = os.homedir();
+  userDataPath = path.join(homeDir, '.config/research_wizard');// this is only valid for linux
+  console.log('Fallback to home directory:', userDataPath);
+}
+const dbPath = path.join(userDataPath, 'research_management.sqlite');
 
 // Ensure the directory exists
-fs.mkdirSync(app.getPath('userData'), { recursive: true });
+// fs.mkdirSync(app.getPath('userData'), { recursive: true });
+fs.mkdirSync(userDataPath, { recursive: true });
 
 // Open or create the database (serialized mode)
 const db = new sqlite3.Database(dbPath, (err) => {
