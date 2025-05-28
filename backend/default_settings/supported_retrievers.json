@@ -6,13 +6,31 @@
         "icon": "exa",
         "type": "search",
         "key_name": "EXA_API_KEY",
-        "key_value": "your_exa_api_key_here"
+        "key_value": "your_exa_api_key_here",
+        "recommendation": "Exa is AI-based search engine, it has a free-tier plan that is sufficient for most use cases."
     },
     {
         "name": "Crossref",
         "description": "Crossref is a DOI registration agency that provides access to academic papers and their metadata.",
         "url": "https://www.crossref.org",
         "icon": "crossref",
-        "type": "search"
+        "type": "search",
+        "recommendation": "Crossref is a simple search engine, it requires the project to have valid research questions."
+    },
+    {
+        "name": "DBLP",
+        "description": "DBLP is a computer science bibliography that provides open bibliographic information on major computer science journals and proceedings.",
+        "url": "https://dblp.org",
+        "icon": "dblp",
+        "type": "search",
+        "recommendation": "DBLP is a simple search engine, it mainly depends on keywords, project title is optional."
+    },
+    {
+        "name": "PLOS",
+        "description": "PLOS provides open access to scientific articles and metadata via its public API.",
+        "url": "https://api.plos.org",
+        "icon": "plos",
+        "type": "search",
+        "recommendation": "PLOS is a simple search engine, it mainly depends on keywords or queries, project title is optional."
     }
 ] 

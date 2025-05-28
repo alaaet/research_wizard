@@ -8,11 +8,12 @@ export async function updateSearchRetriever(retriever: SearchRetriever): Promise
   return await window.electron?.invoke('searchRetrievers:update', retriever);
 }
 
-export async function searchWithRetriever(retriever: string, project_uid: string, project_title: string, queries: string[]): Promise<any> {
+export async function searchWithRetriever(retriever: string, project_uid: string, project_title: string, queries: string[], keywords: string[]): Promise<any> {
   return await window.electron?.invoke('searchRetrievers:search', {
     retriever,
     project_uid,
     project_title,
     queries,
+    keywords,
   });
 } 

@@ -31,7 +31,7 @@ export default function IntegrationsTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }
       {loading ? (
         <div>{t('settings.integrations.loadingRetrievers')}</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" dir={dir}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {retrievers.map(retriever => {
             const iconUrl = `../assets/integrations/retrievers/${retriever.icon}`;
             return (
@@ -54,6 +54,11 @@ export default function IntegrationsTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }
                     style={{ maxHeight: '60%' }}
                   />
                 </div>
+                {retriever.recommendation && (
+                  <div className="text-sm text-center text-gray-500 mt-2">
+                    {retriever.recommendation}
+                  </div>
+                )}
               </Card>
             );
           })}

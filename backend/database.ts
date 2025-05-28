@@ -160,7 +160,8 @@ function initializeTables() {
               type TEXT,
               key_name TEXT,
               key_value TEXT,
-              is_active INTEGER
+              is_active INTEGER,
+              recommendation TEXT
             );
           `, [], (err) => {
             if (err) {
@@ -189,7 +190,7 @@ function initializeTables() {
                   }
                   retrievers.forEach((retriever: any) => {
                     db.run(
-                      `INSERT INTO search_retrievers (slug, description, url, icon, type, key_name, key_value, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                      `INSERT INTO search_retrievers (slug, description, url, icon, type, key_name, key_value, is_active, recommendation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                       [
                         retriever.name.toLowerCase(),
                         retriever.description || '',
@@ -198,7 +199,8 @@ function initializeTables() {
                         retriever.type || '',
                         retriever.key_name || '',
                         retriever.key_value || '',
-                        1 // is_active default to true
+                        1, // is_active default to true
+                        retriever.recommendation || ''
                       ],
                       (err) => {
                         if (err) {
@@ -542,7 +544,8 @@ function updateSearchRetriever(retriever: any) {
         type = ?, 
         key_name = ?, 
         key_value = ?, 
-        is_active = ?
+        is_active = ?,
+        recommendation = ?
       WHERE slug = ?`,
       [
         retriever.description || '',
@@ -552,6 +555,7 @@ function updateSearchRetriever(retriever: any) {
         retriever.key_name || '',
         retriever.key_value || '',
         retriever.is_active ? 1 : 0,
+        retriever.recommendation || '',
         retriever.slug
       ],
       function (err) {

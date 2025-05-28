@@ -7,4 +7,5 @@ export type SearchRetriever = {
   key_name: string;
   key_value: string;
   is_active: boolean;
+  recommendation?: string;
 }; 

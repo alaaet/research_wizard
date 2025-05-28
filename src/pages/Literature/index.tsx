@@ -94,7 +94,8 @@ export default function LiteraturePage() {
         selectedRetrieverName,
         projects.find((p) => p.title === selectedProject)?.uid,
         project.title,
-        project.research_questions
+        project.research_questions,
+        project.keywords
       );
 
       setSearchResults(results);

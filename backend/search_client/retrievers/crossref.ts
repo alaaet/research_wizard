@@ -40,7 +40,7 @@ export class CrossrefRetriever extends BaseRetriever {
     this.client = new CrossrefClient();
   }
 
-  async search(project_title: string, queries: string[], options: SearchOptions): Promise<Resource[]> {
+  async search({project_title, queries = [], keywords = [], options}: {project_title: string, queries: string[], keywords: string[], options: SearchOptions}): Promise<Resource[]> {
     let results: any[] = [];
     console.log(
       `Searching ${options.maxResults || DEFAULT_OPTIONS.maxResults} results per query for:`,
@@ -52,6 +52,10 @@ export class CrossrefRetriever extends BaseRetriever {
     }
     if (project_title) {
       queries = [project_title];
+    }
+    // merge keywords with queries
+    if (keywords.length > 0) {
+      queries = [...queries, ...keywords];
     }
     for (const query of queries) {
       try {

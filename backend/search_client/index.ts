@@ -7,7 +7,7 @@ import { generateUID } from '../../src/lib/researchProject';
  * @param options - Search options for the retriever
  * @returns {Promise<any>} - The search results or error message
  */
-export async function processSearch(project_title: string, queries: string[], options: any): Promise<any[]> {
+export async function processSearch(project_title: string, queries: string[], keywords: string[], options: any): Promise<any[]> {
   try {
     // Get the active search retriever
     const retrievers = (await listSearchRetrievers()) as any[];
@@ -33,6 +33,16 @@ export async function processSearch(project_title: string, queries: string[], op
         RetrieverClass = mod.CrossrefRetriever;
         break;
       }
+      case 'dblp': {
+        const mod = await import('./retrievers/dblp');
+        RetrieverClass = mod.DblpRetriever;
+        break;
+      }
+      case 'plos': {
+        const mod = await import('./retrievers/plos');
+        RetrieverClass = mod.PlosRetriever;
+        break;
+      }
       // Add more cases for other retrievers as you implement them
       default:
         throw new Error(`Search retriever '${slug}' is not supported.`);
@@ -40,7 +50,7 @@ export async function processSearch(project_title: string, queries: string[], op
     // Instantiate the retriever using its static create method
     const retriever = await RetrieverClass.create();
     // Send the queries to the retriever's search method
-    const results = await retriever.search(project_title, queries, options);
+    const results = await retriever.search({project_title, queries, keywords, options});
     return results;
   } catch (err) {
     let message = '';
@@ -54,10 +64,10 @@ export async function processSearch(project_title: string, queries: string[], op
   }
 }
 
-export async function getResources(project_uid: string, project_title: string, queries: string[], options: any): Promise<Resource[]> {
+export async function getResources(project_uid: string, project_title: string, queries: string[], keywords: string[], options: any): Promise<Resource[]> {
     const linksPerQueryObject: any = await getUserMetaDataByKey('LINKS_PER_SEARCH_QUERY');
     const linksPerQuery = linksPerQueryObject?.value || 10;
-    const resources = await processSearch(project_title, queries, {
+    const resources = await processSearch(project_title, queries, keywords, {
         linksPerQuery,
         useAutoprompt: false,
         type: options.type || 'neural',
