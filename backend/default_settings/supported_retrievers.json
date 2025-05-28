@@ -32,5 +32,13 @@
         "icon": "plos",
         "type": "search",
         "recommendation": "PLOS is a simple search engine, it mainly depends on keywords or queries, project title is optional."
+    },
+    {
+        "name": "OpenAlex",
+        "description": "OpenAlex is a free, open catalog of the global research system, providing access to scholarly works, authors, institutions, and more.",
+        "url": "https://openalex.org",
+        "icon": "openalex",
+        "type": "search",
+        "recommendation": "OpenAlex is a simple search engine, it mainly depends on keywords and queries, project title is optional."
     }
 ] 
