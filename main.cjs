@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const db = require('./backend/dist/backend/database.js');
 const { generateResearchKeywordsFromTopic, generateResearchQuestionsFromTopic, generateProjectOutline, generateSectionParagraph } = require('./backend/dist/backend/ai_client/index.js');
@@ -96,8 +96,125 @@ ipcMain.handle('literature:updatePaper', async (event, { paper }) => {
 });
 
 ipcMain.handle('literature:deletePaper', async (event, { paperId }) => {
-  return await db.deletePaper(paperId);
+  return await db.deletePaper(paperId); // This should be db.deleteResource now, but depends on previous task completion.
 });
+
+// --- Resource IPC Handlers ---
+ipcMain.handle('resources:showOpenDialog', async () => {
+  try {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      properties: ['openFile', 'multiSelections'],
+      // You might want to add filters for specific file types, e.g.:
+      // filters: [
+      //   { name: 'Documents', extensions: ['pdf', 'doc', 'docx', 'txt'] },
+      //   { name: 'All Files', extensions: ['*'] },
+      // ],
+    });
+    if (canceled || !filePaths || filePaths.length === 0) {
+      console.log('[resources:showOpenDialog] Dialog canceled or no files selected.');
+      return undefined;
+    }
+    console.log('[resources:showOpenDialog] Files selected:', filePaths);
+    return filePaths;
+  } catch (error) {
+    console.error('[resources:showOpenDialog] Error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('resources:add', async (event, projectId, resourceData) => {
+  console.log('[resources:add] Received projectId:', projectId, 'resourceData:', resourceData);
+  try {
+    // The db.addResourceToProject function should handle UID generation if not provided.
+    // It expects a research_paper like object.
+    const resource = {
+      // uid: resourceData.uid || db.generateUID(), // generateUID is on researchProject.js, db.addResourceToProject handles it
+      title: resourceData.title,
+      url: resourceData.urlOrPath, // urlOrPath from frontend maps to url in DB
+      summary: resourceData.summary,
+      author: resourceData.author,
+      publishedDate: resourceData.publishedDate, // Needs to be ISO string or null
+      score: resourceData.score,
+      sourceQuery: resourceData.sourceQuery,
+      index: resourceData.index,
+      // type: resourceData.type, // Not storing type in DB as per previous task
+    };
+    const result = await db.addResourceToProject(projectId, resource);
+    console.log('[resources:add] Result from DB:', result);
+    return result;
+  } catch (error) {
+    console.error('[resources:add] Error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('resources:list', async (event, projectId) => {
+  console.log('[resources:list] Fetching resources for projectId:', projectId);
+  try {
+    const resources = await db.getResourcesForProject(projectId);
+    console.log('[resources:list] Resources from DB:', resources.length);
+    return resources;
+  } catch (error) {
+    console.error('[resources:list] Error:', error);
+    return []; // Return empty array or error object
+  }
+});
+
+ipcMain.handle('resources:update', async (event, resourceData) => {
+  console.log('[resources:update] Updating resource:', resourceData);
+  try {
+    const result = await db.updateResource(resourceData);
+    console.log('[resources:update] Result from DB:', result);
+    return result;
+  } catch (error) {
+    console.error('[resources:update] Error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('resources:delete', async (event, resourceId) => {
+  console.log('[resources:delete] Deleting resource with ID:', resourceId);
+  try {
+    const result = await db.deleteResource(resourceId);
+    console.log('[resources:delete] Result from DB:', result);
+    return result;
+  } catch (error) {
+    console.error('[resources:delete] Error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('resources:openExternal', async (event, urlOrPath) => {
+  console.log('[resources:openExternal] Opening:', urlOrPath);
+  try {
+    if (urlOrPath.startsWith('http:') || urlOrPath.startsWith('https:')) {
+      await shell.openExternal(urlOrPath);
+    } else {
+      // For local files, shell.openPath might be more appropriate
+      // or shell.showItemInFolder to reveal it.
+      // shell.openPath can execute files, so be cautious.
+      // For simply opening a file with its default app, openExternal can often handle file:// paths too.
+      // If openPath is preferred for local files:
+      // await shell.openPath(path.normalize(urlOrPath));
+      // Using openExternal for file paths (file:// protocol) can also work on some systems.
+      // Let's try openExternal first as it's generally safer.
+      if (path.isAbsolute(urlOrPath)) {
+         await shell.openPath(urlOrPath); // Use openPath for absolute local file paths
+      } else if (urlOrPath.startsWith('file://')) {
+         await shell.openExternal(urlOrPath); // For explicit file URLs
+      } else {
+        // Fallback or error for unclear paths
+        console.warn('[resources:openExternal] Path is not a URL and not absolute, attempting openExternal:', urlOrPath);
+        await shell.openExternal(urlOrPath);
+      }
+    }
+    return { success: true };
+  } catch (error) {
+    console.error('[resources:openExternal] Error opening:', urlOrPath, error);
+    return { success: false, error: error.message };
+  }
+});
+
 
 ipcMain.handle('researchDrafts:list', async (event, { projectId }) => {
   return await db.getAllResearchDrafts(projectId);

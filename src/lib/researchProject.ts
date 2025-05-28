@@ -6,9 +6,24 @@ export interface ResearchProject {
   keywords?: string[];
   description?: string;
   research_questions?: string[];
+  status?: string; // New field
   created_at?: string;
   updated_at?: string;
 }
+
+// Define and export an array of predefined status options
+export const PROJECT_STATUSES = [
+  'Not Started',
+  'Planning',
+  'Data Collection',
+  'Analysis',
+  'Writing',
+  'Submitted',
+  'Completed',
+  'On Hold'
+] as const; // Use 'as const' for stricter typing if desired
+
+export type ProjectStatus = typeof PROJECT_STATUSES[number]; // Optional: type for status
 
 // UID generation (16-character cryptographically strong)
 export function generateUID(): string {
