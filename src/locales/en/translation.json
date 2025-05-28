@@ -251,14 +251,6 @@
         "outlineGenerated": "Outline generated!",
         "draftSaved": "Draft saved successfully!",
         "draftRegenerated": "Draft regenerated and saved!"
-      },
-      "error": {
-        "enterTopic": "Please enter a topic.",
-        "generateFailed": "Failed to generate outline.",
-        "initiateFailed": "Failed to initiate draft.",
-        "generateContentFailed": "Failed to generate subsection content.",
-        "saveFailed": "Failed to save draft.",
-        "regenerateFailed": "Failed to save regenerated draft"
       }
     },
     "report": {

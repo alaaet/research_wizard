@@ -262,14 +262,6 @@
         "outlineGenerated": "¡Esquema generado!",
         "draftSaved": "¡Borrador guardado con éxito!",
         "draftRegenerated": "¡Borrador regenerado y guardado!"
-      },
-      "error": {
-        "enterTopic": "Por favor, ingrese un tema.",
-        "generateFailed": "Error al generar el esquema.",
-        "initiateFailed": "Error al iniciar el borrador.",
-        "generateContentFailed": "Error al generar el contenido de la subsección.",
-        "saveFailed": "Error al guardar el borrador.",
-        "regenerateFailed": "Error al guardar el borrador regenerado"
       }
     },
     "report": {

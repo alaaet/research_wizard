@@ -251,14 +251,6 @@
         "outlineGenerated": "تم إنشاء المخطط!",
         "draftSaved": "تم حفظ المسودة بنجاح!",
         "draftRegenerated": "تم إعادة إنشاء وحفظ المسودة!"
-      },
-      "error": {
-        "enterTopic": "الرجاء إدخال موضوع.",
-        "generateFailed": "فشل إنشاء المخطط.",
-        "initiateFailed": "فشل بدء المسودة.",
-        "generateContentFailed": "فشل إنشاء محتوى القسم الفرعي.",
-        "saveFailed": "فشل حفظ المسودة.",
-        "regenerateFailed": "فشل حفظ المسودة المعاد إنشاؤها"
       }
     },
     "report": {

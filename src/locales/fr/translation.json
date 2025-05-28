@@ -227,14 +227,6 @@
         "outlineGenerated": "Plan généré !",
         "draftSaved": "Brouillon enregistré avec succès !",
         "draftRegenerated": "Brouillon régénéré et enregistré avec succès !"
-      },
-      "error": {
-        "enterTopic": "Veuillez entrer un sujet.",
-        "generateFailed": "Échec de la génération du plan.",
-        "initiateFailed": "Échec de l'initialisation du brouillon.",
-        "generateContentFailed": "Échec de la génération du contenu de la sous-section.",
-        "saveFailed": "Échec de l'enregistrement du brouillon.",
-        "regenerateFailed": "Échec de l'enregistrement du brouillon régénéré"
       }
     },
     "report": {
