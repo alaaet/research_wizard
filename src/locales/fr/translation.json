@@ -82,7 +82,8 @@
     },
     "list": {
       "researchQuestions": "Questions de recherche :",
-      "created": "Créé le :"
+      "created": "Créé le :",
+      "updated": "Mis à jour le :"
     },
     "details": {
       "title": "Détails du projet",
@@ -104,6 +105,19 @@
         "notFound": "Projet non trouvé.",
         "loadFailed": "Échec du chargement du projet.",
         "updateFailed": "Échec de la mise à jour du projet."
+      },
+      "resources": {
+        "title": "Ressources",
+        "addUrl": "Ajouter une URL",
+        "addUrlDialog": {
+          "title": "Ajouter une URL",
+          "urlTitle": "URL",
+          "urlTitlePlaceholder": "Entrer le titre de l'URL",
+          "urlLink": "Lien",
+          "urlLinkPlaceholder": "Entrer le lien"
+        },
+        "addLocalFile": "Ajouter un fichier local",
+        "noResources": "Aucune ressource trouvée"
       }
     }
   },

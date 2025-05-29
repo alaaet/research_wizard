@@ -82,7 +82,8 @@
     },
     "list": {
       "researchQuestions": "أسئلة البحث:",
-      "created": "تم الإنشاء:"
+      "created": "تم الإنشاء:",
+      "updated": "تم التحديث:"
     },
     "details": {
       "title": "تفاصيل المشروع",
@@ -105,6 +106,19 @@
         "notFound": "لم يتم العثور على المشروع.",
         "loadFailed": "فشل تحميل المشروع.",
         "updateFailed": "فشل تحديث المشروع."
+      },
+      "resources": {
+        "title": "الموارد",
+        "addUrl": "إضافة رابط",
+        "addUrlDialog": {
+          "title": "إضافة رابط",
+          "urlTitle": "عنوان الرابط",
+          "urlTitlePlaceholder": "أدخل عنوان الرابط",
+          "urlLink": "الرابط",
+          "urlLinkPlaceholder": "أدخل الرابط"
+        },
+        "addLocalFile": "إضافة ملف محلي",
+        "noResources": "لم يتم العثور على موارد"
       }
     }
   },

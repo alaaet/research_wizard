@@ -82,7 +82,8 @@
     },
     "list": {
       "researchQuestions": "Research Questions:",
-      "created": "Created:"
+      "created": "Created:",
+      "updated": "Updated:"
     },
     "details": {
       "title": "Project Details",
@@ -105,6 +106,19 @@
         "notFound": "Project not found.",
         "loadFailed": "Failed to load project.",
         "updateFailed": "Failed to update project."
+      },
+      "resources": {
+        "title": "Resources",
+        "addUrl": "Add URL",
+        "addUrlDialog": {
+          "title": "Add URL",
+          "urlTitle": "URL",
+          "urlTitlePlaceholder": "Enter URL title",
+          "urlLink": "Link",
+          "urlLinkPlaceholder": "Enter link"
+        },
+        "addLocalFile": "Add Local File",
+        "noResources": "No resources found"
       }
     }
   },
@@ -143,6 +157,8 @@
       "selectProjects": "Select Projects",
       "papers": "Papers",
       "exportPapers": "Export Papers",
+      "importFromUrl": "Import from URL",
+      "importFromFolder": "Import from Folder",
       "exportFormats": {
         "bibtex": "BibTeX",
         "endnote": "EndNote XML",
@@ -164,15 +180,15 @@
       },
       "success": {
         "urlCopied": "URL copied to clipboard",
-        "paperUpdated": "Paper updated successfully",
-        "paperDeleted": "Paper deleted successfully",
-        "paperAdded": "Paper added successfully"
+        "resourceUpdated": "Resource updated successfully",
+        "resourceDeleted": "Resource deleted successfully",
+        "resourceAdded": "Resource added successfully"
       },
       "error": {
         "updateFailed": "Failed to update paper",
         "deleteFailed": "Failed to delete paper",
         "addFailed": "Failed to add paper",
-        "duplicatePaper": "A paper with this title and URL already exists."
+        "duplicateResource": "A resource with this title and URL already exists."
       }
     },
     "paper": {

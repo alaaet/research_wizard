@@ -170,38 +170,6 @@ ipcMain.handle('resources:delete', async (event, resourceId) => {
   }
 });
 
-ipcMain.handle('resources:openExternal', async (event, urlOrPath) => {
-  console.log('[resources:openExternal] Opening:', urlOrPath);
-  try {
-    if (urlOrPath.startsWith('http:') || urlOrPath.startsWith('https:')) {
-      await shell.openExternal(urlOrPath);
-    } else {
-      // For local files, shell.openPath might be more appropriate
-      // or shell.showItemInFolder to reveal it.
-      // shell.openPath can execute files, so be cautious.
-      // For simply opening a file with its default app, openExternal can often handle file:// paths too.
-      // If openPath is preferred for local files:
-      // await shell.openPath(path.normalize(urlOrPath));
-      // Using openExternal for file paths (file:// protocol) can also work on some systems.
-      // Let's try openExternal first as it's generally safer.
-      if (path.isAbsolute(urlOrPath)) {
-         await shell.openPath(urlOrPath); // Use openPath for absolute local file paths
-      } else if (urlOrPath.startsWith('file://')) {
-         await shell.openExternal(urlOrPath); // For explicit file URLs
-      } else {
-        // Fallback or error for unclear paths
-        console.warn('[resources:openExternal] Path is not a URL and not absolute, attempting openExternal:', urlOrPath);
-        await shell.openExternal(urlOrPath);
-      }
-    }
-    return { success: true };
-  } catch (error) {
-    console.error('[resources:openExternal] Error opening:', urlOrPath, error);
-    return { success: false, error: error.message };
-  }
-});
-
-
 ipcMain.handle('researchDrafts:list', async (event, { projectId }) => {
   return await db.getAllResearchDrafts(projectId);
 });
@@ -258,6 +226,22 @@ ipcMain.handle('researchDrafts:delete', async (event, { draftId }) => {
 
 ipcMain.handle('researchDrafts:exportReport', async (event, { uid, format }) => {
   return await helpers.exportDraftReportHelper(uid, format);
+});
+
+ipcMain.handle('resources:extractFromPDF', async (event, filePath) => {
+  return await helpers.extractResourceFromPDF(filePath);
+});
+
+ipcMain.handle('resources:extractFromDocx', async (event, filePath) => {
+  return await helpers.extractResourceFromDocx(filePath);
+});
+
+ipcMain.handle('resources:extractFromTxt', async (event, filePath) => {
+  return await helpers.extractResourceFromTxt(filePath);
+});
+
+ipcMain.handle('resources:extractFromUrl', async (event, url) => {
+  return await helpers.extractResourceFromUrl(url);
 });
 
 function createWindow() {

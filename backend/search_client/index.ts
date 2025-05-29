@@ -63,6 +63,21 @@ export async function processSearch(project_title: string, queries: string[], ke
         RetrieverClass = mod.ElsevierRetriever;
         break;
       }
+      case 'ncbi_nih': {
+        const mod = await import('./retrievers/ncbi_nih');
+        RetrieverClass = mod.NcbiNihRetriever;
+        break;
+      }
+      case 'arxiv': {
+        const mod = await import('./retrievers/arXiv');
+        RetrieverClass = mod.ArxivRetriever;
+        break;
+      }
+      case 'semanticscholar': {
+        const mod = await import('./retrievers/semantic');
+        RetrieverClass = mod.SemanticScholarRetriever;
+        break;
+      }
       // Add more cases for other retrievers as you implement them
       default:
         throw new Error(`Search retriever '${slug}' is not supported.`);

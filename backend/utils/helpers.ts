@@ -9,6 +9,10 @@ import { Document, Packer, Paragraph, TextRun } from 'docx';
 import htmlToDocx from 'html-to-docx';
 import pdf from 'html-pdf';
 import { CreateOptions } from 'html-pdf';
+import pdfParse from 'pdf-parse';
+import mammoth from 'mammoth';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
 function toBibTeX(papers: Resource[]): string {
   return papers.map(paper => `@article{${paper.uid || paper.title.replace(/\W/g, '')},
@@ -165,4 +169,72 @@ export async function exportDraftReportHelper(uid: string, format: 'md' | 'docs'
     return { success: true, filePath };
   }
   return { success: false, error: 'Export cancelled' };
+}
+
+// Extract Resource from PDF file
+export async function extractResourceFromPDF(filePath: string): Promise<Resource> {
+  const dataBuffer = fs.readFileSync(filePath);
+  const data = await pdfParse(dataBuffer);
+  const info = data.info || {};
+  return {
+    uid: filePath,
+    title: typeof (info as any)?.Title === 'string' && (info as any).Title.trim()
+      ? (info as any).Title
+      : (filePath && path.basename(filePath)) || 'Untitled',
+    url: filePath,
+    summary: data.text ? data.text.substring(0, 500) : null,
+    publishedDate: typeof (info as any)?.CreationDate === 'string' ? (info as any).CreationDate : null,
+    author: typeof (info as any)?.Author === 'string' ? (info as any).Author : null,
+    resource_type: 'local_file',
+  };
+}
+
+// Extract Resource from DOCX file
+export async function extractResourceFromDocx(filePath: string): Promise<Resource> {
+  const data = await mammoth.extractRawText({ path: filePath });
+  // Try to infer title/author from the first lines
+  const lines = data.value.split('\n').map(l => l.trim()).filter(Boolean);
+  return {
+    uid: filePath,
+    title: lines[0] || path.basename(filePath),
+    url: filePath,
+    summary: data.value.substring(0, 500),
+    publishedDate: null,
+    author: lines[1] || null,
+    resource_type: 'local_file',
+  };
+}
+
+// Extract Resource from TXT file
+export async function extractResourceFromTxt(filePath: string): Promise<Resource> {
+  const content = fs.readFileSync(filePath, 'utf8');
+  const lines = content.split('\n').map(l => l.trim()).filter(Boolean);
+  return {
+    uid: filePath,
+    title: lines[0] || path.basename(filePath),
+    url: filePath,
+    summary: content.substring(0, 500),
+    publishedDate: null,
+    author: lines[1] || null,
+    resource_type: 'local_file',
+  };
+}
+
+// Extract Resource from a URL (web page)
+export async function extractResourceFromUrl(url: string): Promise<Resource> {
+  const { data } = await axios.get(url);
+  const $ = cheerio.load(data);
+  const title = $('title').text() || url;
+  const author = $('meta[name="author"]').attr('content') || null;
+  const date = $('meta[name="date"]').attr('content') || $('meta[property="article:published_time"]').attr('content') || null;
+  const summary = $('meta[name="description"]').attr('content') || $('p').first().text() || null;
+  return {
+    uid: url,
+    title,
+    url,
+    summary,
+    publishedDate: date,
+    author,
+    resource_type: 'url',
+  };
 }

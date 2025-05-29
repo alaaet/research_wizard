@@ -82,7 +82,8 @@
     },
     "list": {
       "researchQuestions": "研究问题：",
-      "created": "创建于："
+      "created": "创建于：",
+      "updated": "更新于："
     },
     "details": {
       "title": "项目详情",
@@ -104,6 +105,19 @@
         "notFound": "未找到项目。",
         "loadFailed": "加载项目失败。",
         "updateFailed": "更新项目失败。"
+      },
+      "resources": {
+        "title": "资源",
+        "addUrl": "添加URL",
+        "addUrlDialog": {
+          "title": "添加URL",
+          "urlTitle": "URL",
+          "urlTitlePlaceholder": "输入URL标题",
+          "urlLink": "链接",
+          "urlLinkPlaceholder": "输入链接"
+        },
+        "addLocalFile": "添加本地文件",
+        "noResources": "未找到资源"
       }
     }
   },

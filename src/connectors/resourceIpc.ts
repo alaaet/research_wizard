@@ -44,8 +44,10 @@ export async function addResource(
   delete dataToSend.urlOrPath;
 
   // Ensure publishedDate is ISO string if it's a Date object
-  if (dataToSend.publishedDate && dataToSend.publishedDate instanceof Date) {
+  if (dataToSend.publishedDate instanceof Date && !isNaN(dataToSend.publishedDate.getTime())) {
     dataToSend.publishedDate = dataToSend.publishedDate.toISOString();
+  } else if (!dataToSend.publishedDate) {
+    dataToSend.publishedDate = null; // or undefined, depending on your backend
   }
 
   console.log('[addResource] Invoking resources:add with projectId:', projectId, 'resourceData:', dataToSend);
@@ -120,23 +122,6 @@ export async function deleteResource(resourceId: string): Promise<{ success: boo
   }
 }
 
-/**
- * Opens a resource (URL or local file) using the system's default application.
- * @param urlOrPath The URL or local file path to open.
- * @returns A promise that resolves when the open attempt is made.
- */
-export async function openExternalResource(urlOrPath: string): Promise<{ success: boolean; error?: string }> {
-  console.log('[openExternalResource] Invoking resources:openExternal with urlOrPath:', urlOrPath);
-  try {
-    const result = await window.electron?.invoke('resources:openExternal', urlOrPath);
-    console.log('[openExternalResource] Result:', result);
-    return result;
-  } catch (err) {
-    console.error('[openExternalResource] Error:', err);
-    throw err;
-  }
-}
-
 // Legacy functions (to be removed or refactored if still used by other parts of UI not yet updated)
 // For now, these can be kept to avoid breaking other parts of the app immediately,
 // but they should point to the new resource handlers if their functionality overlaps
@@ -169,4 +154,32 @@ export async function exportLiterature(format: string, resources: Resource[]) {
     console.error('[exportLiterature] Error:', err);
     throw err;
   }
+}
+
+/**
+ * Extracts Resource metadata from a PDF file.
+ */
+export async function extractResourceFromPDF(filePath: string): Promise<Resource> {
+  return await window.electron?.invoke('resources:extractFromPDF', filePath);
+}
+
+/**
+ * Extracts Resource metadata from a DOCX file.
+ */
+export async function extractResourceFromDocx(filePath: string): Promise<Resource> {
+  return await window.electron?.invoke('resources:extractFromDocx', filePath);
+}
+
+/**
+ * Extracts Resource metadata from a TXT file.
+ */
+export async function extractResourceFromTxt(filePath: string): Promise<Resource> {
+  return await window.electron?.invoke('resources:extractFromTxt', filePath);
+}
+
+/**
+ * Extracts Resource metadata from a URL.
+ */
+export async function extractResourceFromUrl(url: string): Promise<Resource> {
+  return await window.electron?.invoke('resources:extractFromUrl', url);
 }

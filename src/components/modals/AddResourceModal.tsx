@@ -98,7 +98,11 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({ open, onOpenChange,
             <label className="block font-medium mb-1">Published Date</label>
             <Input
               type="date"
-              value={form.publishedDate instanceof Date ? form.publishedDate.toISOString().slice(0, 10) : ''}
+              value={
+                form.publishedDate instanceof Date && !isNaN(form.publishedDate.getTime())
+                  ? form.publishedDate.toISOString().slice(0, 10)
+                  : ''
+              }
               onChange={e => handleChange('publishedDate', e.target.value)}
             />
           </div>

@@ -295,7 +295,7 @@ function createResearchProject(project: any) {
   return new Promise((resolve) => {
     const now = new Date().toISOString();
     db.run(
-      `INSERT INTO research_projects (uid, title, keywords, description, research_questions, status, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO research_projects (uid, title, keywords, description, research_questions, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         project.uid,
         project.title,
@@ -608,6 +608,13 @@ function saveLiteratureResults(projectId: string, results: Resource[]) {
     let completed = 0;
     let hasError = false;
     results.forEach((resource) => {
+      let isoDate: string | null = null;
+      if (resource.publishedDate) {
+        const dateObj = new Date(resource.publishedDate);
+        if (!isNaN(dateObj.getTime())) {
+          isoDate = dateObj.toISOString();
+        }
+      }
       db.run(
         `INSERT OR IGNORE INTO research_resources (uid, project_uid, title, url, summary, publishedDate, author, score, sourceQuery, idx, resource_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
@@ -616,7 +623,7 @@ function saveLiteratureResults(projectId: string, results: Resource[]) {
           resource.title,
           resource.url,
           resource.summary || null,
-          resource.publishedDate ? (typeof resource.publishedDate === 'string' ? resource.publishedDate : new Date(resource.publishedDate).toISOString()) : now,
+          isoDate,
           resource.author || null,
           resource.score || null,
           resource.sourceQuery || null,
@@ -651,7 +658,13 @@ function getResourcesForProject(projectId: string) {
         }
         const resources = rows.map(row => ({
           ...row,
-          publishedDate: row.publishedDate ? new Date(row.publishedDate).toISOString() : null,
+          publishedDate: (() => {
+            if (!row.publishedDate) return null;
+            const dateObj = new Date(row.publishedDate);
+            if (!isNaN(dateObj.getTime())) return dateObj.toISOString();
+            if (/^\\d{4}$/.test(row.publishedDate)) return row.publishedDate;
+            return null;
+          })(),
         }));
         resolve(resources);
       }
@@ -662,15 +675,22 @@ function getResourcesForProject(projectId: string) {
 function addResourceToProject(projectId: string, resource: Resource) {
   if (!resource.uid) resource.uid = generateUID();
   return new Promise((resolve) => {
+    let isoDate: string | null = null;
+    if (resource.publishedDate) {
+      const dateObj = new Date(resource.publishedDate);
+      if (!isNaN(dateObj.getTime())) {
+        isoDate = dateObj.toISOString();
+      }
+    }
     db.run(
-      `INSERT INTO research_resources (uid, project_uid, title, url, summary, publishedDate, author, score, sourceQuery, idx, resource_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO research_resources (uid, project_uid, title, url, summary, publishedDate, author, score, sourceQuery, idx, resource_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         resource.uid,
         projectId,
         resource.title,
         resource.url,
         resource.summary || null,
-        resource.publishedDate ? (typeof resource.publishedDate === 'string' ? resource.publishedDate : new Date(resource.publishedDate).toISOString()) : null,
+        isoDate,
         resource.author || null,
         resource.score || null,
         resource.sourceQuery || null,
@@ -693,13 +713,20 @@ function addResourceToProject(projectId: string, resource: Resource) {
 
 function updateResource(resource: Resource) {
   return new Promise((resolve) => {
+    let isoDate: string | null = null;
+    if (resource.publishedDate) {
+      const dateObj = new Date(resource.publishedDate);
+      if (!isNaN(dateObj.getTime())) {
+        isoDate = dateObj.toISOString();
+      }
+    }
     db.run(
       `UPDATE research_resources SET title = ?, url = ?, summary = ?, publishedDate = ?, author = ?, score = ?, sourceQuery = ?, idx = ?, resource_type = ? WHERE uid = ?`,
       [
         resource.title,
         resource.url,
         resource.summary || null,
-        resource.publishedDate ? (typeof resource.publishedDate === 'string' ? resource.publishedDate : new Date(resource.publishedDate).toISOString()) : null,
+        isoDate,
         resource.author || null,
         resource.score || null,
         resource.sourceQuery || null,

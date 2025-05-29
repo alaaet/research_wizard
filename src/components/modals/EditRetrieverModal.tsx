@@ -51,6 +51,12 @@ const EditRetrieverModal: React.FC<EditRetrieverModalProps> = ({ open, onOpenCha
                                 />
                             </div>
                         )}
+                        {editRetriever.recommendation && (
+                            <div>
+                                <label className="block font-medium mb-1">Recommendation</label>
+                                <p className="text-sm text-gray-500">{editRetriever.recommendation}</p>
+                            </div>
+                        )}
                         <DialogFooter>
                             <Button type="submit">Save</Button>
                         </DialogFooter>

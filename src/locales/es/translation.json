@@ -116,6 +116,19 @@
         "notFound": "Proyecto no encontrado.",
         "loadFailed": "Error al cargar el proyecto.",
         "updateFailed": "Error al actualizar el proyecto."
+      },
+      "resources": {
+        "title": "Recursos",
+        "addUrl": "Añadir URL",
+        "addUrlDialog": {
+          "title": "Añadir URL",
+          "urlTitle": "URL",
+          "urlTitlePlaceholder": "Ingrese el título de la URL",
+          "urlLink": "Enlace",
+          "urlLinkPlaceholder": "Ingrese el enlace"
+        },
+        "addLocalFile": "Añadir archivo local",
+        "noResources": "No se encontraron recursos"
       }
     }
   },

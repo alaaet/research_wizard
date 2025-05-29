@@ -82,7 +82,8 @@
     },
     "list": {
       "researchQuestions": "Исследовательские вопросы:",
-      "created": "Создан:"
+      "created": "Создан:",
+      "updated": "Обновлен:"
     },
     "details": {
       "title": "Детали проекта",
@@ -104,6 +105,19 @@
         "notFound": "Проект не найден.",
         "loadFailed": "Не удалось загрузить проект.",
         "updateFailed": "Не удалось обновить проект."
+      },
+      "resources": {
+        "title": "Ресурсы",
+        "addUrl": "Добавить URL",
+        "addUrlDialog": {
+          "title": "Добавить URL",
+          "urlTitle": "URL",
+          "urlTitlePlaceholder": "Введите название URL",
+          "urlLink": "Ссылка",
+          "urlLinkPlaceholder": "Введите ссылку"
+        },
+        "addLocalFile": "Добавить локальный файл",
+        "noResources": "Ресурсы не найдены"
       }
     }
   },

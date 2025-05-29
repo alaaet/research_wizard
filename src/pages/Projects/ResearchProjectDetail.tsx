@@ -1,16 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ResearchProject, PROJECT_STATUSES, ProjectStatus } from '../../lib/researchProject';
-import { Resource } from '../../lib/Resource';
 import { getResearchProject, updateResearchProject } from '../../connectors/researchProjectIpc';
-import {
-  listResources,
-  addResource,
-  deleteResource,
-  // updateResource, // Placeholder for edit
-  showOpenFileDialog,
-  openExternalResource,
-} from '../../connectors/resourceIpc';
 import { generateResearchKeywordsFromTopic, generateResearchQuestionsFromTopic } from '../../connectors/aiAgentsIpc';
 import PageLayout from '../../components/layout/PageLayout';
 import { Button } from '../../components/ui/button';
@@ -19,12 +10,10 @@ import { Textarea } from '../../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Label } from '../../components/ui/label';
 import { Badge } from '../../components/ui/badge';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../../components/ui/alert-dialog';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../components/ui/card';
 import { useToast } from '../../hooks/use-toast';
 import { motion } from 'framer-motion';
-import { Brain, Trash2, Edit3, ExternalLink, FilePlus, Link as LinkIcon, UploadCloud } from 'lucide-react';
+import { Brain } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 function TagsInput({ value, onChange, placeholder }: { value: string[]; onChange: (v: string[]) => void; placeholder?: string }) {
@@ -82,32 +71,11 @@ export default function ResearchProjectDetailPage() {
   const [success, setSuccess] = useState(false);
   const { toast } = useToast();
 
-  const [resources, setResources] = useState<Resource[]>([]);
-  const [isAddUrlDialogOpen, setIsAddUrlDialogOpen] = useState(false);
-  const [newUrlForm, setNewUrlForm] = useState({ title: '', url: '' });
-  // const [editingResource, setEditingResource] = useState<Resource | null>(null); // For edit dialog
-
-  const fetchResources = useCallback(async () => {
-    if (!uid) return;
-    try {
-      const fetchedResources = await listResources(uid);
-      setResources(fetchedResources || []);
-    } catch (err) {
-      console.error("Failed to fetch resources:", err);
-      toast({
-        title: t('projects.details.resources.error.fetchFailed'),
-        description: err.message || t('common.unknownError'),
-        variant: 'destructive',
-      });
-    }
-  }, [uid, t, toast]);
-
   useEffect(() => {
     if (!uid) return;
     setLoading(true);
     Promise.all([
       getResearchProject(uid),
-      fetchResources() // Also fetch resources
     ])
       .then(([proj]) => {
         if (!proj) {
@@ -131,7 +99,7 @@ export default function ResearchProjectDetailPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, [uid, t, fetchResources]); // Added fetchResources dependency
+  }, [uid, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -173,121 +141,6 @@ export default function ResearchProjectDetailPage() {
   if (error) {
     return <PageLayout><div className="p-8 text-red-500">{error}</div></PageLayout>;
   }
-  const handleAddUrl = async () => {
-    if (!project || !newUrlForm.title.trim() || !newUrlForm.url.trim()) {
-      toast({
-        title: t('projects.details.resources.error.validation.title'),
-        description: t('projects.details.resources.error.validation.urlOrTitleMissing'),
-        variant: 'destructive',
-      });
-      return;
-    }
-    try {
-      const result = await addResource(project.uid, {
-        title: newUrlForm.title.trim(),
-        urlOrPath: newUrlForm.url.trim(),
-        url: newUrlForm.url.trim(),
-        author: '',
-        publishedDate: new Date(),
-        score: 0,
-        summary: '',
-        sourceQuery: '',
-        index: 0,
-        resource_type: 'paper',
-      });
-      if (result.success) {
-        toast({ title: t('projects.details.resources.success.urlAdded') });
-        setNewUrlForm({ title: '', url: '' });
-        setIsAddUrlDialogOpen(false);
-        fetchResources();
-      } else {
-        throw new Error(result.error || t('common.unknownError'));
-      }
-    } catch (err) {
-      toast({
-        title: t('projects.details.resources.error.addFailed'),
-        description: err.message,
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleAddLocalFile = async () => {
-    if (!project) return;
-    try {
-      const filePathResults = await showOpenFileDialog();
-      if (filePathResults && filePathResults.length > 0) {
-        let allSucceeded = true;
-        for (const filePath of filePathResults) {
-          const derivedTitle = filePath.split(/[/\\]/).pop() || filePath || t('projects.details.resources.untitledFile');
-          const result = await addResource(project.uid, {
-            title: derivedTitle,
-            urlOrPath: filePath,
-            url: filePath,
-            author: '',
-            publishedDate: new Date(),
-            score: 0,
-            summary: '',
-            sourceQuery: '',
-            index: 0,
-            resource_type: 'paper',
-          });
-          if (!result.success) {
-            allSucceeded = false;
-            toast({
-              title: t('projects.details.resources.error.addFileFailed', { filename: derivedTitle }),
-              description: result.error || t('common.unknownError'),
-              variant: 'destructive',
-            });
-          }
-        }
-        if (allSucceeded) {
-          toast({ title: filePathResults.length > 1 ? t('projects.details.resources.success.filesAdded') : t('projects.details.resources.success.fileAdded') });
-        }
-        fetchResources();
-      }
-    } catch (err) {
-      toast({
-        title: t('projects.details.resources.error.dialogFailed'),
-        description: err.message,
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleDeleteResource = async (resourceId: string) => {
-    if (!project) return;
-    try {
-      const result = await deleteResource(resourceId);
-      if (result.success) {
-        toast({ title: t('projects.details.resources.success.deleted') });
-        fetchResources(); // Re-fetch or filter locally: setResources(prev => prev.filter(r => r.uid !== resourceId));
-      } else {
-        throw new Error(result.error || t('common.unknownError'));
-      }
-    } catch (err) {
-      toast({
-        title: t('projects.details.resources.error.deleteFailed'),
-        description: err.message,
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleOpenResource = async (urlOrPath: string) => {
-    try {
-      const result = await openExternalResource(urlOrPath);
-      if (!result.success) {
-        throw new Error(result.error || t('common.unknownError'));
-      }
-    } catch (err) {
-      toast({
-        title: t('projects.details.resources.error.openFailed'),
-        description: err.message,
-        variant: 'destructive',
-      });
-    }
-  };
 
   if (loading) {
     return <PageLayout><div className="p-8">{t('common.loading')}</div></PageLayout>;
@@ -405,100 +258,6 @@ export default function ResearchProjectDetailPage() {
               <span>{t('projects.details.currentStatus')}: <Badge variant="outline" className="ml-1">{t(`projectStatus.${form.status}`, form.status)}</Badge></span>
             </div>
           </CardFooter>
-        </Card>
-
-        {/* Linked Resources Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('projects.details.resources.title')}</CardTitle>
-            <div className="flex gap-2 mt-2">
-              <Dialog open={isAddUrlDialogOpen} onOpenChange={setIsAddUrlDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm"><LinkIcon className="mr-2 h-4 w-4" />{t('projects.details.resources.addUrl')}</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>{t('projects.details.resources.addUrlDialog.title')}</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div>
-                      <Label htmlFor="newUrlTitle">{t('projects.details.resources.addUrlDialog.urlTitle')}</Label>
-                      <Input 
-                        id="newUrlTitle" 
-                        value={newUrlForm.title} 
-                        onChange={(e) => setNewUrlForm(f => ({ ...f, title: e.target.value }))} 
-                        placeholder={t('projects.details.resources.addUrlDialog.urlTitlePlaceholder')}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="newUrlLink">{t('projects.details.resources.addUrlDialog.urlLink')}</Label>
-                      <Input 
-                        id="newUrlLink" 
-                        value={newUrlForm.url} 
-                        onChange={(e) => setNewUrlForm(f => ({ ...f, url: e.target.value }))} 
-                        placeholder="https://example.com"
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button variant="ghost" onClick={() => setIsAddUrlDialogOpen(false)}>{t('common.cancel')}</Button>
-                    <Button onClick={handleAddUrl}>{t('common.add')}</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-              <Button variant="outline" size="sm" onClick={handleAddLocalFile}>
-                <UploadCloud className="mr-2 h-4 w-4" />{t('projects.details.resources.addLocalFile')}
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {resources.length === 0 ? (
-              <p className="text-sm text-muted-foreground">{t('projects.details.resources.noResources')}</p>
-            ) : (
-              <div className="space-y-3">
-                {resources.map(resource => (
-                  <Card key={resource.uid} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3">
-                    <div className="flex-grow mb-2 sm:mb-0">
-                      <h4 className="font-semibold">{resource.title}</h4>
-                      <p className="text-xs text-muted-foreground truncate max-w-xs sm:max-w-md" title={resource.url}>
-                        {resource.url}
-                      </p>
-                      {resource.summary && <p className="text-xs text-muted-foreground mt-1">{resource.summary}</p>}
-                    </div>
-                    <div className="flex gap-2 flex-shrink-0">
-                      <Button variant="ghost" size="icon" onClick={() => handleOpenResource(resource.url)} title={t('projects.details.resources.actions.open')}>
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" disabled title={t('projects.details.resources.actions.edit')}> {/* Edit placeholder */}
-                        <Edit3 className="h-4 w-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon" title={t('projects.details.resources.actions.delete')}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>{t('projects.details.resources.deleteDialog.title')}</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              {t('projects.details.resources.deleteDialog.description', { title: resource.title })}
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDeleteResource(resource.uid)} className="bg-destructive hover:bg-destructive/90">
-                              {t('common.delete')}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </CardContent>
         </Card>
       </motion.div>
     </PageLayout>

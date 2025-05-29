@@ -9,6 +9,7 @@ import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import EditRetrieverModal from '../../components/modals/EditRetrieverModal';
 import { useTranslation } from 'react-i18next';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 export default function IntegrationsTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }) {
   const [retrievers, setRetrievers] = useState<SearchRetriever[]>([]);
@@ -31,7 +32,7 @@ export default function IntegrationsTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }
       {loading ? (
         <div>{t('settings.integrations.loadingRetrievers')}</div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
           {retrievers.map(retriever => {
             const iconUrl = `../assets/integrations/retrievers/${retriever.icon}`;
             return (
@@ -55,9 +56,20 @@ export default function IntegrationsTab({ dir = 'ltr' }: { dir?: 'ltr' | 'rtl' }
                   />
                 </div>
                 {retriever.recommendation && (
-                  <div className="text-sm text-center text-gray-500 mt-2">
-                    {retriever.recommendation}
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className="text-sm text-center text-gray-500 mt-2 max-w-full overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer"
+                        style={{ display: 'block' }}
+                        title={retriever.recommendation}
+                      >
+                        {retriever.recommendation}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {retriever.recommendation}
+                    </TooltipContent>
+                  </Tooltip>
                 )}
               </Card>
             );

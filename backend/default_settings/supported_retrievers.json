@@ -66,5 +66,31 @@
         "type": "search",
         "key_name": "ELSEVIER_API_KEY",
         "recommendation": "Elsevier API requires an API key. It mainly depends on keywords and queries, project title is optional."
+    },
+    {
+        "name": "NCBI-NIH",
+        "description": "NCBI/NIH E-utilities provide programmatic access to PubMed and other NCBI databases for literature and data retrieval.",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK25500/",
+        "icon": "ncbi",
+        "type": "search",
+        "key_name": "NCBI_API_KEY",
+        "recommendation": "NCBI/NIH is for Medical research. It mainly depends on keywords and queries(API key is optional)."
+    },
+    {
+        "name": "arXiv",
+        "description": "arXiv is a free distribution service and an open-access archive for scholarly articles in the fields of physics, mathematics, computer science, quantitative biology, quantitative finance, statistics, electrical engineering and systems science, and economics.",
+        "url": "https://arxiv.org",
+        "icon": "arxiv",
+        "type": "search",
+        "recommendation": "arXiv is a simple search engine, it mainly depends on keywords and queries, project title is optional. No API key required."
+    },
+    {
+        "name": "SemanticScholar",
+        "description": "Semantic Scholar provides access to a large academic graph and scholarly papers via its public API.",
+        "url": "https://api.semanticscholar.org/graph/v1",
+        "icon": "semanticscholar",
+        "type": "search",
+        "key_name": "SEMANTICSCHOLAR_API_KEY",
+        "recommendation": "Semantic Scholar API provides rich metadata and is suitable for academic search and citation analysis. API key is recommended for higher rate limits. See https://www.semanticscholar.org/product/api/tutorial for details."
     }
 ] 
