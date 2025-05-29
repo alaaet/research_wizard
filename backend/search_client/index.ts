@@ -58,6 +58,11 @@ export async function processSearch(project_title: string, queries: string[], ke
         RetrieverClass = mod.CoreAPIRetriever;
         break;
       }
+      case 'elsevier': {
+        const mod = await import('./retrievers/elsevier');
+        RetrieverClass = mod.ElsevierRetriever;
+        break;
+      }
       // Add more cases for other retrievers as you implement them
       default:
         throw new Error(`Search retriever '${slug}' is not supported.`);
