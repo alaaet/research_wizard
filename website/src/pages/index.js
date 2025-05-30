@@ -91,12 +91,12 @@ export default function Home() {
                 maxWidth: 600,
               }}
             >
-              Explore the <Link to="/docs/intro">User Guide</Link> to begin your
+              Explore the <Link to="/docs/user-guide/intro">User Guide</Link> to begin your
               journey with Research Wizard.
             </p>
             <Link
               className="button button--primary button--lg mb-4"
-              to="/docs/intro"
+              to="/docs/user-guide/intro"
             >
               Start the User Guide
             </Link>

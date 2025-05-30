@@ -1,5 +1,4 @@
 ---
-id: user-guide-intro
 sidebar_position: 1
 ---
 
