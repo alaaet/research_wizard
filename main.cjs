@@ -302,9 +302,9 @@ function createWindow() {
   }
 
   // Optional: Open DevTools immediately (less ideal but for debugging)
-  console.log('Attempting to open DevTools immediately...');
-  mainWindow.webContents.openDevTools();
-  console.log('Called openDevTools immediately.');
+  // console.log('Attempting to open DevTools immediately...');
+  // mainWindow.webContents.openDevTools();
+  // console.log('Called openDevTools immediately.');
 }
 
 console.log('Setting up app event listeners...');
