@@ -24,7 +24,8 @@
     "prepare-icons:build": "copyfiles -f assets/icons/png/* build/icons",
     "prepare-icons:assets": "copyfiles -f assets/icons/png/rwiz.png assets/icons/icon.png",
     "prune:prod": "npm prune --production",
-    "build:prod": "npm run prune:prod && npm run dist"
+    "build:prod": "npm run prune:prod && npm run dist",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.52.0",
@@ -136,7 +137,7 @@
     "vite": "^6.3.4"
   },
   "build": {
-    "appId": "eu.rwiz.app",
+    "appId": "com.researchwizard.app",
     "productName": "Research Wizard",
     "files": [
       "dist/**",
@@ -161,9 +162,10 @@
     },
     "win": {
       "target": [
-        "nsis",
-        "portable"
-      ]
+        "nsis"
+      ],
+      "signAndEditExecutable": false,
+      "forceCodeSigning": false
     },
     "mac": {
       "target": [
@@ -177,6 +179,11 @@
         "deb"
       ]
     },
-    "asar": true
+    "asar": true,
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
   }
 }
