@@ -4,32 +4,56 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
+    title: 'Unified Research Workspace',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Organize your research projects, literature, and drafts in one place. Switch seamlessly between project management, literature discovery, and writing.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
-    description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
-    ),
-  },
-  {
-    title: 'Powered by React',
+    title: 'AI-Powered Drafting',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Generate outlines and full research drafts using leading AI models (Gemini, OpenAI, Claude) or write manually for full control.
+      </>
+    ),
+  },
+  {
+    title: 'Comprehensive Literature Search',
+    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    description: (
+      <>
+        Search and import papers from Exa, Crossref, DBLP, PLOS, OpenAlex, EuropePMC, CoreAPI, Elsevier, NCBI-NIH, arXiv, and Semantic Scholar.
+      </>
+    ),
+  },
+  {
+    title: 'Customizable Reports',
+    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    description: (
+      <>
+        Generate, edit, and export research reports in Markdown, DOCX, or PDF. Fine-tune structure and language to fit your needs.
+      </>
+    ),
+  },
+  {
+    title: 'Modern, Intuitive UI',
+    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    description: (
+      <>
+        Enjoy a distraction-free, responsive interface with multi-language and RTL/LTR support. Built for productivity and ease of use.
+      </>
+    ),
+  },
+  {
+    title: 'Open Source & Extensible',
+    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    description: (
+      <>
+        Built for researchers, by researchers. Easily add new AI agents or literature sources. Contributions welcome!
       </>
     ),
   },
