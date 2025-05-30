@@ -20,7 +20,9 @@
     "electron": "npm run build && npm run build:backend && electron .",
     "pack": "electron-builder --dir",
     "dist": "npm run prepare-icons && electron-builder",
-    "prepare-icons": "mkdir -p build/icons && cp assets/icons/png/android-chrome-192x192.png build/icons/192x192.png && cp assets/icons/png/android-chrome-512x512.png build/icons/512x512.png && cp assets/icons/png/apple-touch-icon.png build/icons/apple-touch-icon.png && cp assets/icons/png/favicon-16x16.png build/icons/16x16.png && cp assets/icons/png/favicon-32x32.png build/icons/32x32.png && cp assets/icons/png/favicon.ico build/icons/favicon.ico && cp assets/icons/png/rwiz.png build/icons/rwiz.png",
+    "prepare-icons": "npm run prepare-icons:build && npm run prepare-icons:assets",
+    "prepare-icons:build": "copyfiles -f assets/icons/png/* build/icons",
+    "prepare-icons:assets": "copyfiles -f assets/icons/png/rwiz.png assets/icons/icon.png",
     "prune:prod": "npm prune --production",
     "build:prod": "npm run prune:prod && npm run dist"
   },
