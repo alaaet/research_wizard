@@ -1,9 +1,9 @@
-name: Build and Release
+name: Build and Release Electron App
 
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*.*.*'   # Triggers on version tags like v1.0.0
 
 jobs:
   build:
@@ -11,23 +11,64 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install
-      - run: npm run dist
-      - uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build backend
+        run: npm run build:backend
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Prepare icons
+        run: npm run prepare-icons
+
+      # Set up Wine for Windows builds on Linux (if cross-building Windows from Ubuntu)
+      - name: Set up Wine (for Windows targets on Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y wine64
+
+      - name: Build Electron app
+        run: npm run dist
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          files: |
-            dist/*.exe
-            dist/*.dmg
+          name: ${{ runner.os }}-artifacts
+          path: |
+            # Linux artifacts (AppImage, deb)
             dist/*.AppImage
             dist/*.deb
-            dist/*.rpm
+            # Windows artifacts (exe, msi, portable)
+            dist/*.exe
+            dist/*.msi
+            dist/*.portable.exe
+            # macOS artifacts (dmg, zip)
+            dist/*.dmg
             dist/*.zip
-            dist/*.tar.gz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

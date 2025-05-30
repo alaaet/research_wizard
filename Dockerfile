@@ -1,8 +1,9 @@
-# Use a specific Node 20 LTS version for better reproducibility
-FROM node:20.14.0-bullseye
+# -----------
+# Builder Stage
+# -----------
+FROM node:20.14.0-bullseye AS builder
 
-# Install required system dependencies for electron-builder
-# Using --no-install-recommends can reduce image size
+# Install system dependencies for electron-builder and headless builds
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       libarchive-tools \
@@ -24,19 +25,32 @@ RUN apt-get update && \
 # Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy package files and install dependencies
 COPY package*.json ./
-
-# Pin electron-builder and install with legacy peer deps
-RUN npm install --save-dev electron-builder@24.6.0 --legacy-peer-deps
 RUN npm install --legacy-peer-deps
-RUN npm install buffer-from
 
 # Copy the rest of the project source code
 COPY . .
 
+# Build backend and frontend
+RUN npm run build:backend && npm run build && npm run prepare-icons
+
+# -----------
+# Final Stage (for artifact extraction, not for running the app)
+# -----------
+FROM node:20.14.0-bullseye AS dist
+
+WORKDIR /app
+
+# Copy only the built app and node_modules from builder
+COPY --from=builder /app /app
+
 # Set environment variable for electron-builder
 ENV CI=true
 
-# Default command: build the Electron app
+# Create a non-root user for better security
+RUN useradd --user-group --create-home --shell /bin/false appuser
+USER appuser
+
+# Default command: build the Electron app (outputs to /app/dist)
 CMD ["npm", "run", "dist"]
