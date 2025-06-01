@@ -250,8 +250,8 @@ function createWindow() {
   // Create the browser window.
   console.log('Creating BrowserWindow...');
   const mainWindow = new BrowserWindow({
-    width: 1500,
-    height: 960,
+    width: 1920,
+    height: 1200,
     webPreferences: {
       nodeIntegration: false, // Keep Node integration off for security
       contextIsolation: true, // Protect against prototype pollution

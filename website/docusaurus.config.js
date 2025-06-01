@@ -93,6 +93,11 @@ const config = {
             label: 'Download',
             position: 'left',
           },
+          {
+            to: '/docs/demo',
+            label: 'Demo',
+            position: 'left',
+          },
           // {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/alaaet/research_wizard',
@@ -115,15 +120,15 @@ const config = {
                 label: 'Download',
                 to: '/docs/download',
               },
+              {
+                label: 'Demo',
+                to: '/docs/demo',
+              },
             ],
           },
           {
             title: 'Community',
             items: [
-              {
-                label:'Youtube',
-                href:'https://www.youtube.com/@research-wizard'
-              }
               {
                 label: 'Contact Support',
                 href: 'mailto:info@rwiz.eu',
