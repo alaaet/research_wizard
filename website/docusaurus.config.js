@@ -111,18 +111,14 @@ const config = {
           {
             title: 'Community',
             items: [
-              // {
-              //   label: 'Stack Overflow',
-              //   href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              // },
-              // {
-              //   label: 'Discord',
-              //   href: 'https://discordapp.com/invite/docusaurus',
-              // },
-              // {
-              //   label: 'X',
-              //   href: 'https://x.com/docusaurus',
-              // },
+              {
+                label: 'Contact Support',
+                href: 'mailto:info@rwiz.eu',
+              },
+              {
+                label: 'GitHub Issues',
+                href: 'https://github.com/alaaet/research_wizard/issues',
+              },
             ],
           },
           {

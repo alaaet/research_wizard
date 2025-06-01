@@ -9,7 +9,8 @@
 </p>
 
 ---
-[![Build and Release Electron App](https://github.com/alaaet/research_wizard/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/alaaet/research_wizard/actions/workflows/release.yml)
+[![Build and Release Electron App](https://github.com/alaaet/research_wizard/actions/workflows/release.yml/badge.svg)](https://github.com/alaaet/research_wizard/actions/workflows/release.yml)
+
 ## 🚀 Overview
 
 **Research Wizard** is a modern desktop application that streamlines the entire research workflow. Manage projects, discover literature, and draft reports with the help of advanced AI agents—all in a unified, customizable workspace.
