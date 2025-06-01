@@ -14,6 +14,7 @@ import {
   FileText,
   Cog,
   BookOpenCheck,
+  HelpCircle,
 } from "lucide-react";
 import { useUserMetaData } from "../context/UserMetaDataContext";
 
@@ -80,6 +81,7 @@ const Navbar = () => {
     },
     { title: t('navigation.writing'), icon: BookOpenCheck, path: "/writing" },
     { title: t('navigation.settings'), path: "/settings", icon: Settings },
+    { title: t('navigation.help'), path: "/help", icon: HelpCircle },
   ];
 
   const getCurrentPath = () => {

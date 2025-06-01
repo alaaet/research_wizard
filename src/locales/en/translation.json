@@ -27,6 +27,7 @@
     "literatureManage": "Manage",
     "writing": "Writing",
     "settings": "Settings",
+    "help": "Help & Support",
     "toggleNavigation": "Toggle navigation",
     "toggleTheme": "Toggle theme",
     "defaultUser": "Default User",
@@ -361,5 +362,29 @@
     "Submitted": "Submitted",
     "Completed": "Completed",
     "On Hold": "On Hold"
+  },
+  "help": {
+    "title": "Help & Support",
+    "needHelp": {
+      "title": "Need Help?",
+      "description": "We're here to help you get the most out of Research Wizard",
+      "reportIssues": {
+        "title": "Report Issues",
+        "description": "Found a bug or have a feature request? Open an issue on our GitHub repository.",
+        "button": "Open GitHub Issues"
+      },
+      "contactSupport": {
+        "title": "Contact Support",
+        "description": "Have questions or need assistance? Reach out to our support team.",
+        "button": "Email Support",
+        "emailCopied": "Email address copied to clipboard"
+      }
+    },
+    "license": {
+      "title": "License Information",
+      "description": "Research Wizard is licensed under CC BY-NC-SA 4.0",
+      "content": "This software is free for non-commercial use. You can use it for academic and research purposes. For more details, please see our",
+      "link": "license"
+    }
   }
 } 

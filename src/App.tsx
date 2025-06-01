@@ -13,6 +13,7 @@ import ResearchDrafts from "./pages/Writing";
 import CreateDraftPage from "./pages/Writing/CreateDraft";
 import ResearchDraftDetailPage from "./pages/Writing/ResearchDraftDetail";
 import ReportDetails from "./pages/Writing/ReportDetails";
+import Help from "./pages/Help";
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './lib/i18n';
@@ -43,6 +44,7 @@ const App = () => {
             <Route path="/writing/draft/:uid" element={<ResearchDraftDetailPage />} />
             <Route path="/writing/draft/:uid/report" element={<ReportDetails />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/help" element={<Help />} />
           </Routes>
         </TooltipProvider>
       </HashRouter>

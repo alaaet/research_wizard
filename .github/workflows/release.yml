@@ -21,6 +21,11 @@ jobs:
         with:
           node-version: 20
 
+      - name: Update version in package.json
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          npm version $VERSION --no-git-tag-version
+
       - name: Install dependencies
         run: npm install
 

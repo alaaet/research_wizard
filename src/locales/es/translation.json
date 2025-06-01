@@ -37,6 +37,7 @@
     "literatureManage": "Gestionar",
     "writing": "Escritura",
     "settings": "Configuración",
+    "help": "Ayuda y Soporte",
     "toggleNavigation": "Alternar navegación",
     "toggleTheme": "Alternar tema",
     "defaultUser": "Usuario predeterminado",
@@ -369,5 +370,29 @@
     "Submitted": "Enviado",
     "Completed": "Completado",
     "On Hold": "En Pausa"
+  },
+  "help": {
+    "title": "Ayuda y Soporte",
+    "needHelp": {
+      "title": "¿Necesitas ayuda?",
+      "description": "Estamos aquí para ayudarte a aprovechar al máximo Research Wizard",
+      "reportIssues": {
+        "title": "Reportar problemas",
+        "description": "¿Encontraste un error o tienes una sugerencia de función? Abre un issue en nuestro repositorio de GitHub.",
+        "button": "Abrir GitHub Issues"
+      },
+      "contactSupport": {
+        "title": "Contactar con soporte",
+        "description": "¿Tienes preguntas o necesitas ayuda? Ponte en contacto con nuestro equipo de soporte.",
+        "button": "Email de soporte",
+        "emailCopied": "Dirección de correo electrónico copiada al portapapeles"
+      }
+    },
+    "license": {
+      "title": "Información de licencia",
+      "description": "Research Wizard está licenciado bajo CC BY-NC-SA 4.0",
+      "content": "Este software es gratuito para uso no comercial. Puedes utilizarlo con fines académicos y de investigación. Para más detalles, consulta nuestra",
+      "link": "licencia"
+    }
   }
 } 

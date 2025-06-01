@@ -27,6 +27,7 @@
     "literatureManage": "管理",
     "writing": "写作",
     "settings": "设置",
+    "help": "帮助与支持",
     "toggleNavigation": "切换导航",
     "toggleTheme": "切换主题",
     "defaultUser": "默认用户",
@@ -289,6 +290,30 @@
       "7days": "7天",
       "30days": "30天",
       "90days": "90天"
+    }
+  },
+  "help": {
+    "title": "帮助与支持",
+    "needHelp": {
+      "title": "需要帮助？",
+      "description": "我们随时为您提供帮助，让您充分利用 Research Wizard",
+      "reportIssues": {
+        "title": "报告问题",
+        "description": "发现错误或有功能建议？在我们的 GitHub 仓库中提交问题。",
+        "button": "打开 GitHub Issues"
+      },
+      "contactSupport": {
+        "title": "联系支持",
+        "description": "有问题或需要帮助？请联系我们的支持团队。",
+        "button": "发送支持邮件",
+        "emailCopied": "邮箱地址已复制到剪贴板"
+      }
+    },
+    "license": {
+      "title": "许可证信息",
+      "description": "Research Wizard 采用 CC BY-NC-SA 4.0 许可证",
+      "content": "本软件可免费用于非商业用途。您可以将其用于学术和研究目的。有关详细信息，请查看我们的",
+      "link": "许可证"
     }
   }
 } 

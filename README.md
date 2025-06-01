@@ -133,3 +133,26 @@ We welcome contributions! Please read our [contribution guidelines](CONTRIBUTING
 - Built with ❤️ for the research community
 - Code was partially created by [Lovable](https://lovable.dev/)
 - [Cursor](https://www.cursor.com/) contributed to some specific implementations
+
+## License
+
+This project is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0).
+
+### What this means:
+
+- **You can:**
+  - Use the software for non-commercial purposes
+  - Share and distribute the software
+  - Modify and adapt the software
+  - Use the software for academic and research purposes
+
+- **You cannot:**
+  - Use the software for commercial purposes
+  - Distribute modified versions without sharing the source code
+  - Remove the license and attribution requirements
+
+For more details, please see the [LICENSE](LICENSE) file.
+
+## Contact
+
+For any questions or support, please contact info@rwiz.eu
