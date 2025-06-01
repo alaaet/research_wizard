@@ -15,9 +15,7 @@
 
 [![Watch Demo](https://img.shields.io/badge/Watch%20Demo-Video-red)](https://youtu.be/_c42DV8cemo)
 
-<div style={{display: 'flex', justifyContent: 'center', margin: '2rem 0' }}>
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/_c42DV8cemo" title="Research Wizard Demo" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-</div>
+![Research Wizard Demo GIF](https://www.rwiz.eu/img/demo.gif)
 
 ## 🚀 Overview
 
