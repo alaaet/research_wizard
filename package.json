@@ -163,9 +163,7 @@
     "win": {
       "target": [
         "nsis"
-      ],
-      "signAndEditExecutable": false,
-      "forceCodeSigning": false
+      ]
     },
     "mac": {
       "target": [
@@ -179,11 +177,6 @@
         "deb"
       ]
     },
-    "asar": true,
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true
-    }
+    "asar": true
   }
 }
