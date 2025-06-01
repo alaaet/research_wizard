@@ -40,7 +40,7 @@ jobs:
 
       - name: Build Electron app
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: npm run dist
 
       - name: Upload artifacts
@@ -74,3 +74,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/**/*
+          token: ${{ secrets.PAT_TOKEN }}
