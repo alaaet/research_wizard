@@ -42,7 +42,13 @@ function HomepageHeader() {
               scientific literature, and draft research reports with the help of
               advanced AI agents—all in a modern, intuitive desktop app.
             </p>
-            <div className={styles.buttons}>
+            <div className={styles.buttons} style={{ gap: '1rem' }}>
+              <Link
+                className="button button--success button--lg"
+                to="/docs/download"
+              >
+                Download Research Wizard
+              </Link>
               <Link
                 className="button button--secondary button--lg"
                 to="/docs/user-guide/intro"

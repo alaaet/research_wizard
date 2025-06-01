@@ -88,6 +88,11 @@ const config = {
             position: 'left',
             label: 'User Guide',
           },
+          {
+            to: '/docs/download',
+            label: 'Download',
+            position: 'left',
+          },
           // {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/alaaet/research_wizard',
@@ -105,6 +110,10 @@ const config = {
               {
                 label: 'Docs',
                 to: '/docs/intro',
+              },
+              {
+                label: 'Download',
+                to: '/docs/download',
               },
             ],
           },
@@ -124,13 +133,13 @@ const config = {
           {
             title: 'More',
             items: [
-              // {
-              //   label: 'Blog',
-              //   to: '/blog',
-              // },
               {
                 label: 'GitHub',
                 href: 'https://github.com/alaaet/research_wizard',
+              },
+              {
+                label: 'Download',
+                to: '/docs/download',
               },
             ],
           },

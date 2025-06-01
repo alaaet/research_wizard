@@ -163,20 +163,28 @@
     },
     "win": {
       "target": [
-        "nsis"
-      ]
+        "nsis",
+        "portable"
+      ],
+      "artifactName": "Research-Wizard-Setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "Research-Wizard-Portable.${ext}"
     },
     "mac": {
       "target": [
         "dmg",
         "zip"
-      ]
+      ],
+      "artifactName": "Research-Wizard-arm64.${ext}"
     },
     "linux": {
       "target": [
         "AppImage",
-        "deb"
-      ]
+        "deb",
+        "rpm"
+      ],
+      "artifactName": "Research-Wizard.${ext}"
     },
     "asar": true
   }

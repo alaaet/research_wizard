@@ -11,6 +11,9 @@
 ---
 [![Build and Release Electron App](https://github.com/alaaet/research_wizard/actions/workflows/release.yml/badge.svg)](https://github.com/alaaet/research_wizard/actions/workflows/release.yml)
 
+[![Download Research Wizard](https://img.shields.io/badge/Download-Research%20Wizard-blue)](http://www.rwiz.eu/docs/download)
+
+
 ## 🚀 Overview
 
 **Research Wizard** is a modern desktop application that streamlines the entire research workflow. Manage projects, discover literature, and draft reports with the help of advanced AI agents—all in a unified, customizable workspace.
@@ -71,6 +74,15 @@
 - **Internationalization:** Built-in i18n with support for multiple languages and RTL/LTR layouts.
 
 ---
+## 📥 Download
+
+<div style={{display: 'flex', justifyContent: 'center', margin: '2rem 0' }}>
+  <a class="button button--success button--lg" href="http://www.rwiz.eu/docs/download">
+    Download Research Wizard
+  </a>
+</div>
+
+---
 
 ## 🖥️ Installation
 
@@ -88,7 +100,7 @@
    ```bash
    npm start
    ```
-   _Or follow the [detailed installation guide](https://alaaet.github.io/research_wizard/) for your OS._
+   _Or [download the latest installers](http://www.rwiz.eu/docs/download) for your OS._
 
 ---
 
