@@ -1,7 +1,7 @@
 {
   "name": "research_wizard",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A desktop app for research management, literature discovery, and AI-powered drafting.",
   "license": "CC-BY-NC-SA-4.0",
   "author": {
