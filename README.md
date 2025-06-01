@@ -33,7 +33,9 @@
 </p>
 
 <p align="center">
-  <img src="assets/demo.gif" alt="Research Wizard Logo" width="100%"/>
+  <a href="https://youtu.be/_c42DV8cemo" target="_blank">
+    <img src="assets/demo.gif" alt="Research Wizard Logo" width="400px"/>
+  <a href="https://youtu.be/_c42DV8cemo" target="_blank">
 </p>
 
 
