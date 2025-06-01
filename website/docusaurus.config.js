@@ -121,6 +121,10 @@ const config = {
             title: 'Community',
             items: [
               {
+                label:'Youtube',
+                href:'https://www.youtube.com/@research-wizard'
+              }
+              {
                 label: 'Contact Support',
                 href: 'mailto:info@rwiz.eu',
               },

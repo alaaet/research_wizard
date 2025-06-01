@@ -73,12 +73,5 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist/Research-Wizard-Setup.exe
-            dist/Research-Wizard-Portable.exe
-            dist/Research-Wizard-arm64.dmg
-            dist/Research-Wizard-arm64.zip
-            dist/Research-Wizard.AppImage
-            dist/Research-Wizard.deb
-            dist/Research-Wizard.rpm
+          files: dist/**/*
           token: ${{ secrets.PAT_TOKEN }}
