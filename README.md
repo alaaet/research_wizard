@@ -32,7 +32,10 @@
 <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey" alt="License CC BY-NC-SA 4.0"/>
 </p>
 
-![Research Wizard Demo GIF](https://www.rwiz.eu/img/demo.gif)
+<p align="center">
+  <img src="assets/demo.gif" alt="Research Wizard Logo" width="100%"/>
+</p>
+
 
 ## 🚀 Overview
 
