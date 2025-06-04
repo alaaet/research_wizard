@@ -1,5 +1,7 @@
 ---
+title: User Guide Introduction
 sidebar_position: 1
+description: "Step-by-step guide to using Research Wizard for research management, literature discovery, and AI-powered drafting."
 ---
 
 # User Guide

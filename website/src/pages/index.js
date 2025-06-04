@@ -80,6 +80,18 @@ export default function Home() {
     <Layout
       title={`Welcome to ${siteConfig.title}`}
       description="Research Wizard: AI-powered research management, literature discovery, and drafting."
+      meta={[
+        { property: 'og:title', content: 'Research Wizard: AI-Powered Research Management Tool' },
+        { property: 'og:description', content: 'Organize, search, and write research with advanced AI agents. Literature discovery, project management, and drafting in one place.' },
+        { property: 'og:image', content: 'https://www.rwiz.eu/img/rwiz.png' },
+        { property: 'og:url', content: 'https://www.rwiz.eu/' },
+        { property: 'og:type', content: 'website' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'Research Wizard: AI-Powered Research Management Tool' },
+        { name: 'twitter:description', content: 'Organize, search, and write research with advanced AI agents. Literature discovery, project management, and drafting in one place.' },
+        { name: 'twitter:image', content: 'https://www.rwiz.eu/img/rwiz.png' },
+        { rel: 'canonical', href: 'https://www.rwiz.eu/' },
+      ]}
     >
       <HomepageHeader />
       <main>

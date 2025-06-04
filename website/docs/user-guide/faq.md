@@ -1,6 +1,8 @@
 ---
+title: Frequently Asked Questions (FAQ)
 id: user-guide-faq
 sidebar_position: 7
+description: "Answers to common questions about Research Wizard, including data storage, API keys, offline use, and more."
 ---
 
 # Frequently Asked Questions (FAQ)

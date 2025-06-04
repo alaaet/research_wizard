@@ -36,6 +36,17 @@ const config = {
     locales: ['en'],
   },
 
+  plugins: [
+    [
+      '@docusaurus/plugin-sitemap',
+      {
+        changefreq: 'weekly',
+        priority: 0.5,
+        filename: 'sitemap.xml',
+      },
+    ],
+  ],
+
   presets: [
     [
       'classic',
@@ -75,6 +86,10 @@ const config = {
     ({
       // Replace with your project's social card
       image: '/img/rwiz.png',
+      metadata: [
+        { name: 'description', content: 'Research Wizard: AI-powered research management, literature discovery, and drafting. Organize, search, and write research with advanced AI agents.' },
+        { name: 'keywords', content: 'research, AI, literature, management, drafting, academic, research wizard, organize, search, write, science' },
+      ],
       navbar: {
         title: 'Research Wizard',
         logo: {

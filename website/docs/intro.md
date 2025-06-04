@@ -1,5 +1,7 @@
 ---
+title: Introduction
 sidebar_position: 1
+description: "Welcome to Research Wizard – your AI-powered research management tool. Organize, search, and write research projects with advanced AI agents."
 ---
 
 # Introduction

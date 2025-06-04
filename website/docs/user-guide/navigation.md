@@ -1,6 +1,8 @@
 ---
+title: Navigating the Dashboard
 id: user-guide-navigation
 sidebar_position: 2
+description: "How to navigate the Research Wizard dashboard, access projects, literature, writing, and settings."
 ---
 
 # Navigating the Dashboard

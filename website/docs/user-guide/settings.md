@@ -1,6 +1,8 @@
 ---
+title: Customizing Settings & Integrations
 id: user-guide-settings
 sidebar_position: 6
+description: "Customize Research Wizard settings, manage AI agents, literature retrievers, and report parameters for your workflow."
 ---
 
 # Customizing Settings & Integrations
